@@ -1,0 +1,213 @@
+  <div class="ui-g-12 px-0" *ngIf="mandadoPrisao">
+    <div class="p-card text-center ui-corner-all">
+      <span class="p-card-titulo">Mandado de Prisão</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12 px-0" *ngIf="mandadoPrisao">
+    <div class="ui-g-12 ui-sm-12 px-0">
+      <div class="ui-g p-card mb-0 h-100 ui-corner-all">
+        <div class="ui-g-12 p-0 mb-2 text-center">
+          <div class="p-card-subtitulo">Dados do Mandado de Prisão</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Situação:</div>
+          <div class="ui-g-9 ui-sm-12" >{{mandadoPrisao.status}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Nº do Mandado de Prisão:</div>
+          <div class="ui-g-9 ui-sm-12" >{{utils.formataDado(mandadoPrisao.numero_mandado_prisao, '#######-##.####.#.##.####.##.####-##')}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Data de expedição:</div>
+          <div class="ui-g-9 ui-sm-12" >{{utils.formataData(mandadoPrisao.data_expedicao)}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Data de validade:</div>
+          <div class="ui-g-9 ui-sm-12" >{{utils.formataData(mandadoPrisao.data_validade)}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Nº do processo:</div>
+          <div class="ui-g-9 ui-sm-12" >{{utils.formataDado(mandadoPrisao.numero_processo, '#######-##.####.#.##.####')}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Espécie de prisão:</div>
+          <div class="ui-g-9 ui-sm-12" >{{mandadoPrisao.tipo_prisao}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Órgão do judiciário:</div>
+          <div class="ui-g-9 ui-sm-12" >{{mandadoPrisao.orgao_judiciario}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0" >
+          <div class="ui-g-3 ui-sm-12 fw-bold">Município do Órgão</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.orgao_judiciario_municipio}} - {{mandadoPrisao.orgao_judiciario_uf}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0" >
+          <div class="ui-g-3 ui-sm-12 fw-bold">Magistrado</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.magistrado}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0" >
+          <div class="ui-g-3 ui-sm-12 fw-bold">Síntese da decisão:</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.sintese_decisao}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0" >
+          <div class="ui-g-3 ui-sm-12 fw-bold">Tipificações penais:</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.tipificacoes}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0" *ngIf="mandadoPrisao.descricaoCumprimento">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Descrição do cumprimento</div>
+          <div class="ui-g-12 ui-sm-12">{{mandadoPrisao.descricaoCumprimento}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0 mb-2 mt-2 text-center">
+          <div class="p-card-subtitulo">Pessoa Objeto do Mandado de Prisão</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Nome</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.nome}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">CPF</div>
+          <div class="ui-g-9 ui-sm-12"><a target='_blank' [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(mandadoPrisao.cpf)}' style="color: #3984b8;">{{utils.formataDado(mandadoPrisao.cpf, '###.###.###-##')}}</a></div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Alcunha/Outras Alcunhas</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.alcunha}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Sexo</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.sexo}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Nome do Pai/Outros</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.nome_pai}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Nome da Mãe/Outros</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.nome_mae}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Naturalidade</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.municipio_nascimento}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Nacionalidade</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.pais_nascimento}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Data de Nascimento</div>
+          <div class="ui-g-9 ui-sm-12">{{utils.formataData(mandadoPrisao.data_nascimento)}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">UF de Nascimento</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.uf_nascimento}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Recaptura</div>
+          <div class="ui-g-9 ui-sm-12">{{mandadoPrisao.recaptura}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12 px-0" *ngIf="enderecosEncontrados">
+    <div class="p-card text-center ui-corner-all">
+      <span class="p-card-titulo">Possíveis Paradeiros</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12 px-0" *ngIf="enderecosEncontrados">
+    <div class="ui-g-12 ui-sm-12 px-0">
+      <div class="ui-g p-card mb-0 h-100 ui-corner-all">
+        <div class="ui-g-12 p-0 mb-2 text-center">
+          <div class="p-card-subtitulo">Endereços</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <pandora-table
+            [value]="enderecosEncontrados"
+            [dicionarioDados]="dicionarioDadosEnderecos">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+                  <span *ngSwitchCase="'logradouro'">{{rowData.tipoLogradouro}} {{rowData.logradouro}}, {{rowData.numero}}, {{rowData.complemento}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field] | uppercase}}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </pandora-table>
+
+          <ng-container>
+            <div class="ui-g-12 font-weight-bold">
+              Os dados abaixo utilizam dados georeferenciados encontrados em nossas bases de dados.
+            </div>
+
+            <p-gmap
+              [options]="mapaOptions"
+              [overlays]="mapaOverlays"
+              [style]="{'width':'100%','height':'420px'}">
+            </p-gmap>
+          </ng-container>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12 px-0" *ngIf="vinculosEmpregaticios">
+    <div class="ui-g-12 ui-sm-12 px-0">
+      <div class="ui-g p-card mb-0 h-100 ui-corner-all">
+        <div class="ui-g-12 p-0 mb-2 text-center">
+          <div class="p-card-subtitulo">Vínculos Empregatícios - Fonte: RAIS</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <pandora-table
+            [value]="vinculosEmpregaticios"
+            [dicionarioDados]="dicionarioDadosEmpregadores">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cnpj'">
+                    <a target='_blank' [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cnpj, '##.###.###/####-##')}}</a>
+                  </span>
+                  <span *ngSwitchCase="'dtAdmissao'">{{utils.formataData(rowData.dtAdmissao)}}</span>
+                  <span *ngSwitchCase="'dtDesligamento'">{{utils.formataData(rowData.dtDesligamento)}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field]  | uppercase}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+        </div>
+      </div>
+    </div>
+  </div>

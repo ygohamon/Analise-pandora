@@ -1,0 +1,61 @@
+export const mapeamentoItensAcesso = {
+  pesquisa: {
+    pessoa: 'pessoa',
+    empresa: 'empresa',
+    endereco: 'endereco',
+    veiculo: 'veiculo',
+    telefone: 'telefone',
+    preso: 'preso',
+    obito: 'obito',
+    folhapagamento: 'folha de pagamento',
+    condenacao: 'condenacao',
+    geocoordenada: 'geocoordenada',
+    mandado: 'mandado',
+    socio: 'socio',
+    tipologia: 'tipologia',
+    codata: 'codata',
+    imovel: 'imovel',
+    embarcacao: 'embarcacao',
+    investigado: 'investigado',
+    prontuario: 'prontuario',
+    orcrim: 'orcrim',
+    sasp: 'sasp'
+  },
+  apps: {
+    integra: 'integra',
+    cacafantasmas: 'caca fantasmas',
+    dna: 'dna',
+    painelcovid: 'painelcovid',
+    inp: 'inp',
+    mapaconsumo: 'mapa de consumo',
+    relacionamentos: 'relacionamentos',
+    relatoriointegrado: 'relatorio integrado',
+    erbtracker: 'erbtracker',
+    tiporank: 'tipo rank',
+    ariel: 'ariel',
+    simba: 'simba',
+    yellowpages: 'yellowpages',
+    ondeandei: 'ondeandei',
+    sefazML: 'sefazml',
+    sadep: 'sadep'
+  },
+  analise: {
+    aditivos: 'aditivos',
+    contratos: 'contratos',
+    empenhos: 'empenhos',
+    licitacoes: 'licitacoes',
+    tce: 'tce',
+  },
+  cadastro: {
+    endereco: 'endereco',
+    telefone: 'telefone',
+  },
+};
+
+export const mapeamentoSecoesAcesso = {
+  pesquisa: 'pesquisa',
+  apps: 'apps',
+  analise: 'analise',
+  cadastro: 'cadastro',
+  sistema: 'sistema',
+};

@@ -1,0 +1,203 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Relacionamentos</span>
+
+      <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaRelacionamentosSucesso">
+        <span (click)="resetaBusca()">
+          Retornar
+          <i class="fa fa-reply"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaRelacionamentosSucesso">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul>
+          <li class="pb-1">inserir uma lista de <strong>CPFs</strong> ou <strong>CNPJs</strong>, o sistema tentará encontrar vínculos comuns entre as entidades.
+            <ul>
+              <li class="pb-1">Dependendo da quantidade de vínculos, a pesquisa por relacionamentos pode demorar.</li>
+            </ul>
+          </li>
+          <li class="pb-1">Mantendo o botão direito do mouse pressionado sobre um nó, buscas adicionais podem ser realizadas.</li>
+          <li class="pb-1">Um nó pode ser removido ao manter o botão direito do mouse pressionado sobre ele e selecionar a opção <strong>X</strong>.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaRelacionamentosSucesso">
+    <div class="p-card">
+      <div class="p-card-subtitulo mb-3">CPF ou CNPJ</div>
+
+      <textarea class="w-100" [(ngModel)]="campoTexto" rows="10" pInputTextarea></textarea>
+
+      <div class="w-100 text-center mt-3">
+        <button pButton (click)="onClick()" type="button" icon="pi pi-search" label="Rastrear"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaRelacionamentosSucesso">
+    <div class="p-card p-0">
+        <div class="graph-container" [ngClass]="{'config-closed': escondeConfig}">
+            <div id="cy"></div>
+
+            <span class="pi pi-bars config-toggle" (click)="toggleBarraConfig()"></span>
+            <div id="config" class="config">
+
+                <div class="mb-2">
+                    <span class="label label-info">Relacionamentos</span>
+                </div>
+
+                <div class="mb-2">
+                  <p style="font-size: 0.9em;" class="mb-2">Configurações</p>
+
+                  <div class="w-100 py-1">
+                    <p-checkbox class="mr-1" binary="true" label="Colorido" (onChange)="toggleGrafoColorido()"	 [(ngModel)]="grafoColorido"></p-checkbox>
+                  </div>
+
+                </div>
+
+                <div class="param">
+                  <p style="font-size: 0.9em; margin-bottom: 0.7em;">Ações Globais</p>
+                  <button pButton title="Adicionar Nó" (click)="painelBuscas()" type="button" icon="pi pi-plus"></button>
+                  <button pButton title="Reinicializa Grafo" (click)="executaLayout()" type="button" icon="pi pi-refresh"></button>
+                  <button *ngIf="false" pButton title="Gera Imagem Global" (click)="downloadImagem()" type="button" icon="fa fa-picture-o"></button>
+                  <button pButton title="Gera Relatório Global" (click)="downloadRelatorio(null)" type="button" icon="fa fa-file-pdf-o"></button>
+                  <button pButton title="Gera JSON Global" (click)="downloadJson()" type="button" icon="fa fa-database"></button>
+                  <button pButton title="Expande Nós" (click)="expandirNodes()" type="button" icon="fa fa-podcast"></button>
+                  <button pButton title="Expande Pessoas Físicas" (click)="expandirNodesPF()" type="button" icon="fa fa-user"></button>
+                  <button pButton title="Expande Pessoas Jurídicas" (click)="expandirNodesPJ()" type="button" icon="fa fa-university"></button>
+                  <button pButton title="Expande Telefones" (click)="expandirNodesTelefone()" type="button" icon="fa fa-phone"></button>
+                  <button pButton title="Remove Nós Selecionados" (click)="removeNodesSelecionados()" type="button" icon="fa fa-times"></button>
+                </div>
+
+                <div class="mb-2">
+                  <p style="font-size: 0.9em;" class="mb-2">Filtro de Entidades</p>
+
+                  <div class="w-100">
+                    <div class="ui-g">
+                      <div class="ui-g-3 p-0 pb-1">
+                        <p-checkbox name="filtroentidades" class="mr-2" value="pessoa" (onChange)="apagaEntidadesNaoPermitidas()"	 [(ngModel)]="entidadesPermitidas"></p-checkbox>
+                        <i class="fa fa-user"></i>
+                      </div>
+                      <div class="ui-g-3 p-0 pb-1">
+                        <p-checkbox name="filtroentidades" class="mr-2" value="empresa" (onChange)="apagaEntidadesNaoPermitidas()" [(ngModel)]="entidadesPermitidas"></p-checkbox>
+                        <i class="fa fa-building"></i>
+                      </div>
+                      <div class="ui-g-3 p-0 pb-1">
+                        <p-checkbox name="filtroentidades" class="mr-2" value="telefone" (onChange)="apagaEntidadesNaoPermitidas()" [(ngModel)]="entidadesPermitidas"></p-checkbox>
+                        <i class="fa fa-phone"></i>
+                      </div>
+                      <div class="ui-g-3 p-0 pb-1">
+                        <p-checkbox name="filtroentidades" class="mr-2" value="endereco" (onChange)="apagaEntidadesNaoPermitidas()" [(ngModel)]="entidadesPermitidas"></p-checkbox>
+                        <i class="fa fa-road"></i>
+                      </div>
+                      <div class="ui-g-3 p-0 pb-1">
+                        <p-checkbox name="filtroentidades" class="mr-2" value="orgaopublico" (onChange)="apagaEntidadesNaoPermitidas()" [(ngModel)]="entidadesPermitidas"></p-checkbox>
+                        <i class="fa fa-bank"></i>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <p style="font-size: 0.9em;" class="mb-2">Modelos de Grafo</p>
+
+                  <div class="w-100">
+                    <div class="ui-g">
+                      <div class="ui-g-6 p-0 pb-1">
+                        <p-radioButton name="selecionalayout" value="cola" label="COLA" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton>
+                      </div>
+                      <div class="ui-g-6 p-0 pb-1">
+                        <p-radioButton name="selecionalayout" value="cose" label="COSE" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton>
+                      </div>
+                      <div class="ui-g-6 p-0 pb-1">
+                        <p-radioButton name="selecionalayout" value="breadthfirst" label="BF" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton>
+                      </div>
+                      <div class="ui-g-6 p-0 pb-1">
+                        <p-radioButton name="selecionalayout" value="circle" label="Circular" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton>
+                      </div>
+                      <div class="ui-g-6 p-0 pb-1">
+                        <p-radioButton name="selecionalayout" value="grid" label="Grade" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton>
+                      </div>
+                      <div class="ui-g-6 p-0 pb-1">
+                        <p-radioButton name="selecionalayout" value="concentric" label="Centro" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton>
+                      </div>
+                    </div>
+                    <!-- <p-radioButton name="selecionalayout" class="mr-1" value="random" label="Aleatorio" (onClick)="trocaLayout()" [(ngModel)]="layoutSelecionado"></p-radioButton> -->
+                  </div>
+                </div>
+
+                <div class="mb-2" *ngIf="layoutSelecionado==='cola'">
+                  <p style="font-size: 0.9em;" class="mb-2">Parâmetros do COLA</p>
+
+                  <div class="param">
+                    <!-- <span class="label label-default label-espacamento">Comprimento das arestas</span> -->
+                    <p style="font-size: 0.9em; margin-bottom: 0.7em;">Comprimento das arestas</p>
+                    <p-slider [(ngModel)]="comprimentoArestas" [min]="1" [max]="1000" [style]="{'width':'170px'}" (onSlideEnd)="onTrocaSliderComprimentoArestas($event)"></p-slider>
+                  </div>
+
+                  <div class="param">
+                    <!-- <span class="label label-default label-espacamento"></span> -->
+                    <p style="font-size: 0.9em; margin-bottom: 0.7em;">Espaçamento dos nós</p>
+                    <p-slider [(ngModel)]="espacamentoNos" [min]="1" [max]="100" [style]="{'width':'170px'}" (onSlideEnd)="onTrocaSliderEspacamentoNos($event)"></p-slider>
+                  </div>
+                </div>
+
+                <div class="param">
+                  <p style="font-size: 0.9em; margin-bottom: 0.7em;">Algoritmos</p>
+                  <button pButton title="Encontra Caminho" (click)="encontraCaminho()" type="button" icon="fa fa-location-arrow"></button>
+                </div>
+
+                <div class="param" *ngIf="!!entidadeSelecionada && !!entidade.alvo">
+                  <p style="font-size: 0.9em; margin-bottom: 0.7em;">Ações</p>
+                  <button pButton title="Gera Relatório" (click)="downloadRelatorio(true)" type="button" icon="fa fa-file-pdf-o"></button>
+                </div>
+
+                <div class="param" *ngIf="!!entidadeSelecionada">
+                  <p style="font-size: 0.9em; margin-bottom: 0.7em;">Informações</p>
+
+                  <app-relacionamentos-info-entidade-pessoa
+                    *ngIf="entidadeSelecionada === 'pessoa'"
+                    [data]="entidade">
+                  </app-relacionamentos-info-entidade-pessoa>
+
+                  <app-relacionamentos-info-entidade-empresa
+                    *ngIf="entidadeSelecionada === 'empresa'"
+                    [data]="entidade">
+                  </app-relacionamentos-info-entidade-empresa>
+
+                  <app-relacionamentos-info-entidade-endereco
+                    *ngIf="entidadeSelecionada === 'endereco'"
+                    [data]="entidade">
+                  </app-relacionamentos-info-entidade-endereco>
+
+                  <app-relacionamentos-info-entidade-orgao
+                    *ngIf="entidadeSelecionada === 'orgaopublico'"
+                    [data]="entidade">
+                  </app-relacionamentos-info-entidade-orgao>
+
+                  <app-relacionamentos-info-entidade-telefone
+                    *ngIf="entidadeSelecionada === 'telefone'"
+                    [data]="entidade">
+                  </app-relacionamentos-info-entidade-telefone>
+
+                </div>
+
+                <!-- <div class="param">
+                  <span class="label label-default label-espacamento">Layouts</span>
+                  <button pButton (click)="expandirNodes()" type="button" icon="fa fa-genderless"></button>
+                  <button pButton (click)="expandirNodes()" type="button" icon="fa fa-podcast"></button>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

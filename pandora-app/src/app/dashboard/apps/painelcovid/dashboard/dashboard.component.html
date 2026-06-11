@@ -1,0 +1,55 @@
+<!-- Dashboard de informacoes agregadas -->
+<app-painelcovid-dashboard-agregado
+  [dados]="dados">
+</app-painelcovid-dashboard-agregado>
+
+
+<!-- Mapa da distribuição do coronavoucher pago -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-mapa
+    [uf]="uf"
+    [dados]="dados">
+  </app-painelcovid-dashboard-mapa>
+</div>
+
+<!-- Tabelas contendo informações gerais das tipologias -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-tabelageral
+      [dados]="dados">
+  </app-painelcovid-dashboard-tabelageral>
+</div>
+
+<!-- Tabelas contendo informações da tipologia de falecidos -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-falecido
+      [dados]="dados">
+  </app-painelcovid-dashboard-falecido>
+</div>
+
+<!-- Tabelas contendo informações da tipologia de residentes no exterior -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-residenteexterior
+  [dados]="dados">
+</app-painelcovid-dashboard-residenteexterior>
+</div>
+
+<!-- Tabelas contendo informações da tipologia de proprietarios de veiculos -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-proprietarioveiculos
+      [dados]="dados">
+  </app-painelcovid-dashboard-proprietarioveiculos>
+</div>
+
+<!-- Tabelas contendo informações da tipologia de proprietarios de embarcações -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-proprietarioembarcacoes
+  [dados]="dados">
+</app-painelcovid-dashboard-proprietarioembarcacoes>
+</div>
+
+<!-- Tabelas contendo informações da tipologia de proprietarios de aeronaves -->
+<div class="ui-g-12">
+  <app-painelcovid-dashboard-proprietarioaeronaves
+  [dados]="dados">
+</app-painelcovid-dashboard-proprietarioaeronaves>
+</div>

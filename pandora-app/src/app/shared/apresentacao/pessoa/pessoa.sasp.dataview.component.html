@@ -1,0 +1,351 @@
+<div class="ui-g">
+    <div class="ui-g-12 p-0">
+      <p-table
+        #dt_exportacao
+        [columns]="colunasTabela"
+        [value]="sasp"
+        exportFilename="PM">
+      </p-table>
+  
+      <p-dataView 
+        #data 
+        [value]="sasp" 
+        [paginator]="true" 
+        [rows]="1" 
+        [rowsPerPageOptions]="[1, 5, 10]"
+        emptyMessage="{{msgRegistroNaoEncontrado}}"
+        exportFilename="PM"
+        >
+        <p-header>
+          <div class="p-card-subtitulo my-2 text-left d-flex">
+            <div class="text-center">
+              Registro da Policia Militar
+            </div>
+  
+            <div class="export-button pointer text-primary ml-auto" (click)="dt_exportacao.exportCSV()">
+              <span>CSV</span>
+              <i class="pi pi-download"></i>
+            </div>
+  
+            <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+              <span>PDF</span>
+              <i class="pi pi-download"></i>
+            </div>
+  
+            <div class="export-button pointer text-primary ml-2" (click)="exportExcel()">
+              <span>Excel</span>
+              <i class="pi pi-download"></i>
+            </div>
+          </div>
+        </p-header>
+  
+        <p-footer>{{utils.getFooterResultado(data.totalRecords)}}</p-footer>
+  
+        <ng-template let-sasp pTemplate="listItem">
+            <div class="ui-g-12">
+
+              <!-- Informações de pessoa -->
+              <div class="ui-g-12 ui-sm-12">
+
+                <!-- Nome -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.nome">
+                  <div class="ui-g-4 pandora-atributo">Nome:</div>
+                  <div class="ui-g-8">{{sasp.nome}}</div>
+                </div>
+
+                <!-- Alcunha -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.alcunha">
+                  <div class="ui-g-4 pandora-atributo">Alcunha:</div>
+                  <div class="ui-g-8">{{sasp.alcunha}}</div>
+                </div>
+
+                <!-- Documento -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tipo_documento && !!sasp.documento">
+                  <div class="ui-g-4 pandora-atributo">{{utils.formataDocumentoPM(sasp.tipo_documento)}}:</div>
+                  <div class="ui-g-8">{{sasp.documento}}</div>
+                </div>
+
+                <!-- Mãe -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.mae">
+                  <div class="ui-g-4 pandora-atributo">Mãe:</div>
+                  <div class="ui-g-8">{{sasp.mae}}</div>
+                </div>
+
+                <!-- Pai -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.pai">
+                  <div class="ui-g-4 pandora-atributo">Pai:</div>
+                  <div class="ui-g-8">{{sasp.pai}}</div>
+                </div>
+
+                <!-- Nascimento -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.data_nascimento">
+                  <div class="ui-g-4 pandora-atributo">Data de Nascimento:</div>
+                  <div class="ui-g-8">{{utils.formataData(sasp.data_nascimento)}}</div>
+                </div>
+ 
+                <!-- Inconsistencia -->
+                <div class="ui-g-12 ui-sm-12" *ngIf="!!sasp.descricao_inconsistencias">
+                  <p-fieldset legend="Inconsistencias de Pessoas" [toggleable]="true" [collapsed]="true">
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.descricao_inconsistencias">
+                      <div class="ui-g-4 pandora-atributo">Descrição da Inconsistencias:</div>
+                      <div class="ui-g-8">{{sasp.descricao_inconsistencias}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.colaborador_inconsistencias">
+                      <div class="ui-g-4 pandora-atributo">Colaborador da Inconsistencias:</div>
+                      <div class="ui-g-8">{{sasp.colaborador_inconsistencias}}</div>
+                    </div>
+                  </p-fieldset>
+                </div>
+
+                <!-- Rotulação -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.rotulacao">
+                  <div class="ui-g-4 pandora-atributo">Rotulação:</div>
+                  <div class="ui-g-8">{{sasp.rotulacao}}</div>
+                </div>
+
+                <!-- tatuagem -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tatuagem">
+                  <div class="ui-g-4 pandora-atributo">Tatuagem:</div>
+                  <div class="ui-g-8">{{sasp.tatuagem}}</div>
+                </div>
+
+                <!-- Vinculo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview"
+                  *ngIf="!!sasp.tipo_vinculos && !!sasp.descricao_vinculos">
+                  <div class="ui-g-4 pandora-atributo">{{utils.formataVinculoPM(sasp.tipo_vinculos)}}:</div>
+                  <div class="ui-g-8">{{sasp.descricao_vinculos}}</div>
+                </div>
+
+                <!-- Fato -->
+                <div class="ui-g-12 ui-sm-12" *ngIf="!!sasp.relato_fato">
+                  <p-fieldset legend="Fatos" [toggleable]="true" [collapsed]="true">
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_fato">
+                      <div class="ui-g-4 pandora-atributo">Relato do Fato:</div>
+                      <div class="ui-g-8">{{sasp.relato_fato}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.descricao_fato_crime">
+                      <div class="ui-g-4 pandora-atributo">Descrição Crime:</div>
+                      <div class="ui-g-8">{{sasp.descricao_fato_crime}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.municipio_fato_crime">
+                      <div class="ui-g-4 pandora-atributo">Municipio Crime:</div>
+                      <div class="ui-g-8">{{sasp.municipio_fato_crime}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.uf_fato_crime">
+                      <div class="ui-g-4 pandora-atributo">Estado Crime:</div>
+                      <div class="ui-g-8">{{sasp.uf_fato_crime}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.endereco_fato_endereco">
+                      <div class="ui-g-4 pandora-atributo">Endereço do Fato:</div>
+                      <div class="ui-g-8">{{sasp.endereco_fato_endereco}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.municipio_fato_endereco">
+                      <div class="ui-g-4 pandora-atributo">Municipio Fato:</div>
+                      <div class="ui-g-8">{{sasp.municipio_fato_endereco}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.uf_fato_endereco">
+                      <div class="ui-g-4 pandora-atributo">Estado Fato:</div>
+                      <div class="ui-g-8">{{sasp.uf_fato_endereco}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.descricao_inconsistencia_fato">
+                      <div class="ui-g-4 pandora-atributo">Descrição Inconsistencia:</div>
+                      <div class="ui-g-8">{{sasp.descricao_inconsistencia_fato}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.colaborador_inconsistencia_fato">
+                      <div class="ui-g-4 pandora-atributo">Colaborador Inconsistencia:</div>
+                      <div class="ui-g-8">{{sasp.colaborador_inconsistencia_fato}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.data_ocorrencia">
+                      <div class="ui-g-4 pandora-atributo">Data da Ocorrencia:</div>
+                      <div class="ui-g-8">{{utils.formataData(sasp.data_ocorrencia)}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.natureza_ocorrencia">
+                      <div class="ui-g-4 pandora-atributo">Natureza da Ocorrencia:</div>
+                      <div class="ui-g-8">{{sasp.natureza_ocorrencia}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tipo_arma">
+                      <div class="ui-g-4 pandora-atributo">Arma:</div>
+                      <div class="ui-g-8">{{sasp.tipo_arma}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_arma">
+                      <div class="ui-g-4 pandora-atributo">Quantidade de Armas:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_arma}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tipo_dinheiro">
+                      <div class="ui-g-4 pandora-atributo">Dinheiro:</div>
+                      <div class="ui-g-8">{{sasp.tipo_dinheiro}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_dinheiro">
+                      <div class="ui-g-4 pandora-atributo">Quantidade de Dinheiro:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_dinheiro}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tipo_entorpecente">
+                      <div class="ui-g-4 pandora-atributo">Entorpecente:</div>
+                      <div class="ui-g-8">{{sasp.tipo_entorpecente}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_entorpecente">
+                      <div class="ui-g-4 pandora-atributo">Quantidade de Entorpecentes:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_entorpecente}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tipo_municoes">
+                      <div class="ui-g-4 pandora-atributo">Munição:</div>
+                      <div class="ui-g-8">{{sasp.tipo_municoes}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_municoes">
+                      <div class="ui-g-4 pandora-atributo">Quantidade de Munição:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_municoes}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_flagrantes">
+                      <div class="ui-g-4 pandora-atributo">Quantidade de Flagrantes:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_flagrantes}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_pessoas_apreendidas">
+                      <div class="ui-g-4 pandora-atributo">Quantidade Pessoas Apreendidas:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_pessoas_apreendidas}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_pessoas_mandado">
+                      <div class="ui-g-4 pandora-atributo">Quantidade Pessoas Mandados de Prisão:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_pessoas_mandado}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.tipo_veiculos_fato">
+                      <div class="ui-g-4 pandora-atributo">Veiculo Fato:</div>
+                      <div class="ui-g-8">{{sasp.tipo_veiculos_fato}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.quantidade_veiculos_fato">
+                      <div class="ui-g-4 pandora-atributo">Quantidade de Veiculos:</div>
+                      <div class="ui-g-8">{{sasp.quantidade_veiculos_fato}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.referencia">
+                      <div class="ui-g-4 pandora-atributo">Referencia:</div>
+                      <div class="ui-g-8">{{sasp.referencia}}</div>
+                    </div>
+
+                  </p-fieldset>
+                </div>
+
+                <!-- Veiculo -->
+                <div class="ui-g-12 ui-sm-12" *ngIf="!!sasp.placa">
+                  <p-fieldset legend="Veiculo" [toggleable]="true" [collapsed]="true">
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.placa">
+                      <div class="ui-g-4 pandora-atributo">Placa:</div>
+                      <div class="ui-g-8">{{sasp.placa}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.categoria_veiculo">
+                      <div class="ui-g-4 pandora-atributo">Categoria:</div>
+                      <div class="ui-g-8">{{sasp.categoria_veiculo}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.modelo_veiculo">
+                      <div class="ui-g-4 pandora-atributo">Modelo:</div>
+                      <div class="ui-g-8">{{sasp.modelo_veiculo}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.cor_veiculo">
+                      <div class="ui-g-4 pandora-atributo">Cor:</div>
+                      <div class="ui-g-8">{{sasp.cor_veiculo}}</div>
+                    </div>
+                  </p-fieldset>
+                </div>
+
+                <div class="ui-g-12 ui-sm-12" *ngIf="!!sasp.abordagem_militar_matricula">
+                  <p-fieldset legend="Abordagem" [toggleable]="true" [collapsed]="true">
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.colaborador_inc_abordagem">
+                      <div class="ui-g-4 pandora-atributo">Colaborador Inconsistencia:</div>
+                      <div class="ui-g-8">{{sasp.colaborador_inc_abordagem}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.descricao_inc_abordagem">
+                      <div class="ui-g-4 pandora-atributo">Descrição Inconsistencia:</div>
+                      <div class="ui-g-8">{{sasp.descricao_inc_abordagem}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.abordagem_militar_und">
+                      <div class="ui-g-4 pandora-atributo">Unidade Militar:</div>
+                      <div class="ui-g-8">{{sasp.abordagem_militar_und}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.abordagem_militar_matricula">
+                      <div class="ui-g-4 pandora-atributo">Matricula Militar:</div>
+                      <div class="ui-g-8">{{sasp.abordagem_militar_matricula}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_apt1_ab">
+                      <div class="ui-g-4 pandora-atributo">Relato 1:</div>
+                      <div class="ui-g-8">{{sasp.relato_apt1_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_apt2_ab">
+                      <div class="ui-g-4 pandora-atributo">Relato 2:</div>
+                      <div class="ui-g-8">{{sasp.relato_apt2_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_apt3_ab">
+                      <div class="ui-g-4 pandora-atributo">Relato 3:</div>
+                      <div class="ui-g-8">{{sasp.relato_apt3_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_apt4_ab">
+                      <div class="ui-g-4 pandora-atributo">Relato 4:</div>
+                      <div class="ui-g-8">{{sasp.relato_apt4_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_apt5_ab">
+                      <div class="ui-g-4 pandora-atributo">Relato 5:</div>
+                      <div class="ui-g-8">{{sasp.relato_apt5_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_apt6_ab">
+                      <div class="ui-g-4 pandora-atributo">Relato 6:</div>
+                      <div class="ui-g-8">{{sasp.relato_apt6_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_obs_ab">
+                      <div class="ui-g-4 pandora-atributo">Observição:</div>
+                      <div class="ui-g-8">{{sasp.relato_obs_ab}}</div>
+                    </div>
+
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!sasp.relato_data_ab">
+                      <div class="ui-g-4 pandora-atributo">Data do Relato:</div>
+                      <div class="ui-g-8">{{utils.formataData(sasp.relato_data_ab)}}</div>
+                    </div>
+
+                  </p-fieldset>
+                </div>
+
+              </div>
+            </div>
+          </ng-template>
+      </p-dataView>
+    </div>
+  </div>
+  

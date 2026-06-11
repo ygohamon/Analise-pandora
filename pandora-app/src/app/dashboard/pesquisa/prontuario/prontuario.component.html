@@ -1,0 +1,263 @@
+<div class="ui-g">
+  <app-campos-busca titulo="Prontuário" [nProcesso]="nProcesso" [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;" [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+  </app-campos-busca>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0">
+
+      <p-tabView>
+        <p-table #dt_exportacao [columns]="colunasTabela" [value]="prontuariosEncontrados" exportFilename="prontuarios">
+        </p-table>
+        <p-dataView #data [value]="prontuariosEncontrados" [paginator]="true" [rows]="1"
+          [rowsPerPageOptions]="[1, 5, 10]" emptyMessage="{{msgRegistroNaoEncontrado}}" exportFilename="prontuarios">
+          <p-footer>{{utils.getFooterResultado(data.totalRecords)}}</p-footer>
+          <p-header>
+            <div class="p-card-subtitulo my-2 text-left d-flex">
+              <div class="text-center">
+                Registro do Prontuário
+              </div>
+
+              <div class="export-button pointer text-primary ml-auto" (click)="dt_exportacao.exportCSV()">
+                <span>CSV</span>
+                <i class="pi pi-download"></i>
+              </div>
+
+              <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+                <span>PDF</span>
+                <i class="pi pi-download"></i>
+              </div>
+
+              <div class="export-button pointer text-primary ml-2" (click)="exportExcel()">
+                <span>Excel</span>
+                <i class="pi pi-download"></i>
+              </div>
+            </div>
+          </p-header>
+          <ng-template let-prontuario pTemplate="listItem">
+            <div class="ui-g-12">
+
+              <!-- Informações de pessoa -->
+              <div class="ui-g-12 ui-sm-12">
+
+                <div class="ui-g-12">
+                  <div *ngFor="let foto of prontuario.imagens; let first = first;">
+                    <!-- Foto -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview " *ngIf="!!first">
+                      <div class="ui-g-4 pandora-atributo"></div>
+                      <div class="ui-g-8">
+                        <a [href]="sanitize(foto.imagem)" download>
+                          <img [src]="sanitize(foto.imagem)" pTooltip="Clique para baixar a imagem"
+                            class="avatar" >
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Nome -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.nome">
+                  <div class="ui-g-4 pandora-atributo">Nome:</div>
+                  <div class="ui-g-8">{{prontuario.nome}}</div>
+                </div>
+
+                <!-- Idade -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.idade">
+                  <div class="ui-g-4 pandora-atributo">Idade:</div>
+                  <div class="ui-g-8">{{prontuario.idade}}</div>
+                </div>
+
+                <!-- RG -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview"
+                  *ngIf="!!prontuario.rg && !!prontuario.orgao">
+                  <div class="ui-g-4 pandora-atributo">RG:</div>
+                  <div class="ui-g-8">{{prontuario.rg}} {{prontuario.orgao}}</div>
+                </div>
+
+                <!-- CPF -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.cpf">
+                  <div class="ui-g-4 pandora-atributo">CPF:</div>
+                  <div class="ui-g-8">{{prontuario.cpf}}</div>
+                </div>
+
+                <!-- Data de Nascimento -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.data">
+                  <div class="ui-g-4 pandora-atributo">Data de Nascimento:</div>
+                  <div class="ui-g-8">{{utils.formataData(prontuario.data)}}</div>
+                </div>
+
+                <!-- Pai -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.pai">
+                  <div class="ui-g-4 pandora-atributo">Pai:</div>
+                  <div class="ui-g-8">{{prontuario.pai}}</div>
+                </div>
+
+                <!-- Mãe -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.mae">
+                  <div class="ui-g-4 pandora-atributo">Mãe:</div>
+                  <div class="ui-g-8">{{prontuario.mae}}</div>
+                </div>
+
+                <!-- Vulgo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.vulgo">
+                  <div class="ui-g-4 pandora-atributo">Vulgo:</div>
+                  <div class="ui-g-8">{{prontuario.vulgo}}</div>
+                </div>
+
+                <!-- Comparsas -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.comparsas">
+                  <div class="ui-g-4 pandora-atributo">Comparsas:</div>
+                  <div class="ui-g-8">{{prontuario.comparsas}}</div>
+                </div>
+
+                <!-- Facção -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.faccao">
+                  <div class="ui-g-4 pandora-atributo">Facção:</div>
+                  <div class="ui-g-8">{{prontuario.faccao}}</div>
+                </div>
+
+                <!-- Principal atividade criminosa -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.atividade">
+                  <div class="ui-g-4 pandora-atributo">Principal atividade criminosa:</div>
+                  <div class="ui-g-8">{{prontuario.atividade}}</div>
+                </div>
+
+                <!-- Informações Adicionais -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.info">
+                  <div class="ui-g-4 pandora-atributo">Informações:</div>
+                  <div class="ui-g-8">
+                    <textarea style="width: 100%; background: transparent; border: 0 none;" pInputTextarea
+                      autoResize="autoResize" readonly="readonly">{{prontuario.info}}</textarea>
+                  </div>
+                </div>
+
+                <!-- Cabelo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.cabelo">
+                  <div class="ui-g-4 pandora-atributo">Cabelo:</div>
+                  <div class="ui-g-8">{{prontuario.cabelo}}</div>
+                </div>
+
+                <!-- Olhos -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.olhos">
+                  <div class="ui-g-4 pandora-atributo">Olhos:</div>
+                  <div class="ui-g-8">{{prontuario.olhos}}</div>
+                </div>
+
+                <!-- Cutis -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.cutis">
+                  <div class="ui-g-4 pandora-atributo">Cutis:</div>
+                  <div class="ui-g-8">{{prontuario.cutis}}</div>
+                </div>
+
+                <!-- Barba -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.barba">
+                  <div class="ui-g-4 pandora-atributo">Barba:</div>
+                  <div class="ui-g-8">{{prontuario.barba}}</div>
+                </div>
+
+                <!-- Cicatriz -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.cicatriz">
+                  <div class="ui-g-4 pandora-atributo">Cicatriz:</div>
+                  <div class="ui-g-8">{{prontuario.cicatriz}}</div>
+                </div>
+
+                <!-- Tatuagem -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.tatuagem">
+                  <div class="ui-g-4 pandora-atributo">Tatuagem:</div>
+                  <div class="ui-g-8">{{prontuario.tatuagem}}</div>
+                </div>
+
+                <!-- Naturalidade -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.naturalidade">
+                  <div class="ui-g-4 pandora-atributo">Naturalidade:</div>
+                  <div class="ui-g-8">{{prontuario.naturalidade}}</div>
+                </div>
+
+                <!-- Sexo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.sexo">
+                  <div class="ui-g-4 pandora-atributo">Sexo:</div>
+                  <div class="ui-g-8">{{prontuario.sexo}}</div>
+                </div>
+
+                <!-- Conjugue -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.conjugue">
+                  <div class="ui-g-4 pandora-atributo">Conjugue:</div>
+                  <div class="ui-g-8">{{prontuario.conjugue}}</div>
+                </div>
+
+                <!-- Profissão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.profissao">
+                  <div class="ui-g-4 pandora-atributo">Profissão:</div>
+                  <div class="ui-g-8">{{prontuario.profissao}}</div>
+                </div>
+
+                <!-- Endereço -->
+                <div class="ui-g-12 ui-sm-12" *ngFor="let endereco of prontuario.enderecos; let i = index">
+
+                  <p-fieldset legend="Endereço" [toggleable]="true" [collapsed]="true">
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!endereco.logradouro">
+                      <div class="ui-g-4 pandora-atributo">Logadouro:</div>
+                      <div class="ui-g-8">{{endereco.logradouro}}</div>
+                    </div>
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!endereco.numero">
+                      <div class="ui-g-4 pandora-atributo">Numero:</div>
+                      <div class="ui-g-8">{{endereco.numero}}</div>
+                    </div>
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!endereco.complemento">
+                      <div class="ui-g-4 pandora-atributo">Complemento:</div>
+                      <div class="ui-g-8">{{endereco.complemento}}</div>
+                    </div>
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!endereco.bairro">
+                      <div class="ui-g-4 pandora-atributo">Bairro:</div>
+                      <div class="ui-g-8">{{endereco.bairro}}</div>
+                    </div>
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!endereco.cidade">
+                      <div class="ui-g-4 pandora-atributo">Cidade:</div>
+                      <div class="ui-g-8">{{endereco.cidade}}</div>
+                    </div>
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!endereco.estado">
+                      <div class="ui-g-4 pandora-atributo">Estado:</div>
+                      <div class="ui-g-8">{{endereco.estado}}</div>
+                    </div>
+                  </p-fieldset>
+
+                </div>
+
+                <!-- Falecido -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.falecido">
+                  <div class="ui-g-4 pandora-atributo">Falecido:</div>
+                  <div class="ui-g-8">{{prontuario.falecido}}</div>
+                </div>
+
+                <!-- Imagem -->
+                <div class="ui-g-12 ui-sm-12" *ngFor="let foto of prontuario.imagens; let i = index">
+                  <p-fieldset legend="Foto" [toggleable]="true" [collapsed]="true">
+                    <!-- Foto -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!foto.imagem">
+                      <div class="ui-g-8">
+                        <a [href]="sanitize(foto.imagem)" download>
+                          <img [src]="sanitize(foto.imagem)" pTooltip="Clique para baixar a imagem"
+                            style="width: 1000px;">
+                        </a>
+                      </div>
+                    </div>
+                  </p-fieldset>
+                </div>
+
+                <!-- Ultima atualização -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!prontuario.updated_at">
+                  <div class="ui-g-4 pandora-atributo">Ultima atualização:</div>
+                  <div class="ui-g-8">{{utils.formataData(prontuario.updated_at)}}</div>
+                </div>
+
+              </div>
+
+            </div>
+          </ng-template>
+        </p-dataView>
+
+      </p-tabView>
+
+    </div>
+  </div>

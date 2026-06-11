@@ -1,0 +1,99 @@
+<div class="ui-g">
+
+  <app-campos-busca
+    titulo="Telefone"
+    [nProcesso]="nProcesso"
+    [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+    [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+  </app-campos-busca>
+
+  <div class="ui-g-12" *ngIf="habilitaOpcoesAvancadas && !buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+      <p-panel header="Parâmetros de Busca Avançada" [toggleable]="true">
+        <div class="ui-g ui-fluid">
+
+          <div class="ui-sm-12 ui-g-6 ui-xl-4">
+            <div class="ui-g-12 ui-md-4">
+                <label class="pandora-atributo">Trecho de Telefone</label>
+            </div>
+            <div class="ui-g-12 ui-md-8">
+                <input type="text" pTooltip="Insira ao menos 4 dígitos" tooltipPosition="bottom" [(ngModel)]="telefoneBuscaProfunda" pInputText/>
+            </div>
+          </div>
+
+          <div class="ui-g-12" style="margin-top: 20px">
+              <div class="ui-g-4 ui-sm-12"></div>
+              <div class="ui-g-4  ui-sm-12">
+                  <button pButton (click)="onPesquisaBuscaProfunda()" type="button" icon="pi pi-search" label="Buscar"></button>
+              </div>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-tabView styleClass="p-0" [controlClose]="true">
+        <p-tabPanel styleClass="p-0" header="Pessoa Física" [closable]="true">
+
+          <pandora-table
+            caption="Resultados Encontrados"
+            exportFilename="telefones_pessoa_fisica"
+            [mostraFiltroColunas]="true"
+            [value]="telefonesPF"
+            [dicionarioDados]="dicionarioDadosPF">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cpf'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Pessoa Jurídica" [closable]="true">
+
+          <pandora-table
+            caption="Resultados Encontrados"
+            exportFilename="telefones_pessoa_juridica"
+            [mostraFiltroColunas]="true"
+            [value]="telefonesPJ"
+            [dicionarioDados]="dicionarioDadosPJ">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cnpj'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cnpj, '##.###.###/####-##')}}</a>
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+</div>

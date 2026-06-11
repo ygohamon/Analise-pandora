@@ -1,0 +1,408 @@
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <span class="p-card-titulo">SEFAZML - Detalhe do produto emitido na Nota Fiscal</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações Gerais" [toggleable]="true">
+        <ul style="text-align:justify;">
+          <li class="pt-2">Este aplicativo gera um dossiê de um produto emitido na nota fiscal.</li>
+          <li class="pt-2">Técnicas estatísticas, como desvio padrão <i class="fa fa-question-circle" pTooltip="Desvio padrão é uma medida que indica o quanto o conjunto de dados é uniforme. Quando o desvio é baixo quer dizer que os dados do conjunto estão mais próximos da média. Neste aplicativo, os dados do conjunto que estão acima de três desvios padrão são considerados suspeitos."></i> e 
+            diagrama de caixa <i class="fa fa-question-circle" pTooltip='Diagrama de caixa, assim como o Desvio Padrão, busca identificar itens suspeitos. Porém, atua de forma diferente no cáculo e visualização. O valor suspeito é identificado por um ponto verde.'></i>, são aplicadas sobre o preço unitário do produto para identificar valores suspeitos ou outliers <i class="fa fa-question-circle" pTooltip="Um outlier é um dado que se distancia radicalmente de todos os outros. São pontos fora da curva normal, valores que fogem da normalidade e que podem causar desequilíbrio nos resultados obtidos."> </i>. </li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div *ngIf="buscaSucesso">
+
+    <div class="ui-g-6">
+      <div class="ui-g p-card mb-0 h-100">
+        <div class="p-card-subtitulo pb-2">Detalhe do produto emitido na NF</div>       
+       
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">NSU <i class="fa fa-question-circle" pTooltip="O Número Sequencial Único (NSU) é um código numérico gerado pelo Ambiente Nacional da Secretaria da Fazenda (SEFAZ) para identificar uma Nota Fiscal eletrônica (NF-e), uma Carta de Correção eletrônica (CC-e), um Evento da NF-e, ou mesmo um conjunto desses arquivos"></i></div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.nsu}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">NSUAN <i class="fa fa-question-circle" pTooltip="Número sequencial."></i></div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.nsuan}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Data emissão da Nota Fiscal</div>
+          <div class="ui-g-9 ui-sm-12"> {{itemDetalhado.dataEmissao}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Fornecedor</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.NomeEmitente}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">CNPJ emitente</div>
+          <div class="ui-g-9 ui-sm-12"> 
+            <a target="_blank" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(itemDetalhado.CNPJEmitente)}' class="text-primary">
+              {{utils.formataDado(itemDetalhado.CNPJEmitente, '##.###.###/####-##')}}
+            </a>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Destinatário</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.NomeDestinatario}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">CNPJ destinatário</div>
+          <div class="ui-g-9 ui-sm-12"> 
+            <a target="_blank" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(itemDetalhado.CNPJDestinatario)}' class="text-primary">
+              {{utils.formataDado(itemDetalhado.CNPJDestinatario, '##.###.###/####-##')}}
+            </a>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Valor total da nota fiscal</div>
+          <div class="ui-g-9 ui-sm-12">{{utils.converteEmDinheiroFormatoBrasileiro(itemDetalhado.vTotalNota)}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Natureza de operação</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.natop}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-g-6">
+      <div class="ui-g p-card mb-0 h-100">
+        <div class="p-card-subtitulo pb-2">Desvio padrão do preço unitário do produto <i class="fa fa-question-circle" pTooltip="O cálculo do desvio padrão é realizado sobre os preços unitários de cada produto emitido nas notas fiscais. Esse cálculo estipula o preço unitário esperado não suspeito para um dado produto."></i></div>
+      
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Produto</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.nomeProduto}}</div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">NCM <i class="fa fa-question-circle" pTooltip="Nomenclatura Comum do Mercosul"></i></div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.NCM}}</div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Código do produto</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.codigoProduto}}</div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Quantidade do produto adquirida</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.QuantidadeItem}} {{itemDetalhado.unidadeAquisicao}}</div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Preço total do produto</div>
+          <div class="ui-g-9 ui-sm-12">{{utils.converteEmDinheiroFormatoBrasileiro(itemDetalhado.ValorTotalItem)}}</div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Unidade de Aquisição</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.unidadeAquisicao}}</div>
+        </div>        
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Preço unitário esperado</div>
+          <div class="ui-g-9 ui-sm-12">{{itemDetalhado.faixaPreco}}</div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-3 ui-sm-12 fw-bold">Preço unitário do produto</div>
+          <div class="ui-g-9 ui-sm-12 fw-bold">{{utils.converteEmDinheiroFormatoBrasileiro(itemDetalhado.ValorUnitario)}}/{{itemDetalhado.unidadeAquisicao}}</div>
+        </div>       
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="ui-g-6">
+        <div class="ui-g p-card mb-0 h-100">
+          <div class="p-card-subtitulo pb-2">Alertas 
+            <!-- <i class="fa fa-question-circle" pTooltip="O diagrama de caixa é uma ferramenta visual que visa apresentar os preços unitários discrepantes. O preço esperado desse cáculo pode diferenciar quanto ao preço unitário esperado calculado pela técnica do desvio padrão, pois essa técnica utiliza a média de preços do produto como referência enquanto o diagrama de caixa utiliza a mediana."></i> -->
+          </div>
+
+          <div class="ui-g-12" *ngIf="alerts.length > 0">          
+            <div class="ui-g-9 ui-sm-12">
+              <ul class="text-justify">
+                <li class="pb-1" *ngFor="let item of alerts; let i = index">
+                  <span class="text-danger">{{item}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <button pButton type="button" icon="pi pi-plus" [label]="(activeState[0] ? 'Omitir ' : 'Calcular ') + 'preços unitários suspeitos pela técnica do diagrama de caixa'" (click)="toggle(0)"></button> 
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g p-card mb-0 h-100">
+          <div class="p-card-subtitulo pb-2">Texto padrão</div>
+
+          <div class="ui-g-12">          
+            <div style="text-align: justify;">
+              <p>{{textOficio}}</p>
+              <p *ngIf="activeState[0]">O diagrama de caixa é uma ferramenta visual que pode destacar os valores suspeitos. Ele é uma técnica distinta do desvio padrão pois utiliza a mediana de todos os valores encontrados como referência de cáculo do preço unitário esperado.</p>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <button pButton type="button" label="Copiar texto" (click)="copiar()"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="ui-g-12">   
+      <p-accordion>
+        <p-accordionTab header="Análise de preços suspeitos do produto pelo diagrama de caixa" (onClose)="onTabClose($event)" (onOpen)="onTabOpen($event)" [(selected)]="activeState[0]">            
+          <div echarts [options]="chartOption"></div>          
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+
+    
+    <div class="ui-g-12">
+      <div echarts [options]="chartOptionLine" ></div>
+    </div>
+
+    <!-- Endereço encontrado para a empresa -->
+  <div class="ui-g-12">
+    <div class="ui-g p-card mb-0">
+      <div class="p-card-subtitulo pb-3">Distância do fornecedor do produto ({{itemDetalhado.nomeProduto}}) para com os seus compradores</div>
+
+      <div class="ui-g-12 text-justify">
+        Obs. O ponto em vermelho representa a localização do fornecedor. Os outros pontos representam a localização dos demais órgãos públicos. A precisão desses pontos é de um bairro.
+      </div>
+
+      <div class="ui-g-12" *ngIf="alertsGeoCoordenadas.length > 0">
+        <div class="p-card-subtitulo pb-2">Alertas</div>
+        <div class="ui-g-9 ui-sm-12">
+          
+          <ul class="text-justify">
+            <li class="pb-1" *ngFor="let item of alertsGeoCoordenadas; let i = index">
+              <span class="text-danger">{{item}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+     
+    </div>
+  </div>
+
+  <!-- Geocoordenadas da empresa -->
+  <div class="ui-g-12" *ngIf="mapaCarregado">
+    <div class="p-card p-0 mb-0">
+      <p-gmap
+          [options]="mapaOptions"
+          [overlays]="mapaOverlays"
+          [style]="{'width':'100%','height':'320px'}">
+      </p-gmap>
+    </div>
+  </div>
+
+    <div class="ui-g-12">
+      <p-table
+            #dt            
+            [columns]="dicionarioBaseItensNF"
+            [value]="outrosItensNF"           
+            exportFilename="intensMesmaNF"
+            [responsive]="true"
+            [paginator]="true"
+            [autoLayout]="true"
+            [rows]="5">
+
+            <ng-template pTemplate="caption">
+              <div class="p-card-subtitulo my-2 text-left d-flex">
+                Todos os produtos emitidos na nota fiscal
+    
+                <div class="export-button pointer text-primary ml-auto" (click)="dt.exportCSV()">
+                  <span>CSV</span>
+                  <i class="pi pi-download"></i>
+                </div>
+    
+                <!--
+                <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+                  <span>PDF</span>
+                  <i class="pi pi-download"></i>
+                </div> -->
+              </div>
+    
+              <div style="text-align: left; padding: 10px 0px 5px 0px;" *ngIf="utils.isMobile()">
+                <i class="pi pi-search mr-2"></i>
+                <input type="text" pInputText placeholder="Filtro Global" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:90%">
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+              </tr>
+              <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">                  
+                  <input *ngSwitchDefault placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                </th>
+              </tr>
+            </ng-template>
+            
+            <ng-template pTemplate="body" let-rowData let-columns="columns">              
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span *ngSwitchCase="'nomeProduto'">
+                    <a target='_blank' [routerLink]="['/dashboard/apps/sefazML/dashboard']" [queryParams]='{idItem: utils.codificaDado(rowData.IdItem)}' class="primary-text">{{rowData.nomeProduto}}</a>
+                  </span>
+                  <span *ngSwitchCase="'ValorUnitario'">
+                    {{utils.converteEmDinheiroFormatoBrasileiro(rowData.ValorUnitario)}}
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+      </p-table>
+    </div>
+
+    <div class="ui-g-12">
+      <p-table 
+            #dt1
+            [columns]="dicionarioBaseOutrasOcorrenciasProduto"
+            [value]="itensMesmoProduto"           
+            exportFilename="intensOutrasNF"
+            [responsive]="true"
+            [paginator]="true"
+            [autoLayout]="true"
+            [rows]="5">  
+            
+            <ng-template pTemplate="caption">
+              <div class="p-card-subtitulo my-2 text-left d-flex">
+                Outras ocorrências do mesmo produto para todos os fornecedores
+    
+                <div class="export-button pointer text-primary ml-auto" (click)="dt1.exportCSV()">
+                  <span>CSV</span>
+                  <i class="pi pi-download"></i>
+                </div>
+    
+                <!--
+                <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+                  <span>PDF</span>
+                  <i class="pi pi-download"></i>
+                </div> -->
+              </div>
+    
+              <div style="text-align: left; padding: 10px 0px 5px 0px;" *ngIf="utils.isMobile()">
+                <i class="pi pi-search mr-2"></i>
+                <input type="text" pInputText placeholder="Filtro Global" (input)="dt1.filterGlobal($event.target.value, 'contains')" style="width:90%">
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+              </tr>
+              <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">                  
+                  <input *ngSwitchDefault placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt1.filter($event.target.value, col.field, 'contains')">
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">              
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span *ngSwitchCase="'nomeProduto'">
+                    <a target='_blank' [routerLink]="['/dashboard/apps/sefazML/dashboard']" [queryParams]='{idItem: utils.codificaDado(rowData.IdItem)}' class="primary-text">{{rowData.nomeProduto}}</a>
+                  </span>
+                  <span *ngSwitchCase="'dataEmissao'">
+                    {{utils.formataData(rowData.dataEmissao, 'DD/MM/YYYY hh:mm:ss')}}
+                  </span>
+                  <span *ngSwitchCase="'CNPJEmitente'">
+                    {{utils.formataDado(rowData.CNPJEmitente, '##.###.###/####-##')}}
+                  </span>
+                  <span *ngSwitchCase="'CNPJDestinatario'">
+                    {{utils.formataDado(rowData.CNPJDestinatario, '##.###.###/####-##')}}
+                  </span>                
+                  <span *ngSwitchCase="'ValorUnitario'">
+                    {{utils.converteEmDinheiroFormatoBrasileiro(rowData.ValorUnitario)}}
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+      </p-table>
+    </div>
+
+    <div class="ui-g-12">
+      <p-table
+            #dt2         
+            [columns]="dicionarioBaseOutrasOcorrenciasEntePublicoNF"
+            [value]="itensDiscrepantesEmpresaDestinataria"           
+            exportFilename="intensDiscrepantesEmpresaDestinataria"
+            [responsive]="true"
+            [paginator]="true"
+            [autoLayout]="true"
+            [rows]="5">
+
+            <ng-template pTemplate="caption">
+              <div class="p-card-subtitulo my-2 text-left d-flex">
+                Outras ocorrências suspeitas do ente público: {{itemDetalhado.NomeDestinatario + ' - ' + utils.formataDado(itemDetalhado.CNPJDestinatario, '##.###.###/####-##')}}
+    
+                <div class="export-button pointer text-primary ml-auto" (click)="dt2.exportCSV()">
+                  <span>CSV</span>
+                  <i class="pi pi-download"></i>
+                </div>
+    
+                <!--
+                <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+                  <span>PDF</span>
+                  <i class="pi pi-download"></i>
+                </div> -->
+              </div>
+    
+              <div style="text-align: left; padding: 10px 0px 5px 0px;" *ngIf="utils.isMobile()">
+                <i class="pi pi-search mr-2"></i>
+                <input type="text" pInputText placeholder="Filtro Global" (input)="dt2.filterGlobal($event.target.value, 'contains')" style="width:90%">
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+              </tr>
+              <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">                  
+                  <input *ngSwitchDefault placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt2.filter($event.target.value, col.field, 'contains')">
+                </th>
+              </tr>
+            </ng-template> 
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">              
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span *ngSwitchCase="'nomeProduto'">
+                    <a target='_blank' [routerLink]="['/dashboard/apps/sefazML/dashboard']" [queryParams]='{idItem: utils.codificaDado(rowData.IdItem)}' class="primary-text">{{rowData.nomeProduto}}</a>
+                  </span>
+                  <span *ngSwitchCase="'CNPJDestinatario'">
+                    {{utils.formataDado(rowData.CNPJEmitente, '##.###.###/####-##')}}
+                  </span>                 
+                  <span *ngSwitchCase="'ValorUnitario'">
+                    {{utils.converteEmDinheiroFormatoBrasileiro(rowData.ValorUnitario)}}
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+    </div>
+
+  </div>
+
+</div>

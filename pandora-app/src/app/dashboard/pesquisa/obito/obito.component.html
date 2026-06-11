@@ -1,0 +1,41 @@
+<div class="ui-g">
+
+  <app-campos-busca
+    titulo="Óbito"
+    [nProcesso]="nProcesso"
+    [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+    [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+  </app-campos-busca>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0">
+
+      <pandora-table
+        caption="Resultados"
+        exportFilename="obitos"
+        [mostraFiltroColunas]="true"
+        [value]="obitosEncontrados"
+        [dicionarioDados]="dicionarioDados">
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'obito_cpf'">
+                <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.obito_cpf)}' style="color: #3984b8;">{{utils.formataDado(rowData.obito_cpf, '###.###.###-##')}}</a>
+              </span>
+              <span *ngSwitchCase="'dataNascimento'">{{utils.formataData(rowData.obito_dataNascimento)}}</span>
+              <span *ngSwitchCase="'dataObito'">{{utils.formataData(rowData.obito_dataObito)}}</span>
+              <span *ngSwitchDefault>{{rowData[col.field] | uppercase}}</span>
+            </td>
+          </tr>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </div>
+
+</div>

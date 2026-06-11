@@ -1,0 +1,20 @@
+:host ::ng-deep {
+  .ui-column-filter {
+    display: block;
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .ui-paginator {
+    .ui-dropdown {
+        float: left;
+    }
+
+    .ui-paginator-current {
+        float: right;
+    }
+  }
+
+}

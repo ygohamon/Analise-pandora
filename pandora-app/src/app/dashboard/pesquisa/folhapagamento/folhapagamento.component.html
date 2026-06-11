@@ -1,0 +1,108 @@
+<div class="ui-g">
+
+    <div class="ui-g-12">
+        <div class="p-card">
+            <span class="p-card-titulo">Folha de Pagamento</span>
+
+            <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaFinalizada">
+              <span (click)="resetaBusca()">
+                Retornar
+                <i class="fa fa-reply"></i>
+              </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="!buscaFinalizada">
+      <div class="p-card b-0 p-0">
+          <p-panel
+            header="Informações"
+            [toggleable]="true">
+
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <ul class="mt-0">
+                        <li class="pt-2">A busca da folha de pagamentos dos órgãos é feita através do SAGRES do TCE-PB.</li>
+                    </ul>
+                </div>
+            </div>
+        </p-panel>
+      </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="!buscaFinalizada">
+
+        <div class="p-card b-0 p-0">
+            <p-panel header="Parâmetros de Busca" [toggleable]="true">
+              <div class="ui-g ui-fluid">
+
+                <div class="ui-g-12">
+                  <div class="ui-g-2 ui-sm-12">
+                    <span style="font-weight: bold">Órgão:</span>
+                  </div>
+
+                  <div class="ui-g-4 ui-sm-12">
+                    <p-autoComplete [(ngModel)]="orgao" [suggestions]="orgaosEncontrados" (completeMethod)="buscaOrgao($event)" field="orgao"
+                      placeholder="Órgão" [minLength]="1" [dropdown]="true" forceSelection="true" required="true"></p-autoComplete>
+                  </div>
+                </div>
+
+                <div class="ui-g-12">
+                  <div class="ui-g-2 ui-sm-12">
+                    <span style="font-weight: bold">Mês:</span>
+                  </div>
+
+                  <div class="ui-g-4 ui-sm-12">
+                    <p-dropdown [options]="opcoesMesAnalise" [(ngModel)]="mesAnalise" placeholder="Escolha um mês"></p-dropdown>
+                  </div>
+                </div>
+
+                <div class="ui-g-12">
+                  <div class="ui-g-2 ui-sm-12">
+                    <span style="font-weight: bold">Ano:</span>
+                  </div>
+
+                  <div class="ui-g-4 ui-sm-12">
+                    <p-dropdown [options]="opcoesAnoAnalise" [(ngModel)]="anoAnalise" placeholder="Escolha um ano"></p-dropdown>
+                  </div>
+                </div>
+
+                <div class="ui-g-6 ui-sm-12 ui-fluid">
+                  <button pButton (click)="onGerarFolhaOrgao()" type="button" icon="pi pi-search" label="Gerar"></button>
+                </div>
+              </div>
+            </p-panel>
+        </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf='buscaFinalizada'>
+        <div class="p-card p-0 b-0">
+          <pandora-table
+            caption="Folha de Pagamento"
+            exportFilename="folha_pagamento"
+            sortField='vlBruto'
+            sortOrder='-1'
+            [mostraFiltroColunas]='true'
+            [value]="folhaEncontrada"
+            [dicionarioDados]="dicionarioDados">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cpf'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+                  </span>
+                  <span *ngSwitchCase="'vlBruto'">R$ {{utils.converteEmDinheiro(rowData.vlBruto)}}</span>
+                  <span *ngSwitchCase="'dtAdmissao'">{{utils.formataData(rowData.dtAdmissao)}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field]  | uppercase}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+        </div>
+    </div>
+
+</div>

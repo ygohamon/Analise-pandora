@@ -1,0 +1,49 @@
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <span class="p-card-titulo">DNA</span>
+
+      <div class="to-right">
+        <a *ngIf="isMobile" (click)="resetaBusca()" class="link-retornar pointer" ><span>Retornar</span></a>
+        <a *ngIf="!isMobile && buscaDnaSucesso" (click)="resetaBusca()" class="link-retornar pointer"><span>Refazer</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaDnaSucesso">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações Gerais" [toggleable]="true">
+        <ul style="text-align:justify;">
+          <li class="pt-2">O DNA apresenta uma empresa e seus vínculos com o Estado, mostra a distribuição de modalidades de licitações ganhas, seus valores e localidades.</li>
+          <li class="pt-2">Analisa o histórico de sócios de acordo com diversos critérios, como: doador eleitoral, analfabeto, servidor público etc.</li>
+          <li class="pt-2">Apresenta outras empresas que tenham em seus cadastros telefones ou emails em comum com a empresa analisada.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaDnaSucesso">
+      <div class="p-card mb-0">
+          <div class="ui-g ui-fluid">
+
+              <div class="ui-g-12 mb-2">
+                  <span style="font-size: 16px; font-weight: 600;">Digite um CNPJ</span>
+              </div>
+
+              <div class="ui-g-6 ui-sm-12">
+                  <p-inputMask [(ngModel)]="inputCnpj" mask="99.999.999/9999-99"></p-inputMask>
+              </div>
+
+              <div class="ui-g-6 ui-sm-12">
+                  <button pButton type="submit" icon="pi pi-search" label="Buscar" (click)="buscaDNA()"></button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div *ngIf="buscaDnaSucesso">
+      <app-dna-dashboard
+          [dados]="dnaInformacoes">
+      </app-dna-dashboard>
+  </div>
+</div>

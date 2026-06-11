@@ -1,0 +1,40 @@
+<div class="ui-g dashboard">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Limites de Acesso</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-tabView (onChange)="onTabChange($event)">
+
+        <p-tabPanel header="Quotas Diárias por IP">
+          <app-limitesacessoporip></app-limitesacessoporip>
+        </p-tabPanel>
+
+        <p-tabPanel header="Histórico de Estouro de Quota por IP">
+          <app-limitesacessoporip-historico></app-limitesacessoporip-historico>
+        </p-tabPanel>
+
+        <p-tabPanel header="Incidentes de Blacklist por IP">
+          <app-limitesacessoporip-blacklist></app-limitesacessoporip-blacklist>
+        </p-tabPanel>
+
+        <p-tabPanel header="Quotas Diárias por Usuário">
+          <app-limitesacessoporusuario></app-limitesacessoporusuario>
+        </p-tabPanel>
+
+        <p-tabPanel header="Histórico de Estouro de Quota por Usuário">
+          <app-limitesacessoporusuario-historico></app-limitesacessoporusuario-historico>
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+</div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

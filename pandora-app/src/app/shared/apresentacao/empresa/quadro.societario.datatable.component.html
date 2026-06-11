@@ -1,0 +1,110 @@
+<div class="ui-g">
+
+  <div class="ui-g-12" *ngIf="dataPFRF.length > 0">
+
+    <pandora-table
+      caption="Histórico de Sociedades PF - Fonte: RF"
+      exportFilename="historico_quadro_pf_rf"
+      [value]="dataPFRF"
+      [dicionarioDados]="dicionarioDadosPFRF">
+
+      <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+        <tr>
+          <td *ngFor="let col of columns" [ngSwitch]="col.field">
+            <span class="ui-column-title">{{col.header}}</span>
+
+            <span *ngSwitchCase="'cpf'">
+                <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+            </span>
+            <span *ngSwitchCase="'dataEntradaSociedade'">{{utils.formataData(rowData.dataEntradaSociedade)}}</span>
+            <span *ngSwitchCase="'dataSaidaSociedade'">{{utils.formataData(rowData.dataSaidaSociedade)}}</span>
+            <span *ngSwitchCase="'percCapital'">{{rowData.percCapital}} %</span>
+            <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+          </td>
+        </tr>
+      </ng-template>
+    </pandora-table>
+
+    <div class="ui-g-12" style="height: 30px;"></div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="dataPJRF.length > 0">
+
+    <pandora-table
+      caption="Histórico de Sociedades PJ - Fonte: RF"
+      exportFilename="historico_quadro_pj_rf"
+      [value]="dataPJRF"
+      [dicionarioDados]="dicionarioDadosPJRF">
+
+      <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+        <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchCase="'cnpj'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cnpj, '##.###.###/####-##')}}</a>
+                </span>
+                <span *ngSwitchCase="'dataEntradaSociedade'">{{utils.formataData(rowData.dataEntradaSociedade)}}</span>
+                <span *ngSwitchCase="'dataSaidaSociedade'">{{utils.formataData(rowData.dataSaidaSociedade)}}</span>
+                <span *ngSwitchCase="'percCapital'">{{rowData.percCapital}} %</span>
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+        </tr>
+      </ng-template>
+    </pandora-table>
+  </div>
+
+  <div class="ui-g-12" *ngIf="dataPFCNE.length > 0">
+    <pandora-table
+      caption="Histórico de Sociedades PF - Fonte: CNE"
+      exportFilename="historico_quadro_pf_cne"
+      [value]="dataPFCNE"
+      [dicionarioDados]="dicionarioDadosPFCNE">
+
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+          <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'VL_PARTICIPACAO'">{{(rowData.VL_PARTICIPACAO) ? ((rowData.MOEDA) ? rowData.MOEDA: '')  + ' ' +  utils.converteEmDinheiro(rowData.VL_PARTICIPACAO) : ''}}</span>
+              <span *ngSwitchCase="'DATA_ACAO'">{{utils.formataData(rowData.DATA_ACAO)}}</span>
+              <span *ngSwitchCase="'DOCUMENTO_SOCIO'">
+                  <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.DOCUMENTO_SOCIO)}' style="color: #3984b8;">{{utils.formataDado(rowData.DOCUMENTO_SOCIO, '###.###.###-##')}}</a>
+              </span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+          </td>
+          </tr>
+      </ng-template>
+    </pandora-table>
+
+    <div class="ui-g-12" style="height: 30px;"></div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="dataPJCNE.length > 0">
+
+    <pandora-table
+      caption="Histórico de Sociedades PJ - Fonte: CNE"
+      exportFilename="historico_quadro_pj_cne"
+      [value]="dataPJCNE"
+      [dicionarioDados]="dicionarioDadosPJCNE">
+
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+          <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'VL_PARTICIPACAO'">{{(rowData.VL_PARTICIPACAO) ? ((rowData.MOEDA) ? rowData.MOEDA: '')  + ' ' +  utils.converteEmDinheiro(rowData.VL_PARTICIPACAO) : ''}}</span>
+              <span *ngSwitchCase="'DATA_ACAO'">{{utils.formataData(rowData.DATA_ACAO)}}</span>
+              <span *ngSwitchCase="'DOCUMENTO_SOCIO'">
+                      <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.DOCUMENTO_SOCIO)}' style="color: #3984b8;">{{utils.formataDado(rowData.DOCUMENTO_SOCIO, '##.###.###/####-##')}}</a>
+              </span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+          </td>
+          </tr>
+      </ng-template>
+    </pandora-table>
+
+    <div class="ui-g-12" style="height: 30px;"></div>
+  </div>
+
+</div>

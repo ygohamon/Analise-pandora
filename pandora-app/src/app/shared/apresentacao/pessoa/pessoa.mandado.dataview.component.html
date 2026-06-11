@@ -1,0 +1,632 @@
+<div class="ui-g">
+  <div class="ui-g-12 p-0">
+    <p-table #dt_exportacao [columns]="colunasTabela" [value]="mandado" exportFilename="mandados">
+    </p-table>
+    <p-dataView #data [value]="mandado" [paginator]="true" [rows]="1" [rowsPerPageOptions]="[1, 5, 10]"
+      emptyMessage="{{msgRegistroNaoEncontrado}}" exportFilename="mandados">
+
+      <p-header>
+        <div class="p-card-subtitulo my-2 text-left d-flex">
+          <div class="text-center">
+            Informações do Mandado de Prisão
+          </div>
+
+          <div class="export-button pointer text-primary ml-auto" (click)="dt_exportacao.exportCSV()">
+            <span>CSV</span>
+            <i class="pi pi-download"></i>
+          </div>
+
+          <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+            <span>PDF</span>
+            <i class="pi pi-download"></i>
+          </div>
+
+          <div class="export-button pointer text-primary ml-2" (click)="exportExcel()">
+            <span>Excel</span>
+            <i class="pi pi-download"></i>
+          </div>
+
+        </div>
+      </p-header>
+      <p-footer>{{utils.getFooterResultado(data.totalRecords)}}</p-footer>
+
+      <ng-template let-ma pTemplate="listItem">
+        <div class="ui-g-12 ui-sm-12">
+          <p-fieldset>
+            <!-- Informações de pessoa -->
+            <div class="ui-g-12 ui-sm-12">
+
+              <!-- Alcunha -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.alcunha">
+                <div class="ui-g-4 pandora-atributo">Alcunha:</div>
+                <div class="ui-g-8">{{ma.alcunha}}</div>
+              </div>
+
+              <!-- Nome -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.nome">
+                <div class="ui-g-4 pandora-atributo">Nome:</div>
+                <div class="ui-g-8">{{ma.nome}}</div>
+              </div>
+
+              <!-- Cor do individuo -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.corRaca">
+                <div class="ui-g-4 pandora-atributo">Raça:</div>
+                <div class="ui-g-8">{{ma.corRaca}}</div>
+              </div>
+
+              <!-- Gestante -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.flagGravidez">
+                <div class="ui-g-4 pandora-atributo">Gestante:</div>
+                <div class="ui-g-8">{{ma.flagGravidez}}</div>
+              </div>
+
+              <!-- Lactante -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.flagLactante">
+                <div class="ui-g-4 pandora-atributo">Lactante:</div>
+                <div class="ui-g-8">{{ma.flagLactante}}</div>
+              </div>
+
+              <!-- Deficiente fisico -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.flgDeficienteFisico">
+                <div class="ui-g-4 pandora-atributo">Deficiente Fisico:</div>
+                <div class="ui-g-8">{{ma.flgDeficienteFisico}}</div>
+              </div>
+
+              <!-- Dependente Quimico -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.flagDependenteQuimico">
+                <div class="ui-g-4 pandora-atributo">Dependente Quimico:</div>
+                <div class="ui-g-8">{{ma.flagDependenteQuimico}}</div>
+              </div>
+
+              <!-- Tipo de Busca -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.tipoBuscaCPF">
+                <div class="ui-g-4 pandora-atributo">Tipo de Busca de CPF:</div>
+                <div class="ui-g-8">{{ma.tipoBuscaCPF}}</div>
+              </div>
+
+              <!-- Escolaridade -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.escolaridade">
+                <div class="ui-g-4 pandora-atributo">Escolaridade:</div>
+                <div class="ui-g-8">{{ma.escolaridade}}</div>
+              </div>
+
+              <!-- Justificativa -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.justificativa">
+                <div class="ui-g-4 pandora-atributo">Justificativa:</div>
+                <div class="ui-g-8">{{ma.justificativa}}</div>
+              </div>
+
+              <!-- Local de Custodia -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.municipioCustodiaPessoa">
+                <div class="ui-g-4 pandora-atributo">Local de Custodia:</div>
+                <div class="ui-g-8">{{ma.municipioCustodiaPessoa}} / {{ma.ufCustodiaPessoa}}</div>
+              </div>
+
+            </div>
+
+            <!-- foto -->
+            <div class="ui-g-12 ui-sm-12" *ngFor="let mfoto of ma.foto; let i = index">
+              <p-fieldset legend="Foto" [toggleable]="true" [collapsed]="true">
+                <!-- Foto -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mfoto.foto">
+                  <div class="ui-g-8">
+                    <a [href]="sanitize(mfoto.foto)" download>
+                      <img [src]="sanitize(mfoto.foto)" style="width: 1000px;">
+                    </a>
+                  </div>
+                </div>
+
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mfoto.origemFoto">
+                  <div class="ui-g-4 pandora-atributo">Origem da Foto:</div>
+                  <div class="ui-g-8">{{mfoto.origemFoto}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mfoto.dataFoto">
+                  <div class="ui-g-4 pandora-atributo">Data da foto:</div>
+                  <div class="ui-g-8">{{mfoto.dataFoto}}</div>
+                </div>
+
+              </p-fieldset>
+            </div>
+
+            <!-- Sinais e Marcas -->
+
+                <!-- Testa -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.testa">
+                  <div class="ui-g-4 pandora-atributo">Testa:</div>
+                  <div class="ui-g-8">{{ma.testa}}</div>
+                </div>
+
+                <!-- Sobrancelhas -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.sobrancelhas">
+                  <div class="ui-g-4 pandora-atributo">Sobrancelhas:</div>
+                  <div class="ui-g-8">{{ma.sobrancelhas}}</div>
+                </div>
+
+                <!-- Rosto -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.rosto">
+                  <div class="ui-g-4 pandora-atributo">Rosto:</div>
+                  <div class="ui-g-8">{{ma.rosto}}</div>
+                </div>
+
+                <!-- Pescoço -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.pescoco">
+                  <div class="ui-g-4 pandora-atributo">Pescoço:</div>
+                  <div class="ui-g-8">{{ma.pescoco}}</div>
+                </div>
+
+                <!-- Orelhas -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.orelhas">
+                  <div class="ui-g-4 pandora-atributo">Orelhas:</div>
+                  <div class="ui-g-8">{{ma.orelhas}}</div>
+                </div>
+
+                <!-- Nariz -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.nariz">
+                  <div class="ui-g-4 pandora-atributo">Nariz:</div>
+                  <div class="ui-g-8">{{ma.nariz}}</div>
+                </div>
+
+                <!-- Labios -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.labios">
+                  <div class="ui-g-4 pandora-atributo">Labios:</div>
+                  <div class="ui-g-8">{{ma.labios}}</div>
+                </div>
+
+                <!-- CorPele -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.corPele">
+                  <div class="ui-g-4 pandora-atributo">Cor da Pele:</div>
+                  <div class="ui-g-8">{{ma.corPele}}</div>
+                </div>
+
+                <!-- Formato dos Olhos -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.formatoOlhos">
+                  <div class="ui-g-4 pandora-atributo">Formato dos Olhos:</div>
+                  <div class="ui-g-8">{{ma.formatoOlhos}}</div>
+                </div>
+
+                <!-- Cor do Olhos -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.corOlhos">
+                  <div class="ui-g-4 pandora-atributo">Cor do Olhos:</div>
+                  <div class="ui-g-8">{{ma.corOlhos}}</div>
+                </div>
+
+                <!-- Tipo de Cabelo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.tipoCabelo">
+                  <div class="ui-g-4 pandora-atributo">Tipo Cabelo:</div>
+                  <div class="ui-g-8">{{ma.tipoCabelo}}</div>
+                </div>
+
+                <!-- Bio Tipo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.biotipo">
+                  <div class="ui-g-4 pandora-atributo">Bio Tipo:</div>
+                  <div class="ui-g-8">{{ma.biotipo}}</div>
+                </div>
+
+                <!-- Boca -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.boca">
+                  <div class="ui-g-4 pandora-atributo">Boca:</div>
+                  <div class="ui-g-8">{{ma.boca}}</div>
+                </div>
+
+                <!-- Bigode -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.bigode">
+                  <div class="ui-g-4 pandora-atributo">Bigode:</div>
+                  <div class="ui-g-8">{{ma.bigode}}</div>
+                </div>
+
+                <!-- Barba -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.barba">
+                  <div class="ui-g-4 pandora-atributo">Barba:</div>
+                  <div class="ui-g-8">{{ma.barba}}</div>
+                </div>
+
+                <!-- Altura -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.altura">
+                  <div class="ui-g-4 pandora-atributo">Altura:</div>
+                  <div class="ui-g-8">{{ma.altura}}</div>
+                </div>
+
+                <!-- Outros -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!ma.descricaoOutros">
+                  <div class="ui-g-4 pandora-atributo">Outros:</div>
+                  <div class="ui-g-8">{{ma.descricaoOutros}}</div>
+                </div>
+
+            <!-- Contramandados -->
+            <div class="ui-g-12 ui-sm-12" *ngFor="let mcontra of ma.contramandado; let i = index">
+
+              <p-fieldset legend="Contramandado" [toggleable]="true">
+
+                <!-- Numero da Peça  -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.numeroPeca">
+                  <div class="ui-g-4 pandora-atributo">Numero da Peça:</div>
+                  <div class="ui-g-8">{{mcontra.numeroPeca}}</div>
+                </div>
+
+                <!-- Numero do processo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.numeroProcesso">
+                  <div class="ui-g-4 pandora-atributo">Numero do Processo:</div>
+                  <div class="ui-g-8">{{mcontra.numeroProcesso}}</div>
+                </div>
+
+                <!-- Motivo de Expedição -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoMotivoExpedicao">
+                  <div class="ui-g-4 pandora-atributo">Motivo de Expedição:</div>
+                  <div class="ui-g-8">{{mcontra.descricaoMotivoExpedicao}}</div>
+                </div>
+
+                <!-- Observação -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoObservacao">
+                  <div class="ui-g-4 pandora-atributo">Observação:</div>
+                  <div class="ui-g-8">
+                    <textarea style="width: 100%; background: transparent; border: 0 none;" pInputTextarea autoResize="autoResize" readonly="readonly">{{mcontra.descricaoObservacao}}</textarea>
+                  </div>
+                </div>
+
+                <!-- Sintese de Decisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoSinteseDecisao">
+                  <div class="ui-g-4 pandora-atributo">Sintese de Decisão:</div>
+                  <div class="ui-g-8">
+                    <textarea style="width: 100%; background: transparent; border: 0 none;" pInputTextarea autoResize="autoResize" readonly="readonly">{{mcontra.descricaoSinteseDecisao}}</textarea>
+                  </div>
+                </div>
+
+                <!-- Tipo de Contramandado -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoTipoContramandado">
+                  <div class="ui-g-4 pandora-atributo">Tipo Contramandado:</div>
+                  <div class="ui-g-8">{{mcontra.descricaoTipoContramandado}}</div>
+                </div>
+
+                <!-- Tipo de Medida -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoTipoMedida">
+                  <div class="ui-g-4 pandora-atributo">Tipo de Medida:</div>
+                  <div class="ui-g-8">{{mcontra.descricaoTipoMedida}}</div>
+                </div>
+
+                <!-- Tipo de Peça -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoTipoPeca">
+                  <div class="ui-g-4 pandora-atributo">Tipo da Peça:</div>
+                  <div class="ui-g-8">{{mcontra.descricaoTipoPeca}}</div>
+                </div>
+
+                <!-- Descrição Cumprimento -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.descricaoCumprimento">
+                  <div class="ui-g-4 pandora-atributo">Cumprimento:</div>
+                  <div class="ui-g-8">{{mcontra.descricaoCumprimento}}</div>
+                </div>
+
+                <!-- Outras medidas -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.flgOutrasMedidas">
+                  <div class="ui-g-4 pandora-atributo">Outras Medidas:</div>
+                  <div class="ui-g-8">{{mcontra.flgOutrasMedidas}}</div>
+                </div>
+
+                <!-- Prisão Domiciliar -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.flgPrisaoDomiciliar">
+                  <div class="ui-g-4 pandora-atributo">Prisão Domiciliar:</div>
+                  <div class="ui-g-8">{{mcontra.flgPrisaoDomiciliar}}</div>
+                </div>
+
+                <!-- Data da Conclusão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.dataConclusao">
+                  <div class="ui-g-4 pandora-atributo">Data da Conclusão:</div>
+                  <div class="ui-g-8">{{utils.formataData(mcontra.dataConclusao)}}</div>
+                </div>
+
+                <!-- Data da confirmação do servidor -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.dataConfirmacaoServidor">
+                  <div class="ui-g-4 pandora-atributo">Data da Confirmação do Servidor:</div>
+                  <div class="ui-g-8">{{utils.formataData(mcontra.dataConfirmacaoServidor)}}</div>
+                </div>
+
+                <!-- Data da Criação -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.dataCriacao">
+                  <div class="ui-g-4 pandora-atributo">Data da Criação:</div>
+                  <div class="ui-g-8">{{utils.formataData(mcontra.dataCriacao)}}</div>
+                </div>
+
+                <!-- Data da Expedição -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.dataExpedicao">
+                  <div class="ui-g-4 pandora-atributo">Data da Expedição:</div>
+                  <div class="ui-g-8">{{utils.formataData(mcontra.dataExpedicao)}}</div>
+                </div>
+
+                <!-- Data de Expiração Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.dataExpiracaoPrisaoMP">
+                  <div class="ui-g-4 pandora-atributo">Data da Expiração do Mandado de Prisão:</div>
+                  <div class="ui-g-8">{{utils.formataData(mcontra.dataExpiracaoPrisaoMP)}}</div>
+                </div>
+
+                <!-- Data de Vencimento Mandados -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mcontra.dataVencimentoMandados">
+                  <div class="ui-g-4 pandora-atributo">Data do Vencimento do Mandado:</div>
+                  <div class="ui-g-8">{{utils.formataData(mcontra.dataVencimentoMandados)}}</div>
+                </div>
+
+              </p-fieldset>
+            </div>
+
+            <!-- Informações de Mandado -->
+            <div class="ui-g-12 ui-sm-12" *ngFor="let mprisao of ma.mandadoPrisao; let i = index">
+              <p-fieldset legend="Mandado de Prisão" [toggleable]="true">
+                <!-- Tipo da Peça -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.tipoPeca">
+                  <div class="ui-g-4 pandora-atributo">Tipo da Peça:</div>
+                  <div class="ui-g-8">{{mprisao.tipoPeca}}</div>
+                </div>
+
+                <!-- Numero da Peça -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.numeroPeca">
+                  <div class="ui-g-4 pandora-atributo">Número da Peça:</div>
+                  <div class="ui-g-8">{{mprisao.numeroPeca}}</div>
+                </div>
+
+                <!-- Numero do Processo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.numeroProcesso">
+                  <div class="ui-g-4 pandora-atributo">Número do Processo:</div>
+                  <div class="ui-g-8">{{mprisao.numeroProcesso}}</div>
+                </div>
+
+                <!-- Status da Pessoa -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.status">
+                  <div class="ui-g-4 pandora-atributo">Status:</div>
+                  <div class="ui-g-8">{{mprisao.status}}</div>
+                </div>
+
+                <!-- Data de Criação -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataCriacao">
+                  <div class="ui-g-4 pandora-atributo">Data de Criação:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataCriacao)}}</div>
+                </div>
+
+                <!-- Nome do Servidor -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.nomeServidor">
+                  <div class="ui-g-4 pandora-atributo">Nome do Servidor:</div>
+                  <div class="ui-g-8">{{mprisao.nomeServidor}}</div>
+                </div>
+
+                <!-- Cargo do Servidor -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.cargoServidor">
+                  <div class="ui-g-4 pandora-atributo">Cargo do Servidor:</div>
+                  <div class="ui-g-8">{{mprisao.cargoServidor}}</div>
+                </div>
+
+                <!-- Nome Magistrado -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.nomeMagistrado">
+                  <div class="ui-g-4 pandora-atributo">Magistrado:</div>
+                  <div class="ui-g-8">{{mprisao.nomeMagistrado}}</div>
+                </div>
+
+                <!-- Data de Confirmação do Servidor -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataConfirmacaoServidor">
+                  <div class="ui-g-4 pandora-atributo">Data de confirmação do Servidor:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataConfirmacaoServidor)}}</div>
+                </div>
+
+                <!-- Justificativa de Cancelamento -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.textoJustificativaCancelamento">
+                  <div class="ui-g-4 pandora-atributo">Justificativa de Cancelamento:</div>
+                  <div class="ui-g-8">{{mprisao.textoJustificativaCancelamento}}</div>
+                </div>
+
+                <!-- Data de Expedição -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataExpedicao">
+                  <div class="ui-g-4 pandora-atributo">Data de Expedição:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataExpedicao)}}</div>
+                </div>
+
+                <!-- Data de Conclusão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataConclusao">
+                  <div class="ui-g-4 pandora-atributo">Data de Conclusão:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataConclusao)}}</div>
+                </div>
+
+                <!-- Data de Vencimento do Mandado de Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataVencimentoMandados">
+                  <div class="ui-g-4 pandora-atributo">Data de Vencimento do Mandado de Prisão:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataVencimentoMandados)}}</div>
+                </div>
+
+                <!-- Data de Expiração do Mandado de Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataExpiracaoPrisaoMandadoPrisao">
+                  <div class="ui-g-4 pandora-atributo">Data de Expiração do Mandado de Prisão:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataExpiracaoPrisaoMandadoPrisao)}}</div>
+                </div>
+
+                <!-- Orgão Judiciario -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.orgaoJudiciario">
+                  <div class="ui-g-4 pandora-atributo">Orgão Judiciario:</div>
+                  <div class="ui-g-8">{{mprisao.orgaoJudiciario}}</div>
+                </div>
+
+                <!-- Data de Validade -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataValidade">
+                  <div class="ui-g-4 pandora-atributo">Data da Validade:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataValidade)}}</div>
+                </div>
+
+                <!-- Numero do Prazo de Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.numeroPrazoPrisao">
+                  <div class="ui-g-4 pandora-atributo">Numero do Prazo de Prisão:</div>
+                  <div class="ui-g-8">{{mprisao.numeroPrazoPrisao}}</div>
+                </div>
+
+                <!-- Data da Infração -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataInfracao">
+                  <div class="ui-g-4 pandora-atributo">Data da Infração:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataInfracao)}}</div>
+                </div>
+
+                <!-- Sintese de Decisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.sinteseDecisao">
+                  <div class="ui-g-4 pandora-atributo">Sintese da Decisão:</div>
+                  <div class="ui-g-8">
+                    <textarea style="width: 100%; background: transparent; border: 0 none;" pInputTextarea autoResize="autoResize" readonly="readonly">{{mprisao.sinteseDecisao}}</textarea>
+                  </div>
+                </div>
+
+                <!-- Descriação do Local de Ocorrencia -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.descricaoLocalOcorrencia">
+                  <div class="ui-g-4 pandora-atributo">Descrição do local de Ocorrencia:</div>
+                  <div class="ui-g-8">{{mprisao.descricaoLocalOcorrencia}}</div>
+                </div>
+
+                <!-- Tempo de Pena -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.tempoPenaAno">
+                  <div class="ui-g-4 pandora-atributo">Anos de Pena:</div>
+                  <div class="ui-g-8">{{mprisao.tempoPenaAno}}</div>
+                </div>
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.tempoPenaMes">
+                  <div class="ui-g-4 pandora-atributo">Meses de Pena:</div>
+                  <div class="ui-g-8">{{mprisao.tempoPenaMes}}</div>
+                </div>
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.tempoPenaDia">
+                  <div class="ui-g-4 pandora-atributo">Dias de Pena:</div>
+                  <div class="ui-g-8">{{mprisao.tempoPenaDia}}</div>
+                </div>
+
+
+                <!-- Descrição do Comprimento -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.descricaoCumprimento">
+                  <div class="ui-g-4 pandora-atributo">Descrição do Comprimento:</div>
+                  <div class="ui-g-8">
+                    <textarea style="width: 100%; background: transparent; border: 0 none;" pInputTextarea autoResize="autoResize" readonly="readonly">{{mprisao.descricaoCumprimento}}</textarea>
+                  </div>
+                </div>
+
+                <!-- Observação -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.observacao">
+                  <div class="ui-g-4 pandora-atributo"> Observação:</div>
+                  <div class="ui-g-8">{{mprisao.observacao}}</div>
+                </div>
+
+                <!-- Regime Prisional -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.regimePrisional">
+                  <div class="ui-g-4 pandora-atributo">Regime Prisional:</div>
+                  <div class="ui-g-8">{{mprisao.regimePrisional}}</div>
+                </div>
+
+                <!-- Especie de Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.especiePrisao">
+                  <div class="ui-g-4 pandora-atributo">Especie de Prisão:</div>
+                  <div class="ui-g-8">{{mprisao.especiePrisao}}</div>
+                </div>
+
+                <!-- Sigilo -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.sigilo">
+                  <div class="ui-g-4 pandora-atributo">Sigilo:</div>
+                  <div class="ui-g-8">{{mprisao.sigilo}}</div>
+                </div>
+
+                <!-- Estabelecimento Pricional -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.nomeEstabelecimentoPrisional">
+                  <div class="ui-g-4 pandora-atributo">Estabelecimento Prisional:</div>
+                  <div class="ui-g-8">{{mprisao.nomeEstabelecimentoPrisional}}</div>
+                </div>
+
+                <!-- Justificativa -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.descricaoJustificativa">
+                  <div class="ui-g-4 pandora-atributo">Justificativa:</div>
+                  <div class="ui-g-8">{{mprisao.descricaoJustificativa}}</div>
+                </div>
+
+                <!-- Data de Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.dataPrisao">
+                  <div class="ui-g-4 pandora-atributo">Data de Prisão:</div>
+                  <div class="ui-g-8">{{utils.formataData(mprisao.dataPrisao)}}</div>
+                </div>
+
+                <!-- Uf de Custodia -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.ufCustodia">
+                  <div class="ui-g-4 pandora-atributo">UF custodia:</div>
+                  <div class="ui-g-8">{{mprisao.ufCustodia}}</div>
+                </div>
+
+                <!-- Municipio de Custodia -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.municipioCustodia">
+                  <div class="ui-g-4 pandora-atributo">Municipio custodia:</div>
+                  <div class="ui-g-8">{{mprisao.municipioCustodia}}</div>
+                </div>
+
+                <!-- Link do Mandado de Prisão -->
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!mprisao.linkMandadoPrisao">
+                  <div class="ui-g-4 pandora-atributo">Mandado de prisão:</div>
+                  <div class="ui-g-8">
+                    <a href="{{mprisao.linkMandadoPrisao}}" target="_blank">Mandado no Portal BNMP! </a>
+                  </div>
+                </div>
+
+                <!-- Tipificação Penal -->
+                <div class="ui-g-12 ui-sm-12" *ngFor="let tipificacao of mprisao.tipificacaoPenal; let i = index">
+                  <p-fieldset legend="Tipificação Penal" [toggleable]="true">
+
+                    <!-- Rotulo Tipificação Penal -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.rotuloTipificacaoPenal">
+                      <div class="ui-g-4 pandora-atributo">Rotulo da Tipificação Penal:</div>
+                      <div class="ui-g-8">{{tipificacao.rotuloTipificacaoPenal}}</div>
+                    </div>
+
+                    <!-- Crime de Atentado -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.flgCrimeTentado">
+                      <div class="ui-g-4 pandora-atributo">Crime de Atentado:</div>
+                      <div class="ui-g-8">{{tipificacao.flgCrimeTentado}}</div>
+                    </div>
+
+                    <!-- Violencia Domestica -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.flgViolenciaDomestica">
+                      <div class="ui-g-4 pandora-atributo">Violencia Domestica:</div>
+                      <div class="ui-g-8">{{tipificacao.flgViolenciaDomestica}}</div>
+                    </div>
+
+                    <!-- Violencia Contra Mulher -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.flgMulher">
+                      <div class="ui-g-4 pandora-atributo">Mulher:</div>
+                      <div class="ui-g-8">{{tipificacao.flgMulher}}</div>
+                    </div>
+
+                    <!-- Violenca Criança ou Adolecente  -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.flgCriancaAdolescente">
+                      <div class="ui-g-4 pandora-atributo">Criança ou Adolecente:</div>
+                      <div class="ui-g-8">{{tipificacao.flgCriancaAdolescente}}</div>
+                    </div>
+
+                    <!-- Violencia Idoso -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.flgIdoso">
+                      <div class="ui-g-4 pandora-atributo">Idoso:</div>
+                      <div class="ui-g-8">{{tipificacao.flgIdoso}}</div>
+                    </div>
+
+                    <!-- Categoria da Tipificação Penal -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview"
+                      *ngIf="!!tipificacao.nomeCategoriaTipificacaoPenal">
+                      <div class="ui-g-4 pandora-atributo">Categoria Tipificação Penal:</div>
+                      <div class="ui-g-8">{{tipificacao.nomeCategoriaTipificacaoPenal}}</div>
+                    </div>
+
+                    <!-- Rotulo da Categoria -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!tipificacao.rotuloCategoria">
+                      <div class="ui-g-4 pandora-atributo">Rotulo da Categoria:</div>
+                      <div class="ui-g-8">{{tipificacao.rotuloCategoria}}</div>
+                    </div>
+
+                    <!-- Descrição da Tipificação Penal -->
+                    <div class="ui-g-12 py-0 pandora-linha-dataview"
+                      *ngIf="!!tipificacao.descricaoCategoriaTipificacaoPenal">
+                      <div class="ui-g-4 pandora-atributo">Descrição da Tipificação Penal:</div>
+                      <div class="ui-g-8">{{tipificacao.descricaoCategoriaTipificacaoPenal}}</div>
+                    </div>
+
+                  </p-fieldset>
+                </div>
+
+              </p-fieldset>
+            </div>
+
+            
+          </p-fieldset>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </div>
+</div>

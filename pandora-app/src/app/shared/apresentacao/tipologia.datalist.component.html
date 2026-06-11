@@ -1,0 +1,135 @@
+<div class="ui-g">
+
+  <ng-container *ngIf="tipologiasTCE.length > 0">
+    <div class="ui-g-12 pb-2">
+      <pandora-table
+        caption="Tipologias - Fonte: TCE"
+        exportFilename="tabela_tipologias_tce"
+        [value]="tipologiasTCE"
+        [dicionarioDados]="dicionarioDadosTCE">
+
+        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+              <span *ngSwitchCase="'tipologia'">{{utils.toUpperCase(rowData.tipologia)}}</span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </pandora-table>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="tipologiasTCU.length > 0">
+    <div class="ui-g-12 pb-2">
+      <p-dataView
+        [value]="tipologiasTCU"
+        [paginator]="true"
+        [rows]="1"
+        emptyMessage="{{msgRegistroNaoEncontrado}}">
+        <p-header>Tipologias - Fonte: TCU</p-header>
+
+        <ng-template let-empresa pTemplate="listItem">
+          <div class="ui-g-12 pb-2" style="padding:20px;border-bottom:1px solid #D5D5D5;">
+            <div class="ui-g-12 ui-sm-12">
+
+              <div class="ui-g-12"  style="background-color: #eaeeef;">
+                  <div class="ui-g-2 pandora-atributo">ID</div>
+                  <!-- <div class="ui-g-2 pandora-atributo">PESO</div> -->
+                  <div class="ui-g-10 pandora-atributo">DESCRIÇÃO</div>
+              </div>
+
+              <div class="ui-g-12" *ngIf="!indices[empresa.index].length">
+                  <div class="ui-g-12 pandora-atributo">{{msgRegistroNaoEncontrado}}</div>
+              </div>
+
+              <div class="ui-g-12" *ngFor="let idx of indices[empresa.index]; let i = index" [style.background-color]="pintaLinha(i)">
+                  <div class="ui-g-2 pandora-atributo" *ngIf="!!empresa['t'+idx]">T{{idx}}</div>
+                  <!-- <div class="ui-g-2" *ngIf="!!empresa['t'+idx]">{{empresa['t'+idx]}}</div> -->
+                  <div class="ui-g-10" *ngIf="!!empresa['t'+idx] && tipo==='pj'">{{utils.mapeamentoTipologiaPJ['t'+idx]}}</div>
+                  <div class="ui-g-10" *ngIf="!!empresa['t'+idx] && tipo==='pf'">{{utils.mapeamentoTipologiaPF['t'+idx]}}</div>
+              </div>
+
+              <div class="ui-g-12" style="margin-top: 20px;"></div>
+
+              <!-- <div class="ui-g-12" *ngIf="!!empresa.totalPeso" style="background-color: #f9fbfc;">
+                  <div class="ui-g-4 pandora-atributo" *ngIf="!!empresa.totalPeso">Peso total</div>
+                  <div class="ui-g-4" *ngIf="!!empresa.totalPeso">{{empresa.totalPeso}}</div>
+              </div> -->
+
+              <div class="ui-g-12" *ngIf="!!empresa.totalOcorrencias">
+                  <div class="ui-g-4 pandora-atributo" *ngIf="!!empresa.totalOcorrencias">Total de Ocorrências</div>
+                  <div class="ui-g-4" *ngIf="!!empresa.totalOcorrencias">{{empresa.totalOcorrencias}}</div>
+              </div>
+
+              <div class="ui-g-12" style="background-color: #f9fbfc;">
+                  <div class="ui-g-4 pandora-atributo">Doação Eleitoral</div>
+                  <div class="ui-g-4">R$ {{utils.converteEmDinheiro(empresa.doacaoEleitoral)}}</div>
+              </div>
+
+              <div class="ui-g-12">
+                  <div class="ui-g-4 pandora-atributo">Taxa de Doação</div>
+                  <div class="ui-g-4">{{calculaTaxaDoacao(empresa.taxaDoacao)}}</div>
+              </div>
+
+              <div class="ui-g-12" style="background-color: #f9fbfc;">
+                  <div class="ui-g-4 pandora-atributo">Total TCS</div>
+                  <div class="ui-g-4">R$ {{utils.converteEmDinheiro(empresa.totalTCS)}}</div>
+              </div>
+
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="tipologiasLicitacoesTCE.length > 0">
+    <div class="ui-g-12 pb-2">
+      <pandora-table
+        #dt_tipologias
+        caption="Tipologias Licitações - Fonte: TCE"
+        exportFilename="tabela_tipologias_licitacoes_tce"
+        dataKey="id"
+        [value]="tipologiasLicitacoesTCE"
+        [dicionarioDados]="dicionarioDadosLicitacoesTCE"
+        [dicionarioDadosExpand]="dicionarioDadosLicitacoesExpandCompleto">
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th style="width: 3em"></th>
+            <th *ngFor="let col of columns" [pandoraSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+            </th>
+          </tr>
+
+          <tr>
+            <th style="width: 3em"></th>
+            <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                <p-multiSelect *ngSwitchCase="'codigoTipologia'"          [options]="completoCodigoTipologias" styleClass="ui-column-filter" defaultLabel="Códigos"  (onChange)="dt_tipologias.filter($event.value, col.field, 'in')"></p-multiSelect>
+                <p-multiSelect *ngSwitchCase="'tipologia'"                [options]="completoTipologias"       styleClass="ui-column-filter" defaultLabel="Descrição" (onChange)="dt_tipologias.filter($event.value, col.field, 'in')"></p-multiSelect>
+                <p-multiSelect *ngSwitchCase="'numeroProtocoloLicitacao'" [options]="completoNumeroProtocolo"  styleClass="ui-column-filter" defaultLabel="Protocolo Licitação"   (onChange)="dt_tipologias.filter($event.value, col.field, 'in')"></p-multiSelect>
+            </th>
+        </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td>
+              <a href="#" [pandoraRowToggler]="rowData">
+                <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                <!-- aqui é onde ẽ chamado os items -->
+              </a>
+            </td>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </ng-container>
+</div>

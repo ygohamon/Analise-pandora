@@ -1,0 +1,29 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Logs</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf='buscaUltimosLogsFinalizada'>
+
+    <div class="p-card p-0 b-0">
+      <p-tabView (onChange)="onTabChange($event)">
+
+        <p-tabPanel header="Logs">
+          <app-ultimos-logs [logsEncontrados]=logsEncontrados></app-ultimos-logs>
+        </p-tabPanel>
+
+        <p-tabPanel header="Tokens Válidos" >
+            <app-tokens-validos [tokensValidos]="tokensValidos"></app-tokens-validos>
+        </p-tabPanel>
+      </p-tabView>
+
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

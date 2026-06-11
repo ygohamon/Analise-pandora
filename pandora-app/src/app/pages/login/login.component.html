@@ -1,0 +1,59 @@
+<ngx-loading-bar [color]="'firebrick'" [height]="'4px'"></ngx-loading-bar>
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<div class="login-body">
+  <div class="login-panel ui-fluid" [style.height]="getHeight()">
+    <div #conteudo class="ui-g">
+
+      <div class="ui-g-12 logo-container" style="text-align: center; padding: 25px 50px 25px 50px;">
+        <img src="../../../assets/layout/images/logo_principal.png" class="logo" alt="logo" style="height: 200px;">
+        <!-- <img src="../../../assets/layout/images/logo.png" class="logo" alt="logo" style="height: 200px;"> -->
+        <!-- <h2>Sistema Integrado de Apoio ao Promotor - SIAP</h2> -->
+      </div>
+
+      <div class="ui-g-12 logo-container text-center" style="padding-top: 0px;" *ngIf="mostraAviso">
+        <h3>Aviso</h3>
+        <h4>
+          O Pandora se encontrará indisponível das 21h00 do dia 19/08/2022(sexta-feira) até as 4h00 do o dia 20/08/2022(sábado),
+          devido manutenção nos servidores do Ministério Público.
+        </h4>
+      </div>
+
+      <div class="ui-g-12 campos-login" style="padding-top: 0px;">
+        <div class="input-wrapper">
+          <img src="../../../assets/layout/images/login/user.png" class="user-icon" alt="">
+          <label for="login"></label>
+          <input id="login" type="text" name="login" [(ngModel)]="formLogin" placeholder="Login"
+            class="ui-inputtext ui-widget" ngModel>
+        </div>
+      </div>
+
+      <div class="ui-g-12 campos-login">
+        <div class="input-wrapper">
+          <label for="password"></label>
+          <img src="../../../assets/layout/images/login/lock.png" class="lock-icon" alt="">
+          <input id="password" type="password" name="senha" [(ngModel)]="formSenha" placeholder="Senha"
+            class="ui-inputtext ui-widget" ngModel>
+        </div>
+      </div>
+
+      <re-captcha #invisible size="invisible" (resolved)="$event && respostaRecaptcha($event)"></re-captcha>
+
+      <div class="ui-g-12" style="margin-bottom: 15px;">
+
+        <div class="ui-g-6 ui-sm-12" style="padding: 10px 0px 0px 0px;">
+          <button type="submit" (click)="invisible.execute()"
+            class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only blue-btn raised-btn"
+            style="margin-bottom: 0px; background-color: #347AAC">
+            <span class="ui-button-text ui-c">Entrar</span>
+          </button>
+        </div>
+
+        <div class="ui-g-6 ui-sm-12" id="solicitaAcesso" style="padding: 15px 0px 0px 0px;;">
+          <a href="#" class="btn btn-link px-0" [routerLink]="['/cadastro']">Solicitar acesso</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

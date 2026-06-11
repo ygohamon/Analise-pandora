@@ -1,0 +1,37 @@
+.aviso {
+    border-color: #ebccd1;
+    background-color: #000;
+}
+
+.aviso-cabecalho {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.home {
+    text-align: center;
+}
+
+.img-fundo {
+    width: 100%;
+    height: auto;
+    max-width: 100px;
+    max-height: 130px;
+}
+
+@media (max-width: 640px) {
+    h1.muda-mobile {
+        font-size: 1.4em;
+    }
+    h2.muda-mobile {
+        font-size: 1.2em;
+    }
+}
+
+@media (min-width: 641px) {
+    h1.muda-mobile {
+        font-size: 25px;
+    }
+}
+

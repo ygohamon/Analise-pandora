@@ -1,0 +1,233 @@
+<div class="ui-g">
+
+  <app-campos-busca
+      titulo="Preso"
+      [nProcesso]="nProcesso"
+      [campos]="campos"
+      style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+      [(buscaFinalizada)]="buscaFinalizada"
+      (pesquisa)="onPesquisa($event)">
+  </app-campos-busca>
+
+
+  <div class="ui-g-12" *ngIf="buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-tabView
+        styleClass="p-0"
+        [controlClose]="true">
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Fonte - SISDEPEN" [closable]="true">
+
+          <pandora-table
+            caption="Resultados Encontrados"
+            exportFilename="presosEncontradosSISDEPEN"
+            [mostraFiltroColunas]="true"
+            [value]="presosEncontradosSISDEPEN"
+            [dicionarioDados]="dicionarioDadosDEP">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cpf'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' class="text-primary">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+                  </span>
+                  <span *ngSwitchCase="'cnc'" class="pointer text-primary" (click)="getDetalhesCNC(rowData.cnc)">
+                    {{utils.formataDado(rowData.cnc, '############-##')}}
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field] | uppercase}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Fonte - Prisional/PB" [closable]="true">
+
+          <pandora-table
+            caption="Resultados Encontrados"
+            exportFilename="presosEncontradosPrisional"
+            [mostraFiltroColunas]="true"
+            [value]="presosEncontradosPrisional"
+            [dicionarioDados]="dicionarioDadosPRS">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cpf'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' class="text-primary">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+                  </span>
+                  <span *ngSwitchCase="'dataEntrada'">{{utils.formataData(rowData.dataEntrada)}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field] | uppercase}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Fonte - SDS/PB" [closable]="true">
+
+          <pandora-table
+            caption="Resultados Encontrados"
+            exportFilename="presosEncontradosSDS"
+            [mostraFiltroColunas]="true"
+            [value]="presosEncontradosSDS"
+            [dicionarioDados]="dicionarioDadosSDS">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'cpf'">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' class="text-primary">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+                  </span>
+                  <span *ngSwitchDefault>{{rowData[col.field] | uppercase}}</span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </pandora-table>
+
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+<p-dialog
+  *ngIf="mostrapresoDetalhadoCNC"
+  [(visible)]="mostrapresoDetalhadoCNC"
+  header="Detalhes"
+  [style]="utils.getDialogStyle()"
+  [modal]="true">
+
+  <div class="ui-g">
+      <div class="ui-g-12">
+          <div class="ui-g-12" >
+            <div class="ui-g-4 pandora-atributo"><label for="nome">Foto: </label></div>
+            <div class="ui-g-8">
+              <span *ngIf="!presoDetalhadoCNC.foto">Não Encontrado</span>
+              <img *ngIf="!!presoDetalhadoCNC.foto" src="data:image/png;base64,{{presoDetalhadoCNC.foto}}" style="width: 100%;">
+            </div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="nome">Nome: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.nome}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="nomeApresentacao">Nome Apresentação: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.nomeApresentacao}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="nomeSocial">Nome Social: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.nomeSocial}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="cpf">CPF: </label></div>
+            <div class="ui-g-8">{{utils.formataDado(presoDetalhadoCNC.cpf, '###.###.###-##')}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="cnc">CNC: </label></div>
+            <div class="ui-g-8">{{utils.formataDado(presoDetalhadoCNC.cnc, '############-##')}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="vulgo">Vulgo: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.vulgo}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="naturalidade">Naturalidade: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.naturalidade}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="naturalidadeUF">Naturalidade UF: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.naturalidadeUF}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="nacionalidade">Nacionalidade: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.nacionalidade}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="rg">RG: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.rg}} {{presoDetalhadoCNC.rgOrgaoEmissor}}/{{presoDetalhadoCNC.rgUf}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="rgDataExpedicao">Data Expedição: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.rgDataExpedicao}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="cadeia">Cadeia: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.cadeia}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="cadeiaUF">Cadeia UF: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.cadeiaUF}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="cadeiaAmbito">Cadeia Âmbito: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.cadeiaAmbito}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="situacao">Situação: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.situacao}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="situacao">Recolhimento: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.tipoRecolhimento}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="situacao">Regime: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.regimePrisional}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="tipificacao">Tipificação: </label></div>
+            <div class="ui-g-8">{{presoDetalhadoCNC.tipificacao}}</div>
+          </div>
+
+          <div class="ui-g-12">
+            <div class="ui-g-4 pandora-atributo"><label for="dataInformacao">Data Informação: </label></div>
+            <div class="ui-g-8">{{utils.formataData(presoDetalhadoCNC.dataInformacao)}}</div>
+          </div>
+      </div>
+
+  </div>
+
+  <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="pi pi-times" (click)="mostrapresoDetalhadoCNC=false" label="Fechar"></button>
+        <button type="button" pButton icon="pi pi-download" (click)="geraRelatorioPresoDetalhado()" label="Download Relatório"></button>
+      </div>
+  </p-footer>
+</p-dialog>

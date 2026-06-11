@@ -1,0 +1,25 @@
+<div class="ui-g">
+    <app-crawlers-motoresbusca class="w-100" *ngIf="motoresbusca.length > 0" [data]="motoresbusca" cabecalho="Motores de Busca (Google, Bing, Yahoo, Presearch e DuckDuckGo)">
+    </app-crawlers-motoresbusca>
+
+    <app-crawlers-doe class="w-100" *ngIf="doe.length > 0" [dados]="doe">
+    </app-crawlers-doe>
+
+    <app-crawlers-jusbrasil class="w-100" *ngIf="jusbrasil.length > 0" [dados]="jusbrasil">
+    </app-crawlers-jusbrasil>
+
+    <app-crawlers-escavador class="w-100" *ngIf="escavador.length > 0" [data]="escavador" cabecalho="Escavador">
+    </app-crawlers-escavador>
+
+    <app-crawlers-transparencia class="w-100" *ngIf="transparencia.length > 0" [data]="transparencia" cabecalho="Transparência Federal">
+    </app-crawlers-transparencia>
+
+    <app-crawlers-facebook class="w-100" *ngIf="facebook.length > 0" [data]="facebook">
+    </app-crawlers-facebook>
+
+    <app-crawlers-instagram class="w-100" *ngIf="instagram.length > 0" [data]="instagram">
+    </app-crawlers-instagram>
+
+    <app-crawlers-linkedin class="w-100" *ngIf="linkedin.length > 0" [data]="linkedin">
+    </app-crawlers-linkedin>
+</div>

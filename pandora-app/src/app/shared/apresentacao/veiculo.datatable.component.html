@@ -1,0 +1,62 @@
+<div class="ui-g">
+
+    <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+      A tabela abaixo apresenta os dados detalhados dos veículos do proprietário, discrimina as informações relevantes em diferentes bases de dados.
+    </div>
+
+    <div class="ui-g-12">
+        <pandora-table
+              #dt_veiculos
+              caption="Veículos - Detalhado"
+              exportFilename="tabela_veiculos"
+              dataKey="id"
+              [value]="dadosCompleto"
+              [dicionarioDados]="dicionarioDadosCompleto"
+              [dicionarioDadosExpand]="dicionarioDadosExpandCompleto"
+              >
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th style="width: 3em"></th>
+                  <th *ngFor="let col of columns" [pandoraSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                  </th>
+                </tr>
+                <tr>
+                  <th style="width: 3em"></th>
+                  <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                      <p-multiSelect *ngSwitchCase="'placa'"        [options]="completoPlaca"       styleClass="ui-column-filter" defaultLabel="Placas"       (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                      <p-multiSelect *ngSwitchCase="'marcaModelo'"  [options]="completoModelos"     styleClass="ui-column-filter" defaultLabel="Modelos"      (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                      <p-multiSelect *ngSwitchCase="'cor'"          [options]="completoCores"       styleClass="ui-column-filter" defaultLabel="Cores"        (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                      <p-multiSelect *ngSwitchCase="'anoFab'"       [options]="completoFabricacao"  styleClass="ui-column-filter" defaultLabel="Fabricação"   (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                      <p-multiSelect *ngSwitchCase="'anoMod'"       [options]="completoModelo"      styleClass="ui-column-filter" defaultLabel="Modelos"      (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                      <p-multiSelect *ngSwitchCase="'anoRegistro'"  [options]="completoRegistro"    styleClass="ui-column-filter" defaultLabel="Registro"     (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                      <p-multiSelect *ngSwitchCase="'fonte'"        [options]="completoFonte"       styleClass="ui-column-filter" defaultLabel="Fontes"       (onChange)="dt_veiculos.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  </th>
+              </tr>
+              </ng-template>
+
+              
+              <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+                <tr>
+                  <td>
+                    <a href="#" [pandoraRowToggler]="rowData">
+                      <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                      <!-- aqui é onde ẽ chamado os items -->
+                    </a>
+                  </td>
+
+                  <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                    <span class="ui-column-title">{{col.header}}</span>
+
+                    <span *ngSwitchCase="'dataAtualizacao'">{{utils.formataData(rowData.dataAtualizacao)}}</span>
+                    <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+              </ng-template>
+         
+          </pandora-table>
+    </div>
+    
+</div>

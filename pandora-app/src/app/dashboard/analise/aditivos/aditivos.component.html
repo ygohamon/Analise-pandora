@@ -1,0 +1,78 @@
+<div class="ui-g">
+
+  <app-campos-busca
+    titulo="Aditivo"
+    [nProcesso]="nProcesso"
+    [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+    [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+
+    <div class="ui-g-12">
+      <div class="p-card p-0 b-0">
+        <p-panel header="Informações" [toggleable]="true">
+          <ul class="text-justify">
+            <li class="pb-1">Lista todos os aditivos que foram feitos entre órgãos públicos <strong>municipais</strong> e <strong>estaduais</strong> com pessoas físicas ou pessoas jurídicas.</li>
+            <li class="pb-1">Campos apresentados:
+              <ul class="mt-1">
+                <li class="pb-1">Unidade Gestora;</li>
+                <li class="pb-1">Tipo, número, ano e valor da licitação;</li>
+                <li class="pb-1">Número, data de empenho, data de pagamento e descrição do empenho;</li>
+                <li class="pb-1">Valor empenhado, estornado e pago.</li>
+              </ul>
+            </li>
+          </ul>
+        </p-panel>
+      </div>
+    </div>
+
+  </app-campos-busca>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-tabView
+        styleClass="p-0"
+        [controlClose]="true">
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Aditivos Municipais" [closable]="true">
+
+          <pandora-table
+            caption="Aditivos Municipais"
+            exportFilename="aditivos_municipais"
+            dataKey="id"
+            [value]="aditivosMunicipais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpand"
+            [dicionarioDados]="dicionarioDados">
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Aditivos Estaduais" [closable]="true">
+
+          <pandora-table
+            caption="Aditivos Estaduais"
+            exportFilename="aditivos_estaduais"
+            dataKey="id"
+            [value]="aditivosEstaduais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpand"
+            [dicionarioDados]="dicionarioDados">
+          </pandora-table>
+
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+
+</div>

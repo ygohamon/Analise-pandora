@@ -1,0 +1,409 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+
+    <div class="ui-g-12">
+      <div class="p-card mb-0">
+        <span class="p-card-titulo">Dados da Administração Pública</span>
+        <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaFinalizada">
+          <span (click)="resetaBusca()">
+            Retornar
+            <i class="fa fa-reply"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="p-card p-0 b-0 mb-0">
+        <p-panel header="Informações" [toggleable]="true">
+          <ul class="mt-0">
+            <li class="pt-2">A não exibição de algum registro não significa que o mesmo não exista.</li>
+          </ul>
+        </p-panel>
+      </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="!buscaFinalizada">
+      <div class="p-card">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <h3>Selecione os parâmetros para análise:</h3>
+          </div>
+
+          <div class="ui-g-6 ui-sm-12">
+            <div class="ui-g-12">
+              <div class="ui-g-3 ui-sm-3">
+                <span style="font-weight: bold">Tipo:</span>
+              </div>
+              <div class="ui-g-9 ui-sm-9">
+                <p-dropdown [style]="{'width':'100%'}" [options]="tiposAnalise" [(ngModel)]="tipoAnaliseSelecionada">
+                </p-dropdown>
+              </div>
+            </div>
+
+            <div class="ui-g-12">
+              <div class="ui-g-3 ui-sm-3">
+                <span style="font-weight: bold">Período:</span>
+              </div>
+
+              <div class="ui-g-9 ui-sm-9">
+                <p-calendar [(ngModel)]="dataAnalise" [locale]="pt_br" [showIcon]="true" dateFormat="dd/mm/yy"
+                  inputId="dateFormat" [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true" yearRange="1900:2050">
+                </p-calendar>
+              </div>
+            </div>
+
+            <div class="ui-g-12 ui-sm-12">
+              <button pButton (click)="buscar()" type="button" icon="pi pi-search" label="Analisar"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0 mb-0">
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_conta_bancaria'">
+
+        <pandora-table caption="Resultados - Contas Bancarias" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="contaBancariaExpand"
+          [dicionarioDados]="contasBancarias">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_empenho'">
+
+        <pandora-table caption="Resultados - Empenhos" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="empenhoExpand"
+          [dicionarioDados]="empenhos">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_empenho_anulado'">
+
+        <pandora-table caption="Resultados - Empenhos Anulados" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="empenhoAnuladoExpand"
+          [dicionarioDados]="empenhosAnulados">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_empenho_suplementacao'">
+
+        <pandora-table caption="Resultados - Empenhos Suplementação" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="empenhoSuplementoExpand"
+          [dicionarioDados]="empenhosSuplementos">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_licitacao'">
+
+        <pandora-table caption="Resultados - Licitação" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="licitacaoExpand"
+          [dicionarioDados]="licitacao">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento'">
+
+        <pandora-table caption="Resultados - Pagamentos" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoExpand"
+          [dicionarioDados]="pagamentos">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_anulado'">
+
+        <pandora-table caption="Resultados - Pagamentos Anulado" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoAnuladoExpand"
+          [dicionarioDados]="pagamentosAnulados">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_extra_orcamentario'">
+
+        <pandora-table caption="Resultados - Pagamentos Extra Orçamentarios" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoExtraOrcamentarioExpand"
+          [dicionarioDados]="pagamentosExtras">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_orcamentario'">
+
+        <pandora-table caption="Resultados - Pagamentos Orçamentarios" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoOrcamentarioExpand"
+          [dicionarioDados]="pagamentosOrcamentarios">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_orcamentario_anulado'">
+
+        <pandora-table caption="Resultados - Pagamentos Orçamentario Anulado" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoOrcamentarioAnuladoExpand"
+          [dicionarioDados]="pagamentosOrcamentariosAnulados">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_restituicao_receita'">
+
+        <pandora-table caption="Resultados - Pagamentos de Restituição de Receita" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoRestituidoExpand"
+          [dicionarioDados]="pagamentosRestituidos">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_restos_a_pagar'">
+
+        <pandora-table caption="Resultados - Pagamentos de Restos a Pagar" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoRestoPagarExpand"
+          [dicionarioDados]="pagamentosRestos">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+      <div *ngIf="tipoAnaliseSelecionada == 'tce_pagamento_retencao'">
+
+        <pandora-table caption="Resultados - Pagamentos Retidos" exportFilename="tce" dataKey="id" [value]="tceEncontrados"
+          [mostraEspacamentoExpand]="true" [mostraFiltroColunas]="true" [dicionarioDadosExpand]="pagamentoRetencaoExpand"
+          [dicionarioDados]="pagamentosRetencoes">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+      </div>
+
+    </div>
+  </div>
+
+</div>

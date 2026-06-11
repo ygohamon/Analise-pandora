@@ -1,0 +1,85 @@
+version: '3'
+
+volumes:
+  app-volume:
+
+services:
+
+  nginx:
+    container_name: nginx
+    restart: always
+    build:
+      context: ./pandora-nginx/
+      dockerfile: ./Dockerfile
+    depends_on:
+      - app
+    volumes:
+      - app-volume:/app
+    env_file:
+      - ./pandora-nginx/.envs/nginx.env
+    ports:
+      - "80:80"
+      - "443:443"
+
+  app:
+    container_name: app
+    build:
+      context: ./pandora-app/
+      dockerfile: ./compose/production/Dockerfile
+    image: app
+    depends_on:
+      - server
+    # user: "1000:1000"
+    volumes:
+      # - ./pandora-app/:/app
+      - app-volume:/home/app
+    env_file:
+      - ./pandora-app/.envs/.production/app.env
+
+  server:
+    container_name: server
+    restart: always
+    build:
+      context: ./pandora-server/
+      dockerfile: ./compose/production/Dockerfile
+    image: server
+    depends_on:
+      - apicache
+      - corecache
+      - crawlers
+    # user: "1000:1000"
+    volumes:
+      - ./pandora-server/:/server
+    env_file:
+      - ./pandora-server/.envs/.production/server.env
+    ports:
+      - "3000:3000"
+    command: /start
+
+  apicache:
+    container_name: apicache
+    restart: always
+    build:
+      context: ./pandora-redis/
+      dockerfile: ./Dockerfile
+    ports:
+      - "16379:6379"
+
+  corecache:
+    container_name: corecache
+    restart: always
+    build:
+      context: ./pandora-redis/
+      dockerfile: ./Dockerfile
+    ports:
+      - "16380:6379"
+
+  crawlers:
+    container_name: crawlers
+    restart: always
+    build:
+      context: ./pandora-crawlers/
+      dockerfile: ./compose/production/Dockerfile
+    ports:
+      - "3123:3123"
+

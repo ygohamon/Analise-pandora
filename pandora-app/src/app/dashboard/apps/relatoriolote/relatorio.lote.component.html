@@ -1,0 +1,33 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+      <div class="p-card">
+          <span class="p-card-titulo">Relatórios em Lote</span>
+      </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pb-1">O relatório integrado realiza busca em todas as bases de dados disponíveis e será gerado a partir de um <strong>CPF</strong> ou <strong>CNPJ</strong>.</li>
+          <li class="pb-1">Dependendo da quantidade de informações, a busca pode demorar. Se acontecer algum erro, favor tentar novamente.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <div class="p-card-subtitulo mb-3">Lista de CPF's e/ou CNPJ's</div>
+
+      <textarea class="w-100" [(ngModel)]="campoTexto" rows="10" pInputTextarea></textarea>
+
+      <div class="w-100 text-center my-2">
+        <button pButton (click)="onClick()" type="button" icon="pi pi-search" label="Buscar"></button>
+      </div>
+    </div>
+  </div>
+
+</div>
+

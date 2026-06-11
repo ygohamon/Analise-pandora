@@ -1,0 +1,56 @@
+<ngx-loading-bar [color]="'firebrick'" [height]="'4px'"></ngx-loading-bar>
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<div class="p-grid p-justify-center mt-4">
+  <div class="p-col-12 p-sm-12 p-md-6 p-lg-4">
+    
+    <!-- card -->
+    <div class="card-default-border">
+        <div class="p-grid p-justify-center centraliza-conteudo p-3">
+          
+          <!-- Img Cabeçalho -->
+          <div class="p-col-12">
+            <img src="../../../assets/layout/images/logo_principal.png" class="img-resize" alt="logo" >
+          </div>
+    
+          <div class="p-col-12" *ngIf='mostraAviso'>
+            <h3>Aviso</h3>
+            <h4>O SIAP se encontrará offline de 18h00 às 21h00 do dia 27/02/18 por motivos de manutenção excepcional.</h4>
+          </div>
+    
+          <div class="p-col-12 border-top padding-login pt-4">
+            <div class="ui-inputgroup">
+                <span class="ui-inputgroup-addon">
+                  <i class="pi pi-user" style="line-height: 1.25;"></i>
+                </span>
+                <input type="text" style="width: 100%;" pInputText [(ngModel)]="formLogin" placeholder="   Login">         
+            </div>
+          </div>
+    
+          <div class="p-col-12 padding-login">
+            <div class="ui-inputgroup">
+                <span class="ui-inputgroup-addon">
+                  <i class="pi pi-lock" style="line-height: 1.25;"></i>
+                </span>
+                <input type="password" style="width: 100%;" pInputText [(ngModel)]="formSenha" placeholder="   Senha">
+            </div>
+          </div>
+
+          <re-captcha #invisible size="invisible" (resolved)="$event && respostaRecaptcha($event)" siteKey="{{googleRecaptchaKey}}"></re-captcha>
+    
+          <div class="p-col-12 padding-login">
+            <div class="p-grid">
+              <div class="p-col-6 p-sm-12 p-md-6 mt-2">
+                <button style="width: 100%;" pButton label="Entrar" (click)="invisible.execute()"></button>
+              </div>
+        
+              <!-- <div class="p-col-6 p-sm-12 p-md-6 mt-2 center">
+                <a href="#" class="btn btn-link px-0" [routerLink]="['/cadastro']">Solicitar acesso</a>
+              </div> -->
+            </div>
+          </div>
+      </div>      
+    </div>
+    <!-- /card -->
+  </div>
+</div>

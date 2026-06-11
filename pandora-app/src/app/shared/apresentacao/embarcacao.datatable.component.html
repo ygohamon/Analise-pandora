@@ -1,0 +1,61 @@
+<div class="ui-g">
+
+  <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+    A tabela abaixo apresenta os dados detalhados das embarcacões do proprietário, discrimina as informações relevantes em diferentes bases de dados.
+  </div>
+
+  <div class="ui-g-12">
+        <pandora-table
+          #dt_embarcacoes
+          caption="Embarcações - Detalhado"
+          exportFilename="embarcacoes"
+          dataKey="id"
+          [value]="dadosCompleto"
+          [dicionarioDados]="dicionarioDadosCompleto"
+          [dicionarioDadosExpand]="dicionarioDadosExpandCompleto">
+
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th style="width: 3em"></th>
+              <th *ngFor="let col of columns" [pandoraSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+              </th>
+            </tr>
+            <tr>
+              <th style="width: 3em"></th>
+              <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <p-multiSelect *ngSwitchCase="'embarcacao'"      [options]="completoEmbarcacao"     styleClass="ui-column-filter" defaultLabel="Embarcação"      (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'anoConstrucao'"   [options]="completoAnoConstrucao"  styleClass="ui-column-filter" defaultLabel="Ano Construção"  (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'descricao'"       [options]="completoDescricao"      styleClass="ui-column-filter" defaultLabel="Descrição"       (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'localAquisicao'"  [options]="completoLocalAquisicao" styleClass="ui-column-filter" defaultLabel="Local Aquisição" (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'valor'"           [options]="completoValor"          styleClass="ui-column-filter" defaultLabel="Valor"           (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'dataAquisicao'"   [options]="completoDataAquisicao"  styleClass="ui-column-filter" defaultLabel="Data Aquisição"  (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'dataValidade'"    [options]="completoDataValidade"   styleClass="ui-column-filter" defaultLabel="Data Validade"   (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+                  <p-multiSelect *ngSwitchCase="'fonte'"           [options]="completoFonte"          styleClass="ui-column-filter" defaultLabel="Fonte"           (onChange)="dt_embarcacoes.filter($event.value, col.field, 'in')"></p-multiSelect>
+              </th>
+          </tr>
+          </ng-template>
+                      
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+                <span *ngSwitchCase="'dataInscricao'">{{utils.formataData(rowData.dataInscricao)}}</span>
+                <span *ngSwitchCase="'dataAquisicao'">{{utils.formataData(rowData.dataAquisicao)}}</span>
+                <span *ngSwitchCase="'dataValidade'">{{utils.formataData(rowData.dataValidade)}}</span>
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      
+    </div>
+
+</div>

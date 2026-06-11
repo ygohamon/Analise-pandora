@@ -1,0 +1,62 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <span class="p-card-titulo">SIMBA</span>
+
+      <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaSucesso">
+        <span (click)="resetaBusca()">
+          Retornar
+          <i class="fa fa-reply"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaSucesso">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações Gerais" [toggleable]="true">
+        <ul style="text-align:justify;">
+          <li class="pt-2">A integração com o SIMBA lista 10 rankings contendo algumas tipologias calculadas.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaSucesso">
+    <div class="p-card mb-0">
+      <div class="p-card-subtitulo mb-3">Digite um CPF ou CNPJ</div>
+
+        <div class="ui-g ui-fluid">
+
+          <div class="ui-g-6 ui-sm-12">
+            <input type="text" pInputText [(ngModel)]="input"/>
+          </div>
+
+          <div class="ui-g-6 ui-sm-12">
+            <button pButton type="submit" icon="pi pi-search" label="Buscar" (click)="busca()"></button>
+          </div>
+        </div>
+    </div>
+  </div>
+
+<!--
+  <div class="ui-g-12" *ngIf="buscaSucesso">
+    <div class="p-card">
+      <div class="p-card-subtitulo">Resultados</div>
+    </div>
+  </div> -->
+
+  <div class="ui-g-12" *ngIf="buscaSucesso">
+    <div class="p-card p-0 b-0">
+      <app-simba-rankings
+        [alvo]="input"
+        [dados]="dados">
+      </app-simba-rankings>
+    </div>
+  </div>
+
+  <!-- <div class="ui-g-12" *ngIf="buscaTipologiasFinalizadaFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div> -->
+</div>

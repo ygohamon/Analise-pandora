@@ -1,0 +1,159 @@
+<p-confirmDialog acceptLabel="Sim" rejectLabel="Não"></p-confirmDialog>
+
+<p-dialog
+  *ngIf="telaAtivacaoBool"
+  header="Ativação de Usuário"
+  [modal]="true"
+  [style]="utils.getDialogStyle()"
+  [(visible)]="telaAtivacaoBool">
+
+  <div class="ui-g">
+    <div class="ui-g-12">
+
+      <div class="ui-g-4 ui-sm-12 fw-bold">
+        <label for="login">Login: </label>
+      </div>
+      <div class="ui-g-8 ui-sm-12">
+          <input type="text" name="login" [(ngModel)]="usuarioParaAtivar.login" style="width:155px;" pInputText required>
+      </div>
+
+      <div class="ui-g-4 ui-sm-12 fw-bold">
+        <label for="perfil">Perfil: </label>
+      </div>
+      <div class="ui-g-8 ui-sm-12">
+          <p-dropdown [options]="opcoesPerfil" [(ngModel)]="opcaoPerfilEscolhida" placeholder="Selecione perfil" [style]="{'width':'155px'}" required></p-dropdown>
+      </div>
+
+      <div class="ui-g-4 ui-sm-12 fw-bold">
+        <label for="acesso">Acesso: </label>
+      </div>
+      <div class="ui-g-8 ui-sm-12">
+          <p-dropdown [options]="opcoesAcesso" [(ngModel)]="opcaoAcessoEscolhida" placeholder="Selecione acesso" [style]="{'width':'155px'}"required></p-dropdown>
+      </div>
+
+      <div class="ui-g-4 ui-sm-12" *ngIf="opcaoAcessoEscolhida === 'LOCAL'"><label for="senha">Senha: </label></div>
+      <div class="ui-g-8 ui-sm-12" *ngIf="opcaoAcessoEscolhida === 'LOCAL'">
+          <input type="text" name="senha" [(ngModel)]="usuarioParaAtivar.senha" style="width:155px;" pInputText required>
+      </div>
+    </div>
+  </div>
+
+  <p-footer>
+    <div class="">
+      <button type="button" pButton icon="pi pi-times" (click)="telaAtivacaoBool=false" label="Cancelar"></button>
+      <button type="button" pButton icon="pi pi-check" [disabled]="!opcaoPerfilEscolhida || !opcaoAcessoEscolhida" (click)="onAtivarComAcessos()" label="Ativar"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Ativação de Usuários</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0">
+      <pandora-table
+        dataKey="id"
+        caption="Usuários Inativos"
+        exportFilename="usuarios_inativos"
+        sortField="dataAtualizacao"
+        sortOrder="-1"
+        [mostraFiltroColunas]="true"
+        [mostraEspacamentoExpand]="true"
+        [value]="preUsuariosEncontrados"
+        [dicionarioDados]="dicionarioDados">
+
+        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+          <tr>
+            <td [attr.colspan]="columns.length + 1">
+              <div class="ui-g caixa">
+                <div class="ui-g-12 ui-sm-12">
+                  <div *ngIf="rowData.origem === 'recadastro'">
+                    <div class="ui-g-12" style="text-align: center;"><p><strong>Dados Usuário</strong></p></div>
+
+                    <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Login</div>
+                      <div class="ui-g-8">{{rowData.login | lowercase}}</div>
+                    </div>
+                    <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Acesso</div>
+                      <div class="ui-g-8">{{rowData.acesso | lowercase}}</div>
+                    </div>
+                    <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Perfil</div>
+                      <div class="ui-g-8">{{rowData.perfil | lowercase}}</div>
+                    </div>
+                  </div>
+
+                  <div class="ui-g-12" style="text-align: center;"><p><strong>Detalhes</strong></p></div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Nome</div>
+                      <div class="ui-g-8">{{rowData.nome | uppercase}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Lotação</div>
+                      <div class="ui-g-8">{{rowData.lotacao | uppercase}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Titularidade</div>
+                      <div class="ui-g-8">{{rowData.titularidade | uppercase}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Matrícula</div>
+                      <div class="ui-g-8">{{rowData.matricula}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">RG</div>
+                      <div class="ui-g-8">{{rowData.identidade}} {{rowData.orgEmissor | uppercase}}/{{rowData.ufOrgEmissor | uppercase}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">CPF</div>
+                      <div class="ui-g-8">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Email</div>
+                      <div class="ui-g-8">{{rowData.email}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Telefone</div>
+                      <div class="ui-g-8">{{rowData.telefone}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Data de Cadastro</div>
+                      <div class="ui-g-8">{{utils.formataData(rowData.dataCadastro)}}</div>
+                  </div>
+                </div>
+
+                <div class="ui-g-12 ui-sm-12 ui-fluid">
+                  <div class="ui-g-6 ui-sm-12">
+                    <button *ngIf="rowData.origem === 'recadastro'" pButton type="submit" icon="pi pi-plus" label="Ativar" (click)="onAtivarRecadastro(rowData)"></button>
+                    <button *ngIf="rowData.origem === 'cadastro'" pButton type="submit" icon="pi pi-plus" label="Ativar" (click)="onAtivarCadastro(rowData)"></button>
+                  </div>
+
+                  <div class="ui-g-6 ui-sm-12">
+                    <button *ngIf="rowData.origem === 'recadastro'" pButton type="submit" icon="pi pi-times" class="ui-button-danger" label="Recadastrar" (click)="onRecadastrar(rowData)"></button>
+                    <button *ngIf="rowData.origem === 'cadastro'" pButton type="submit" icon="pi pi-times" class="ui-button-danger" label="Remover" (click)="onDeletar(rowData)"></button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </div>
+</div>

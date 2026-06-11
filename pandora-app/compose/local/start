@@ -1,0 +1,43 @@
+#!/bin/sh
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+printf "\n\n"
+printf "####################################\n"
+printf "#     Instalando dependências      #\n"
+printf "####################################\n"
+printf "\n"
+yarn install
+
+printf "\n"
+printf "#############################\n"
+printf "#     Inicializando o APP   #\n"
+printf "#############################\n"
+printf "#   Variáveis de ambiente   #\n"
+printf "#############################\n"
+printf "\n\n"
+
+export $(grep -v '^#' .envs/.local/app.env | xargs)
+cat .envs/.local/app.env
+
+printf "\n\n"
+printf "####################################\n"
+printf "# Criando arquivos environment.ts  #\n"
+printf "####################################\n"
+printf "\n"
+
+npm run build:env
+
+printf "\n"
+
+cat ./src/environments/environment.ts
+
+printf "\n\n"
+printf "#########################################\n"
+printf "# Compilando e servindo a aplicação...  #\n"
+printf "#########################################\n"
+printf "\n\n"
+
+ng serve --host 0.0.0.0 --port 4200 --proxy-config proxy.conf.json

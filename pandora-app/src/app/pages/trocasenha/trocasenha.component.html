@@ -1,0 +1,53 @@
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<div class="login-body">
+    <div class="login-panel ui-fluid">
+        <div class="ui-g">
+
+            <form #trocaSenhaForm="ngForm" (ngSubmit)="onTrocaSenhaSubmit(trocaSenhaForm)">
+
+                <div class="ui-g-12 logo-container">
+                    <img src="../../../assets/layout/images/logo.png" class="logo">
+                    <h2>Pandora - Sistema Integrado de Apoio a Investigação</h2>
+                </div>
+
+                <div class="ui-g-12" style="text-align: center;"><h3>Alteração da senha de acesso</h3></div>
+
+                <div class="ui-g-12">
+                    <!--<label for="password">Senha</label>-->
+                    <div class="input-wrapper">
+                        <input type="password" name="senhaantiga" placeholder="Senha Antiga" class="ui-inputtext ui-widget" ngModel>
+                        <img src="../../../assets/layout/images/login/lock.png" class="lock-icon">
+                    </div>
+                </div>
+
+                <div class="ui-g-12">
+                    <!--<label for="password">Senha</label>-->
+                    <div class="input-wrapper">
+                        <input type="password" name="senhanova" placeholder="Senha Nova" class="ui-inputtext ui-widget" ngModel>
+                        <img src="../../../assets/layout/images/login/lock.png" class="lock-icon">
+                    </div>
+                </div>
+
+                <div class="ui-g-12">
+                    <!--<label for="password">Senha</label>-->
+                    <div class="input-wrapper">
+                        <input type="password" name="senhanova2" placeholder="Repita Senha Nova" class="ui-inputtext ui-widget" ngModel>
+                        <img src="../../../assets/layout/images/login/lock.png" class="lock-icon">
+                    </div>
+                </div>
+
+
+                <div class="ui-g-3"></div>
+                <div class="ui-g-6">
+                    <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only blue-btn raised-btn">
+                        <span class="ui-button-text ui-c">Enviar</span>
+                    </button>
+                </div>
+                <div class="ui-g-3"></div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

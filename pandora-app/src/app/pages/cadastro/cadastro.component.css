@@ -1,0 +1,88 @@
+.brasao img {
+  width: 70%;
+  margin-left: 15%;
+}
+
+label {
+ text-align: right;
+ font-weight: 700;
+}
+
+.nome {
+  vertical-align: middle;
+  margin: auto 0;
+}
+
+.subtitulo {
+  font-weight: 700;
+  font-size: 1.3em;
+}
+
+.tituloOrgao {
+  margin: 0;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+.tituloSetor {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 400;
+}
+
+.tituloNucleo {
+  margin: 0;
+  font-size: 0.8em;
+  font-weight: 400;
+}
+
+.login-body {
+  background: none;
+}
+
+.titulos {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.label-css {
+  text-align: left;
+  margin-top: 3px;
+}
+
+#logotitulo {
+  width: 100%;
+  height: auto;
+}
+
+.div-titulo {
+  text-align: center; 
+}
+
+.login-body .login-panel .fix-padding {
+  padding-top: 0px;
+  padding-bottom: 18px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+@media (max-width: 640px) {
+  .login-body .login-panel {
+    margin-top: 0px;
+  }
+
+  .login-body .login-panel .fix-padding {
+    padding-bottom: 5px;
+  }
+  .resize-captcha {
+    /* transform:scale(0.73);
+    -webkit-transform:scale(0.73); */
+    transform-origin:0 0;
+    -webkit-transform-origin:0 0;
+  }
+}
+
+.remove-padding-y {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}

@@ -1,0 +1,77 @@
+<div class="mapa-container" [ngClass]="{'config-closed': escondeConfig}">
+  <div id="mapa">
+    <p-gmap
+      #gmap
+      [options]="options"
+      [style]="dimensoesMapa"
+      (onMapDragEnd)="onZoomChanged(gmap.getMap())"
+      (onMapClick)="onMapClick($event)"
+      (onZoomChanged)="onZoomChanged(gmap.getMap())" >
+    </p-gmap>
+  </div>
+
+  <span class="pi pi-bars config-toggle" (click)="toggleBarraConfig()"></span>
+
+  <div id="config" class="config">
+
+    <div class="mb-3">
+      <span>Mapa</span>
+      <p>Ferramenta de busca.</p>
+    </div>
+
+    <div class="mb-2">
+      <span>Ações Globais</span>
+
+      <div class="my-1">
+        <button pButton title="Muda Gradiente" (click)="mudaGradiente()" type="button" icon="fa fa-snowflake-o" class="mr-1 p-1"></button>
+        <button pButton title="Muda Raio" (click)="mudaRaio()" type="button" icon="fa fa-expand" class="mr-1 p-1"></button>
+        <button pButton title="Completo" (click)="reseta()" icon="pi pi-refresh" type="button" class="mr-1 p-1"></button>
+        <button pButton title="Adicionar CPF" (click)="mostraAddCpf = true" icon="pi pi-plus" type="button" class="mr-1 p-1"></button>
+        <button pButton (click)="rodaVideoMapaCalor()" icon="fa fa-play-circle-o" type="button" class="mr-1 p-1"></button>
+      </div>
+    </div>
+
+    <div class="mb-2" *ngIf="mostraAddCpf">
+      <span>Adicionar Pessoa no Mapa</span>
+
+      <div class="my-1">
+        <input class="w-75" type="text" [(ngModel)]="cpfExtra" pInputText placeholder="CPF">
+        <button pButton class="m-0 w-25" title="Adicionar CPF" (click)="buscaDadosCpf()" icon="pi pi-search" type="button"></button>
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <span>Dias da Semana</span>
+
+      <p-selectButton
+        multiple="multiple"
+        [style]="{'font-size': '10px'}"
+        [options]="diasSemana"
+        [(ngModel)]="diasSelecionadosMultiSelect"
+        (onChange)="onDiasSelecionados($event)">
+      </p-selectButton>
+    </div>
+
+    <div class="mb-2">
+      <span>Períodos</span>
+      <p>Entre {{rangeHorarios[0]}}h e {{rangeHorarios[1]}}h</p>
+
+      <p-slider (onSlideEnd)="onPeriodoChange()" [(ngModel)]="rangeHorarios" [min]="0" [max]="23" class="botao-periodo" [range]="true"></p-slider>
+    </div>
+
+    <div class="mb-2">
+      <span>Quantidade de Registros</span>
+      <p>{{dadosViewPort.length}} registros</p>
+    </div>
+
+    <div class="mb-2">
+      <span>Distribuição no tempo</span>
+
+      <div class="distribuicao-temporal my-2">
+        <div #histogramatemporal></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

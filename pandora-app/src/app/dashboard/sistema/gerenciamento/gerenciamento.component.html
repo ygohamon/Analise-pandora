@@ -1,0 +1,287 @@
+<p-confirmDialog acceptLabel="Sim" rejectLabel="Não"></p-confirmDialog>
+<p-dialog
+    *ngIf="mostraTelaDetalhes"
+    header="Detalhes do usuário"
+    [(visible)]="mostraTelaDetalhes"
+    [modal]="true"
+    [maximizable]="true"
+    [style]="utils.getDialogStyle()">
+
+    <div class="ui-g">
+      <div class="ui-g-12">
+
+        <div class="ui-g-4"><label for="login">Login: </label></div>
+        <div class="ui-g-8">
+            <input type="text" name="login" [(ngModel)]="usuarioSelecionadoDetalhes.login" style="width:300px;" pInputText required>
+        </div>
+
+        <div class="ui-g-4"><label for="login">Acesso: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" [options]="opcoesAcesso" [(ngModel)]="usuarioSelecionadoDetalhes.acesso" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+        <div class="ui-g-4"><label for="login">Ativo: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" [options]="opcoesAtivo" [(ngModel)]="usuarioSelecionadoDetalhes.ativo" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+        <div class="ui-g-4"><label for="perfil">Perfil: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" [options]="opcoesPerfil" [(ngModel)]="usuarioSelecionadoDetalhes.perfil" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+        <div class="ui-g-4"><label for="recadastramento">Recadastramento: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" [options]="opcoesRecadastramento" [(ngModel)]="usuarioSelecionadoDetalhes.recadastramento" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+        <div class="ui-g-4"><label for="necessitaProcesso">Necessita Processo: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" [options]="opcoesProcesso" [(ngModel)]="usuarioSelecionadoDetalhes.necessitaProcesso" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+        <div class="ui-g-4"><label for="proximoLogon">Mudar senha próximo login: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" [options]="opcoesProximoLogon" [(ngModel)]="usuarioSelecionadoDetalhes.proximoLogon" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+      </div>
+    </div>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="pi pi-lock" (click)="abreControleAcesso()" label="Permissões de Acesso"></button>
+        <button *ngIf="showButtonRedefinirSenha()" type="button" pButton icon="pi pi-key" (click)="onRedefinirSenha()" label="Redefinir Senha"></button>
+      </div>
+
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="pi pi-times" (click)="mostraTelaDetalhes=false" label="Cancelar"></button>
+        <button type="button" pButton icon="pi pi-user-minus" (click)="onRemoverUsuario()" label="Remover"></button>
+        <button type="button" pButton icon="pi pi-check" (click)="onAtualizarUsuario()" label="Atualizar"></button>
+      </div>
+    </p-footer>
+</p-dialog>
+
+<p-dialog
+  header="Controle de Acesso"
+  [(visible)]="mostraControleAcesso"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="utils.getDialogStyle()">
+
+  <div class="ui-g" style="text-transform: capitalize" *ngIf='buscaPermissoesUsuarioSucesso'>
+
+      <div class="ui-g-12" *ngFor="let secao of secoesSistema">
+        <h3>{{secao}}</h3>
+        <div class="ui-g-4 ui-sm-6"
+            *ngFor="let permissao of permissoesSistema[secao]">
+            <p-checkbox name="group" value="{{permissao.item}}" label="{{permissao.item}}" [(ngModel)]="permissoesUsuario[secao]" inputId="{{permissao.item}}"></p-checkbox>
+        </div>
+      </div>
+  </div>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-times" (click)="fechaControleAcesso()" label="Cancelar"></button>
+      <button type="button" pButton icon="pi pi-check" (click)="onAtualizarPermissoesUsuario()" label="Atualizar"></button>
+    </div>
+  </p-footer>
+
+</p-dialog>
+
+<p-dialog
+    *ngIf="mostraLogsAcesso"
+    header="Logs de Acesso do Usuário"
+    [(visible)]="mostraLogsAcesso"
+    [modal]="true">
+
+    <div class="ui-g12">
+      <div class="p-card p-0 b-0">
+        <pandora-table
+          caption="Últimos 200 registros"
+          [value]="logsUsuario"
+          [columns]="colsLog"
+          [responsive]="true"
+          [autoLayout]="true"
+          [dicionarioDados]="dicionarioDadosLogsAcesso"
+          exportFilename="logs_usuario"
+          [rows]="20">
+
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns">
+                {{col.header}}
+              </th>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      </div>
+    </div>
+</p-dialog>
+
+
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Gerenciamento de Usuários</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0">
+      <pandora-table
+        #dt
+        caption="Usuários"
+        [value]="usuariosEncontrados"
+        [dicionarioDados]="dicionarioDados"
+        dataKey="login"
+        [rows]="20">
+
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th style="width: 3.25em"></th>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th style="width: 3.25em"></th>
+          </tr>
+
+          <tr>
+            <th style="width: 3.25em"></th>
+            <th *ngFor="let col of columns" [ngSwitch]="col.field">
+              <input *ngSwitchCase="'login'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+              <p-multiSelect *ngSwitchCase="'acesso'" [options]="opcoesAcesso" [style]="{'width':'100%'}" defaultLabel="Acessos" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
+              <p-multiSelect *ngSwitchCase="'perfil'" [options]="opcoesPerfil" [style]="{'width':'100%'}" defaultLabel="Perfis" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+              <p-multiSelect *ngSwitchCase="'ativo'"  [options]="opcoesAtivo" [style]="{'width':'100%'}" defaultLabel="Opções" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+              <p-multiSelect *ngSwitchCase="'recadastramento'" [options]="opcoesRecadastramento" [style]="{'width':'100%'}" defaultLabel="Opções" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+              <p-multiSelect *ngSwitchCase="'necessitaProcesso'" [options]="opcoesProcesso" [style]="{'width':'100%'}" defaultLabel="Opções" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+            </th>
+            <th style="width: 3.25em"></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td>
+              <span href="#" [pandoraRowToggler]="rowData">
+                <i class="pointer" [ngClass]="expanded ? 'fa fa-chevron-circle-down' : 'fa fa-chevron-circle-right'"></i>
+              </span>
+            </td>
+
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'ativo'">{{(rowData.ativo) ? 'Sim': 'Não'}}</span>
+              <span *ngSwitchCase="'necessitaProcesso'">{{(rowData.necessitaProcesso) ? 'Sim': 'Não'}}</span>
+              <span *ngSwitchCase="'recadastramento'">{{(rowData.recadastramento) ? 'Sim': 'Não'}}</span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+
+            <td>
+              <i class="pointer fa fa-edit" (click)="onRowSelect(rowData)"></i>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+            <tr>
+                <td [attr.colspan]="columns.length + 1">
+                    <div class="ui-g caixa">
+                        <div class="ui-g-12">
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Nome</div>
+                            <div class="ui-g-8">{{rowData.nome}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                          <div class="ui-g-4 atributo">CPF</div>
+                          <div class="ui-g-8">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Login</div>
+                            <div class="ui-g-8">{{rowData.login}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                            <div class="ui-g-4 atributo">Email</div>
+                            <div class="ui-g-8">{{rowData.email}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Ativo</div>
+                            <div class="ui-g-8">{{(rowData.ativo) ? 'Sim': 'Não'}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                            <div class="ui-g-4 atributo">Acesso</div>
+                            <div class="ui-g-8">{{rowData.acesso}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Perfil</div>
+                            <div class="ui-g-8">{{rowData.perfil}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                          <div class="ui-g-4 atributo">Titularidade</div>
+                          <div class="ui-g-8">{{rowData.titularidade}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                          <div class="ui-g-4 atributo">Lotação</div>
+                          <div class="ui-g-8">{{rowData.lotacao}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                            <div class="ui-g-4 atributo">Troca Senha no Próximo Login</div>
+                            <div class="ui-g-8">{{(rowData.proximoLogon) ? 'Sim': 'Não'}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Necessita inserir processo</div>
+                            <div class="ui-g-8">{{(rowData.necessitaProcesso) ? 'Sim': 'Não'}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                            <div class="ui-g-4 atributo">Recadastramento</div>
+                            <div class="ui-g-8">{{(rowData.recadastramento) ? 'Sim': 'Não'}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Ativador</div>
+                            <div class="ui-g-8">{{rowData.cadastrador}}</div>
+                        </div>
+
+                        <div class="ui-g-12 linha-escura">
+                            <div class="ui-g-4 atributo">Data Criação</div>
+                            <div class="ui-g-8">{{rowData.dataCriacao | date:"dd/MM/yyyy HH:mm:ss"}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 atributo">Data última atualização</div>
+                            <div class="ui-g-8">{{rowData.dataAtualizacao | date:"dd/MM/yyyy HH:mm:ss"}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="rowData.perfil !== 'admin'">
+                          <div class="ui-g-6 ">
+                            <button pButton type="button" icon="pi pi-list" label="Ver log de acesso" (click)="onShowLogs(rowData.login)"></button>
+                          </div>
+                        </div>
+
+                    </div>
+                </div>
+                </td>
+            </tr>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </div>
+
+</div>

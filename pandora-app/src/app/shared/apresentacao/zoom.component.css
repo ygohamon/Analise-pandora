@@ -1,0 +1,19 @@
+#cy {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 17em;
+  height: 600px;
+}
+
+.graph-container {
+  position: relative;
+}
+
+.label {
+  display: inline-block;
+}
+
+.label-espacamento {
+  margin-bottom: 8px;
+}

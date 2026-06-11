@@ -1,0 +1,312 @@
+<div class="ui-g">
+    <div class="ui-g-12" *ngIf="dadosPrisional.length > 0">
+        <p-dataView
+            #dt
+            [value]="dadosPrisional"
+            [paginator]="true"
+            [rows]="1"
+            [rowsPerPageOptions]="[1, 5, 10]"
+            emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+            <p-header>Dados prisionais - Fonte: Prisional</p-header>
+            <p-footer>{{dt.totalRecords}} registros encontrados</p-footer>
+
+            <ng-template let-preso let-i="index" pTemplate="listItem">
+                <div class="ui-g" style="padding:20px;border-bottom:1px solid #D5D5D5;">
+                    <div class="ui-g-12 ui-sm-12">
+
+                        <div class="ui-g-12" *ngIf="!!preso.cpf">
+                            <div class="ui-g-4 pandora-atributo">CPF</div>
+                            <div class="ui-g-8">{{utils.formataDado(preso.cpf, '###.###.###-##')}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.nome">
+                            <div class="ui-g-4 pandora-atributo">Nome</div>
+                            <div class="ui-g-8">{{preso.nome}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.vulgo">
+                            <div class="ui-g-4 pandora-atributo">Vulgo</div>
+                            <div class="ui-g-8">{{preso.vulgo}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.dataEntrada">
+                            <div class="ui-g-4 pandora-atributo">Data de Entrada</div>
+                            <div class="ui-g-8">{{utils.formataData(preso.dataEntrada)}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.prontuario">
+                            <div class="ui-g-4 pandora-atributo">Prontuário</div>
+                            <div class="ui-g-8">{{preso.prontuario}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.status">
+                            <div class="ui-g-4 pandora-atributo">Status</div>
+                            <div class="ui-g-8">{{preso.status}}</div>
+                        </div>
+
+                    </div>
+                    <!-- <div class="ui-g-12 ui-sm-12 ui-fluid">
+                        <div class="ui-g-12" style="text-align: center;"><p><strong>Ações</strong></p></div>
+                        <div class="ui-g-12">
+                            <button pButton type="button" icon="fa fa-pencil-square-o" label="Editar" (click)="onEditarPreso(preso)"></button>
+                        </div>
+
+                        <div class="ui-g-4"></div>
+                        <div class="ui-g-4 ui-sm-12">
+                            <button pButton type="button" icon="pi pi-times" class="ui-button-danger" label="Remover Registro" (click)="onRemoverPrisional(preso.index)"></button>
+                        </div>
+                    </div> -->
+                </div>
+            </ng-template>
+        </p-dataView>
+    </div>
+
+    <div class="ui-g-12" *ngIf="dadosPrisional.length > 0 && dadosSDS.length > 0" style="height: 30px;"></div>
+
+    <div class="ui-g-12" *ngIf="dadosSDS.length > 0">
+        <p-dataView
+            #dt_SDS
+            [value]="dadosSDS"
+            [paginator]="true"
+            [rows]="1"
+            [rowsPerPageOptions]="[1, 5, 10]"
+            emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+            <p-header>Dados prisionais - Fonte: SDS</p-header>
+            <p-footer>{{dt_SDS.totalRecords}} registros encontrados</p-footer>
+
+            <ng-template let-preso let-i="index" pTemplate="listItem">
+                <div class="ui-g" style="padding:20px;border-bottom:1px solid #D5D5D5;">
+
+                    <div class="ui-g-12 ui-sm-12">
+
+                        <div class="ui-g-12" *ngIf="!!preso.cpf">
+                            <div class="ui-g-4 pandora-atributo">CPF</div>
+                            <div class="ui-g-8">{{utils.formataDado(preso.cpf, '###.###.###-##')}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.nome">
+                            <div class="ui-g-4 pandora-atributo">Nome</div>
+                            <div class="ui-g-8">{{preso.nome}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.vulgo">
+                            <div class="ui-g-4 pandora-atributo">Vulgo</div>
+                            <div class="ui-g-8">{{preso.vulgo}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.comparsas">
+                            <div class="ui-g-4 pandora-atributo">Comparsas</div>
+                            <div class="ui-g-8">{{preso.comparsas}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.faccao">
+                            <div class="ui-g-4 pandora-atributo">Facção</div>
+                            <div class="ui-g-8">{{preso.faccao}}</div>
+                        </div>
+
+                        <div class="ui-g-12" style="padding-top: 20px; padding-bottom: 20px; font-size: 1.3em;"
+                            *ngIf="!!preso.cabelo || !!preso.olhos || !!preso.barba || !!preso.cicatriz || !!preso.tatuagem">
+                            <strong>Descrição Física</strong>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.cabelo">
+                            <div class="ui-g-4 pandora-atributo">Cabelo</div>
+                            <div class="ui-g-8">{{preso.cabelo}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.olhos">
+                            <div class="ui-g-4 pandora-atributo">Olhos</div>
+                            <div class="ui-g-8">{{preso.olhos}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.cutis">
+                            <div class="ui-g-4 pandora-atributo">Cutis</div>
+                            <div class="ui-g-8">{{preso.cutis}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.barba">
+                            <div class="ui-g-4 pandora-atributo">Barba</div>
+                            <div class="ui-g-8">{{preso.barba}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.cicatriz">
+                            <div class="ui-g-4 pandora-atributo">Cicatriz</div>
+                            <div class="ui-g-8">{{preso.cicatriz}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.tatuagem">
+                            <div class="ui-g-4 pandora-atributo">Tatuagem</div>
+                            <div class="ui-g-8">{{preso.tatuagem}}</div>
+                        </div>
+
+                        <div class="ui-g-12" style="padding-top: 20px; padding-bottom: 20px; font-size: 1.3em;"
+                            *ngIf="!!preso.principalAtividade || !!preso.infoAdicional || !!preso.infoAdicional2">
+                            <strong>Informações Adicionais</strong>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.principalAtividade">
+                            <div class="ui-g-4 pandora-atributo">Principal Atividade</div>
+                            <div class="ui-g-8">{{preso.principalAtividade}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.infoAdicional">
+                            <div class="ui-g-4 pandora-atributo">Informação Adicional</div>
+                            <div class="ui-g-8" style="text-align: justify;">{{preso.infoAdicional}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!preso.infoAdicional2">
+                            <div class="ui-g-4 pandora-atributo">Informação Adicional</div>
+                            <div class="ui-g-8" style="text-align: justify;">{{preso.infoAdicional2}}</div>
+                        </div>
+
+                    </div>
+                    <!-- <div class="ui-g-12 ui-sm-12 ui-fluid">
+                        <div class="ui-g-12" style="text-align: center;"><p><strong>Ações</strong></p></div>
+                        <div class="ui-g-12">
+                            <button pButton type="button" icon="fa fa-pencil-square-o" label="Editar" (click)="onEditarPreso(preso)"></button>
+                        </div>
+
+                        <div class="ui-g-4"></div>
+                        <div class="ui-g-4 ui-sm-12">
+                            <button pButton type="button" icon="pi pi-times" class="ui-button-danger" label="Remover Registro" (click)="onRemoverSDS(preso.index)"></button>
+                        </div>
+                    </div> -->
+                </div>
+            </ng-template>
+        </p-dataView>
+    </div>
+
+    <div class="ui-g-12" *ngIf="dadosSISDEPEN.length > 0 && dadosSDS.length > 0" style="height: 30px;"></div>
+
+    <div class="ui-g-12" *ngIf="dadosSISDEPEN.length > 0">
+        <p-dataView
+            #dt_SISDEPEN
+            [value]="dadosSISDEPEN"
+            [paginator]="true"
+            [rows]="1"
+            [rowsPerPageOptions]="[1, 5, 10]"
+            emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+            <p-header>Dados prisionais - Fonte: SISDEPEN</p-header>
+            <p-footer>{{dt_SISDEPEN.totalRecords}} registros encontrados</p-footer>
+
+            <ng-template let-preso let-i="index" pTemplate="listItem">
+                <div class="ui-g" style="padding:20px;border-bottom:1px solid #D5D5D5;">
+
+                    <div class="ui-g-12 ui-sm-12">
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">CNC</div>
+                            <div class="ui-g-8">{{utils.formataDado(preso.cnc, '############-##')}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">CPF</div>
+                            <div class="ui-g-8">{{utils.formataDado(preso.cpf, '###.###.###-##')}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Vulgo</div>
+                            <div class="ui-g-8">{{preso.vulgo}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Unidade Prisional</div>
+                            <div class="ui-g-8">{{preso.cadeia}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">UF</div>
+                            <div class="ui-g-8">{{preso.cadeiaUF}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Âmbito</div>
+                            <div class="ui-g-8">{{preso.cadeiaAmbito}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Situação</div>
+                            <div class="ui-g-8">{{preso.situacao}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Recolhimento</div>
+                            <div class="ui-g-8">{{preso.tipoRecolhimento}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Regime</div>
+                            <div class="ui-g-8">{{preso.regimePrisional}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Data Informação</div>
+                            <div class="ui-g-8">{{preso.dataInformacao}}</div>
+                        </div>
+
+                        <div class="ui-g-12" style="padding-top: 20px; padding-bottom: 20px; font-size: 1.3em;">
+                            <strong>Informações Cadastrais</strong>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Nome</div>
+                            <div class="ui-g-8">{{preso.nome}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Nome Apresentação</div>
+                            <div class="ui-g-8">{{preso.nomeApresentacao}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Nome Social</div>
+                            <div class="ui-g-8">{{preso.nomeApresentacao}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Sexo</div>
+                            <div class="ui-g-8">{{preso.sexo}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Nacionalidade</div>
+                            <div class="ui-g-8">{{preso.nacionalidade}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Naturalidade</div>
+                            <div class="ui-g-8">{{preso.naturalidade}} - {{preso.naturalidadeUF}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">Escolaridade</div>
+                            <div class="ui-g-8">{{preso.escolaridade}}</div>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <div class="ui-g-4 pandora-atributo">RG</div>
+                            <div class="ui-g-8">{{preso.rg}} {{preso.rgOrgaoEmissor}} {{preso.rgUf}}</div>
+                        </div>
+
+                    </div>
+                    <!-- <div class="ui-g-12 ui-sm-12 ui-fluid">
+                        <div class="ui-g-12" style="text-align: center;"><p><strong>Ações</strong></p></div>
+                        <div class="ui-g-12">
+                            <button pButton type="button" icon="fa fa-pencil-square-o" label="Editar" (click)="onEditarPreso(preso)"></button>
+                        </div>
+
+                        <div class="ui-g-4"></div>
+                        <div class="ui-g-4 ui-sm-12">
+                            <button pButton type="button" icon="pi pi-times" class="ui-button-danger" label="Remover Registro" (click)="onRemoverSDS(preso.index)"></button>
+                        </div>
+                    </div> -->
+                </div>
+            </ng-template>
+        </p-dataView>
+    </div>
+</div>
+
+

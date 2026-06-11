@@ -1,0 +1,12 @@
+version: '3'
+services:
+
+  crawlers-dev:
+    container_name: crawlers-dev-solo
+    build:
+      context: ./
+      dockerfile: ./compose/local/Dockerfile
+    volumes:
+      - ./:/home/pptruser/pandora-crawler
+    ports:
+      - "3123:3123"

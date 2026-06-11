@@ -1,0 +1,50 @@
+<div class="ui-g">
+  <ng-container *ngIf="dataRAIS.length > 0">
+
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+          As informações relativas de cargo da RAIS são baseadas na CBO - Classificação Brasileira de Ocupações. Para determinado código podem ser apresentadas
+          diversas ocupações, considere todas as possibilidades (Cargo e Sinônimos) para tomar decisões.
+      </div>
+
+      <div class="ui-g-12">
+        <pandora-table
+          caption="Empregadores - Fonte: RAIS"
+          exportFilename="tabela_RAIS"
+          dataKey="id"
+          [value]="dataRAIS"
+          [dicionarioDadosExpand]="dicionarioDadosExpandRAIS"
+          [dicionarioDados]="dicionarioDadosRAIS">
+
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th style="width: 3em"></th>
+              <th *ngFor="let col of columns" [pandoraSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+              <tr>
+                  <td>
+                    <a href="#" [pandoraRowToggler]="rowData">
+                      <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                    </a>
+                  </td>
+
+                  <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                    <span class="ui-column-title">{{col.header}}</span>
+
+                    <span *ngSwitchCase="'cnpj'">
+                      <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cnpj, '##.###.###/####-##')}}</a>
+                    </span>
+                    <span *ngSwitchCase="'salarioContratado'">R$ {{utils.converteEmDinheiro(rowData.salarioContratado)}}</span>
+                    <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                  </td>
+              </tr>
+          </ng-template>
+        </pandora-table>
+      </div>
+  </ng-container>
+</div>

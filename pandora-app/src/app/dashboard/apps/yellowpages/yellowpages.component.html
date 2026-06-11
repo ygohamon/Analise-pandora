@@ -1,0 +1,46 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+        <span class="p-card-titulo">YellowPages</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Parâmetros de busca" [toggleable]="true">
+        <ul class="text-justify">
+            <li class="pb-1">O YellowPages apresenta um registro contendo informações para auxiliar os órgãos de controle na requisição de dados às empresas provedoras de serviços.</li>
+            <li class="pb-1">Atualmente existem cerca de 100 serviços cadastrados, como Uber, Google, Facebook, Apple, etc.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" >
+    <div class="ui-g ui-fluid p-card">
+      <span class="p-card-subtitulo pb-3">Busque o serviço</span>
+
+      <div class="ui-g-12">
+        <p-autoComplete
+          [(ngModel)]="iServico" [suggestions]="servicosEncontrados" (completeMethod)="pesquisaServico($event)"
+          field="nome" placeholder="Nome do serviço ou Razão Social" [minLength]="1" forceSelection="true" required="true">
+        </p-autoComplete>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaSucesso">
+    <div class="p-card p-0 b-0">
+      <app-pandora-dataview
+        [values]="servicosEncontrados"
+        header="Serviços Encontrados"
+        [dict]="dicionarioDados">
+      </app-pandora-dataview>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

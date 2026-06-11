@@ -1,0 +1,14 @@
+.container{
+    position: relative;
+}
+
+.container>.player-buttons
+{
+    height: 128px;
+    width: 128px;
+    left: 90%;
+    top: 5%;
+    /* margin: -64px 0 0 -64px; */
+    position: absolute;
+    z-index: 1; 
+}

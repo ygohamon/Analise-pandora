@@ -1,0 +1,103 @@
+<div class="ui-g">
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEIS.length > 0">
+      <pandora-table
+        caption="CEIS"
+        exportFilename="condenacoes_ceis"
+        [value]="dataCEIS"
+        [dicionarioDados]="dicionarioDadosCEIS">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataAcordoLeniencia.length > 0">
+      <pandora-table
+        caption="Acordos de Leniência - Fonte: Transparência Federal"
+        exportFilename="acordo_leniencia"
+        [value]="dataAcordoLeniencia"
+        [dicionarioDados]="dicionarioDadosAcordoLeniencia">
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'id'">
+                <a href="http://www.portaltransparencia.gov.br/sancoes/acordos-leniencia/{{rowData.id}}" style="color: #3984b8;">{{rowData.id}}</a>
+              </span>
+              <span *ngSwitchCase="'dataConsulta'">{{utils.formataData(rowData.dataConsulta)}}</span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCNEP.length > 0">
+      <pandora-table
+        caption="CNEP - Fonte: Transparência Federal"
+        exportFilename="cnep"
+        [value]="dataCNEP"
+        [dicionarioDados]="dicionarioDadosCNEP">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEPIM.length > 0">
+      <pandora-table
+        caption="CEPIM - Fonte: Transparência Federal"
+        exportFilename="cepim"
+        [value]="dataCEPIM"
+        [dicionarioDados]="dicionarioDadosCEPIM">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEIST.length > 0">
+      <pandora-table
+        caption="CEIS - Fonte: Transparência Federal"
+        exportFilename="ceis_transparencia"
+        [value]="dataCEIST"
+        [dicionarioDados]="dicionarioDadosCEIST">
+      </pandora-table>
+    </div>
+
+    <app-pgfn-dividaativa-table
+      [dados]=data>
+    </app-pgfn-dividaativa-table>
+
+    <ng-container *ngIf="dataCondenacaoTCU.length > 0">
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+        Os dados abaixo foram coletados em tempo real diretamente do webservice do TCU
+      </div>
+
+      <div class="ui-g-12 pb-2">
+        <app-tcu-condenacao-table
+          [dados]=dataCondenacaoTCU>
+        </app-tcu-condenacao-table>
+      </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="dataAcordaoTCU.length > 0">
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+        Os dados abaixo foram coletados em tempo real diretamente do webservice do TCU
+      </div>
+
+      <div class="ui-g-12 pb-2">
+        <app-tcu-acordao-table
+          [dados]=dataAcordaoTCU>
+        </app-tcu-acordao-table>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="dataProcessoTCU.length > 0">
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+        Os dados abaixo foram coletados em tempo real diretamente do webservice do TCU
+      </div>
+
+      <div class="ui-g-12 pb-2">
+        <app-tcu-processo-table
+          [dados]=dataProcessoTCU>
+        </app-tcu-processo-table>
+      </div>
+    </ng-container>
+
+</div>

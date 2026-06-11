@@ -1,0 +1,56 @@
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <span class="p-card-titulo">Painel COVID</span>
+
+      <div class="to-right">
+        <a *ngIf="isMobile" (click)="resetaBusca()" class="link-retornar pointer" ><span>Retornar</span></a>
+        <a *ngIf="!isMobile && buscaSucesso" (click)="resetaBusca()" class="link-retornar pointer"><span>Refazer</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaSucesso">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações Gerais" [toggleable]="true">
+        <ul style="text-align:justify;">
+          <li class="pt-2">O Painel COVID apresenta uma série de informações a respeito do auxílio emergencial pago pelo governo federal.</li>
+          <li class="pt-2">Realiza cruzamentos, gera tipologias e faz a distribuição espacial do pagamento por cada Unidade Federativa.</li>
+          <li class="pt-2">Os dados apresentados em tabelas podem ser exportados para análise posterior.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaSucesso">
+    <div class="p-card mb-0">
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-g-12 mb-2">
+            <span style="font-size: 16px; font-weight: 600;">Selecione um Estado</span>
+        </div>
+
+        <div class="ui-g-6 ui-sm-12">
+          <p-dropdown [style]="{'width':'100%'}" [options]="ufs" [(ngModel)]="ufSelecionado"></p-dropdown>
+        </div>
+
+        <div class="ui-g-6 ui-sm-12">
+            <button pButton type="submit" icon="pi pi-search" label="Buscar" (click)="geraPainel()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaSucesso">
+    <div class="p-card mb-0 text-center">
+      <span class="p-card-titulo">{{nomeEstado}}</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="buscaSucesso">
+      <app-painelcovid-dashboard class="w-100"
+        [uf]="ufSelecionado"
+        [dados]="dados">
+      </app-painelcovid-dashboard>
+  </ng-container>
+</div>

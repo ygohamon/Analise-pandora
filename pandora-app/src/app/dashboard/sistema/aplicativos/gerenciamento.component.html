@@ -1,0 +1,125 @@
+<p-confirmDialog acceptLabel="Sim" rejectLabel="Não"></p-confirmDialog>
+<p-dialog
+    *ngIf="mostraTelaDetalhes"
+    header="Detalhes do aplicativo"
+    [(visible)]="mostraTelaDetalhes"
+    [modal]="true"
+    [maximizable]="true"
+    [style]="utils.getDialogStyle()">
+
+    <div class="ui-g">
+      <div class="ui-g-12">
+
+        <div class="ui-g-4"><label for="aplicativoExterno">Aplicativo Externo: </label></div>
+        <div class="ui-g-8">
+            <input type="text" name="aplicativoExterno" [(ngModel)]="aplicativoSelecionadoDetalhes.nome" style="width:300px;" pInputText required>
+        </div>
+
+        <div class="ui-g-4"><label for="dataIninio">Data de início: </label></div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="aplicativoSelecionadoDetalhes.dataInicio" [locale]="pt_br" [showIcon]="true" dateFormat="dd/mm/yy"
+            inputId="dateFormat" [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true" yearRange="2022:2122">
+          </p-calendar>
+        </div>
+
+        <div class="ui-g-4"><label for="dataExpiracao">Data de expiração: </label></div>
+        <div class="ui-g-8">
+            <p-calendar [(ngModel)]="aplicativoSelecionadoDetalhes.dataExpiracao" [locale]="pt_br" [showIcon]="true" dateFormat="dd/mm/yy"
+              inputId="dateFormat" [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true" yearRange="2022:2122">
+            </p-calendar>
+        </div>
+
+        <div class="ui-g-4"><label for="ativo">Ativo: </label></div>
+        <div class="ui-g-8">
+            <p-dropdown appendTo="body" name="ativo" [options]="opcoesAtivo" [(ngModel)]="aplicativoSelecionadoDetalhes.ativo" [style]="{'width':'300px'}" required></p-dropdown>
+        </div>
+
+      </div>
+    </div>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="pi pi-times" (click)="mostraTelaDetalhes=false" label="Cancelar"></button>
+        <!-- <button type="button" pButton icon="pi pi-minus" (click)="onRemoverAplicativo()" label="Remover"></button> -->
+        <button type="button" pButton icon="pi pi-check" (click)="onAtualizarAplicativo()" label="Salvar"></button>
+      </div>
+    </p-footer>
+</p-dialog>
+
+<div class="ui-g">
+  <div class="ui-g-12">
+    <button class="w-25" pButton icon="fa fa-edit" label="Adicionar Aplicativo" (click)="onAdicionarNovoApp()"></button>
+  </div>
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Gerenciamento de Aplicativos que Acessam a API do Pandora</span>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações sobre a autorização do aplicativo" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pb-1">O token gerado será exibido apenas uma vez no momento de sua geração.</li>
+          <li class="pb-1">Você deve copiar o token e o nome do aplicativo para repassá-los ao cliente.</li>
+          <li *ngIf="messageToken" class="pb-1"><b>{{this.messageToken}}</b></li>
+          <button *ngIf="messageToken" pButton icon="fa fa-edit" label="Copiar credenciais" (click)="copiar()"></button>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0">
+      <pandora-table
+        #dt
+        caption="Aplicativos"
+        [value]="aplicativosEncontrados"
+        [dicionarioDados]="dicionarioDados"
+        dataKey="login"
+        [rows]="20">
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th style="width: 3.25em"></th>
+          </tr>
+
+          <tr>
+            <th *ngFor="let col of columns" [ngSwitch]="col.field">
+              <input *ngSwitchCase="'nome'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+              <input *ngSwitchCase="'dataInicio'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+              <input *ngSwitchCase="'dataExpiracao'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+              <p-multiSelect *ngSwitchCase="'ativo'"  [options]="opcoesAtivo" [style]="{'width':'100%'}" defaultLabel="Opções" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+            </th>
+            <th style="width: 3.25em"></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              <span *ngSwitchCase="'nome'">{{rowData.nome}}</span>
+              <span *ngSwitchCase="'dataInicio'">{{rowData.dataInicio}}</span>
+              <span *ngSwitchCase="'dataExpiracao'">{{rowData.dataExpiracao}}</span>
+              <span *ngSwitchCase="'ativo'">{{(rowData.ativo) ? 'Sim': 'Não'}}</span>
+
+            </td>
+
+            <td>
+              <i class="pointer fa fa-edit" (click)="onRowSelect(rowData)"></i>
+            </td>
+          </tr>
+        </ng-template>
+      </pandora-table>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,82 @@
+<div class="ui-g">
+
+  <div class="p-card">
+    <div class="ui-g-1 ui-sm-12"></div>
+    <div class="ui-g-10 ui-sm-12">
+
+      <div class="ui-g">
+        <!-- <div class="ui-g-4 home">
+          <img style="max-width: 180px; width: 100%;" src="../../../assets/layout/images/logo_principal.png" alt="GAECO"/>
+        </div> -->
+
+        <div class="ui-g-12 text-center">
+          <h1 class="muda-mobile my-3">Sistema Integrado de Apoio a Investigação</h1>
+          <h2 class="muda-mobile">GAECO/LABLD - MPPB</h2>
+        </div>
+      </div>
+
+      <div class="ui-g-12"></div>
+
+      <div class="ui-g-12">
+
+        <div class="ui-g-12" *ngIf="necessitaProcesso">
+          <div class="ui-g-2 ui-sm-12"></div>
+          <div class="ui-g-8 ui-sm-12">
+            <div class="ui-g-12">
+              <p>Para ter acesso as pesquisas é necessário inserir um número de Processo</p>
+            </div>
+
+            <div class="ui-g-12 ui-fluid">
+              <div class="ui-g-2 ui-sm-12 text-center" style="font-size: 14px; font-weight: 600;">
+                <label for="processo">Número do Processo</label>
+              </div>
+              <div class="ui-g-8 ui-sm-12">
+                <input type="text" placeholder="Digite Processo" pInputText #processo>
+              </div>
+              <div class="ui-g-2 ui-sm-12">
+                <button type="button" label="Inserir Número" pButton (click)="onSetaProcesso(processo.value)"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="ui-g-2 ui-sm-12"></div>
+          <div class="ui-g-8 ui-sm-12">
+            <p-panel class="ui-widget ui-panel text-justify">
+              <p-header>Aviso</p-header>
+              Este sistema é voltado para o uso dos membros e parceiros do <strong>MPPB</strong>.
+              <br>
+              <br> Informamos que os referidos dados são oriundos de
+              <strong>fontes secundárias</strong> de pesquisa, e para que haja uma melhor tomada de decisão, sugerimos a confirmação
+              dos dados mediante solicitação aos órgãos que detêm os dados primários (Detrans, Receitas, Tribunais de Contas,
+              Delegacias de Trabalho e Emprego e etc...)
+            </p-panel>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui-g-12"></div>
+
+      <div class="ui-g-12 text-center">
+        <div class="ui-g-2 ui-sm-12"></div>
+        <div class="ui-g-8 ui-sm-12">
+          <div class="ui-g-3">
+            <img class="img-fundo" src="../../../assets/layout/images/logo_tjpb.png" alt="TJPB" />
+          </div>
+          <div class="ui-g-3">
+            <img class="img-fundo" src="../../../assets/layout/images/logo_mppb_2.png" alt="MPPB" />
+          </div>
+          <div class="ui-g-3">
+            <img class="img-fundo" src="../../../assets/layout/images/logo_governo_pb.png" alt="GOVERNOPB" />
+          </div>
+          <div class="ui-g-3">
+            <img class="img-fundo" src="../../../assets/layout/images/logo_tce.png" alt="TCEPB" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g-1 ui-sm-12"></div>
+  </div>
+</div>

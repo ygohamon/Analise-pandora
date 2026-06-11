@@ -1,0 +1,240 @@
+<ngx-loading-bar [color]="'firebrick'" [height]="'4px'"></ngx-loading-bar>
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<div class="login-body">
+  <div class="login-panel ui-fluid">
+    <div class="ui-g">
+      <form #cadastroForm="ngForm" style="width: 100%;">
+
+        <div class="ui-g-12 logo-container" style="padding-top: 25px;">
+          <div class="ui-g-6 ui-sm-12 div-titulo">
+            <img id="logotitulo" src="../../../assets/layout/images/logo_topbar.png" class="logo">
+          </div>
+          <div class="ui-g-6 titulos ui-sm-12">
+            <p class="tituloOrgao">MINISTÉRIO PÚBLICO DA PARAÍBA</p>
+            <p class="tituloSetor">PROCURADORIA-GERAL DE JUSTIÇA</p>
+            <p class="tituloNucleo">NÚCLEO DE GESTÃO DO CONHECIMENTO E SEGURANÇA INSTITUCIONAL</p>
+          </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="nome" class="label-css">Nome: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="text" name="nome" placeholder="Nome" maxlength="255" pInputText ngModel required>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="cpf" class="label-css">CPF: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <!-- <input type="text" name="cpf" placeholder="CPF" maxlength="11" minlength="11" pInputText ngModel required> -->
+                <p-inputMask name="cpf" [(ngModel)]="cpfMask" mask="999.999.999-99" placeholder="123.456.789-10" required></p-inputMask>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="identidade" class="label-css">RG: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="text" name="identidade" placeholder="99999" maxlength="16" pInputText ngModel required>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="orgEmissor" class="label-css">Órgão Emissor: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="text" name="orgEmissor" placeholder="(SSP, SDS ...)" maxlength="16" pInputText ngModel required>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="ufOrgEmissor" class="label-css">UF Órgão Emissor: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <p-inputMask name="ufOrgEmissor" mask="aa"  placeholder="(PB, PE, RN, ...)" [(ngModel)]="ufOrgEmissorMask" required></p-inputMask>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="titularidade" class="label-css">Titularidade: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="text" name="titularidade" placeholder="Titularidade" maxlength="255" pInputText ngModel required>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="lotacao" class="label-css">Promotoria/ Lotação: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="text" name="lotacao" placeholder="Lotação" maxlength="255" pInputText ngModel required>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="matricula" class="label-css">Matrícula: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="text" name="matricula" placeholder="Matrícula" maxlength="16" pInputText ngModel required>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="telefone2" class="label-css">Telefone: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <p-inputMask name="telefone2" [(ngModel)]="telefoneMask" mask="(99) 9999-9999?9"  placeholder="(99) 9999-9999" required></p-inputMask>
+            </div>
+        </div>
+
+        <div class="ui-g-12 fix-padding">
+            <div class="ui-g-2 ui-sm-12 remove-padding-y">
+              <label for="email" class="label-css">E-mail Institucional: </label>
+            </div>
+            <div class="ui-g-10 ui-sm-12 remove-padding-y">
+                <input type="email" name="email" placeholder="exemplo@exemplo.com" maxlength="100" pInputText ngModel required>
+            </div>
+        </div>
+
+        <re-captcha #invisible size="invisible" (resolved)="$event && respostaRecaptcha($event, cadastroForm)"></re-captcha>
+
+        <div class="ui-g-12">
+          <button type="submit" (click)="invisible.execute()" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only blue-btn raised-btn" style="margin-bottom: 0px; background-color: #347AAC">
+            <span class="ui-button-text ui-c">Enviar</span>
+          </button>
+          <!-- <div class="ui-g-6 ui-sm-12 resize-captcha" [style.transform]="scaleRecaptcha()">
+            <re-captcha (resolved)="showResponse($event)" siteKey="6LcpOigUAAAAAA0HOnEZ3kOhrh2KdrudJT7G9aXi"></re-captcha>
+          </div> -->
+          <!-- <div class="ui-g-6 ui-sm-12">
+            <button pButton type="submit" icon="fa fa-paper-plane" label="Enviar" [disabled]="(!cadastroForm.valid || !captchaResponse) || formEnviado"></button>
+          </div> -->
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Recadastramento de Usuários"
+  [(visible)]="mostraModalRecadastramento"
+  [modal]="true"
+  [responsive]="true"
+  [style]="{width: '350px', minWidth: '200px'}"
+  [minY]="70"
+  [maximizable]="true"
+  [baseZIndex]="10000">
+
+  <h3>Atenção, {{loginUsuario}}!</h3>
+
+  <p>
+      É necessário um recadastramento para acesso ao sistema <strong>Pandora</strong>.
+  </p>
+
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="mostraModalRecadastramento=false" label="Aceitar"></button>
+  </p-footer>
+</p-dialog>
+
+
+<p-dialog
+  *ngIf="mostraPreview"
+  header="Dados cadastrais"
+  [(visible)]="mostraPreview"
+  [responsive]="true"
+  showEffect="fade"
+  [style]="{width: '350px', minWidth: '200px'}"
+  [modal]="true">
+
+  <div class="ui-g">
+
+    <div class="ui-g-12">
+        <p-panel header="Informações" *ngIf="!recadastramento">
+            <p>Após validação desse formulário de cadastramento você receberá por e-mail as informações de acesso.</p>
+            <p>O formulário em PDF dever ser assinado e entregue ao Núcleo de Gestão do Conhecimento e Segurança Institucional (NGSCI).</p>
+            <p>DECLARO, SOB AS PENAS DA LEI, VERDADEIRAS AS INFORMAÇÕES NESTE ATO PRESTADAS, FAZENDO PARTE INTEGRANTE DOS REGISTROS E ARQUIVOS DO NÚCLEO DE GESTÃO DO CONHECIMENTO DO MPPB, COMPREENDENDO O QUE ESTABELECEM OS ART. 153, 313-A, 313-B, 299, 325 E 327 DO CÓDIGO PENAL BRASILEIRO.</p>
+        </p-panel>
+
+        <p-panel header="Informações" *ngIf="recadastramento">
+            <p>Após o preenchimento desse formulário de recadastramento seus dados serão validados e após verificação dos mesmos seu acesso será reativado.</p>
+        </p-panel>
+    </div>
+
+    <div class="ui-g-12">
+
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="nome">Nome: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.nome}}
+            </div>
+        </div>
+        <!-- <div class="ui-g-12">
+            <div class="ui-g-4"><label for="nacionalidade">Nacionalidade: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.nacionalidade}}
+            </div>
+        </div> -->
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="cpf">CPF: </label></div>
+            <div class="ui-g-8">
+                {{utils.formataDado(dadosCadastro.cpf, '###.###.###-##')}}
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="identidade">RG: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.identidade}} {{dadosCadastro.orgEmissor}}/{{dadosCadastro.ufOrgEmissor}}
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="titularidade">Titularidade: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.titularidade}}
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="lotacao">Promotoria/ Lotação: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.lotacao}}
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="matricula">Matrícula: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.matricula}}
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="telefone2">Telefone: </label></div>
+            <div class="ui-g-8">
+                {{(dadosCadastro.telefone.length === 10) ? utils.formataDado(dadosCadastro.telefone, '(##) ####-####') : utils.formataDado(dadosCadastro.telefone, '(##) # ####-####') }}
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4"><label for="email">E-mail Institucional: </label></div>
+            <div class="ui-g-8">
+                {{dadosCadastro.email}}
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-times" (click)="mostraPreview=false" label="Fechar"></button>
+      <button type="button" pButton icon="pi pi-check" (click)="enviarDados(cadastroForm)" label="Confirmar"></button>
+    </div>
+  </p-footer>
+</p-dialog>

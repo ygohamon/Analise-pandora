@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "outDir": "./out",
+    "removeComments": true,
+    "lib": ["es6", "dom", "es2019"],
+    "types": ["node", "mocha", "express-session"],
+    "sourceMap": true,
+    "rootDir": "src/"
+  },
+  "exclude": ["node_modules"]
+}

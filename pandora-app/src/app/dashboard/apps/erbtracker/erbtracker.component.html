@@ -1,0 +1,126 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+        <span class="p-card-titulo">ERB Tracker</span>
+
+        <div class="to-right text-primary export-button pointer link-retornar" *ngIf="mostraMapa">
+          <span (click)="resetaBusca()">
+            Retornar
+            <i class="fa fa-reply"></i>
+          </span>
+        </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!mostraMapa">
+    <div class="p-card p-0 b-0">
+      <p-panel
+        header="Informações"
+        [toggleable]="true">
+
+        <div class="ui-g">
+          <div class="ui-g-12">
+            <ul class="m-0">
+              <li class="pb-1">Insira um registro por linha.</li>
+              <li class="pb-1">Campos <strong>Latitude</strong> e <strong>Longitude</strong> são obrigatórios. Demais campos são opcionais.</li>
+              <li class="pb-1">Valores default, se campo vazio:
+                <ul class="pt-1">
+                  <li class="pb-1">Raio: 2000m</li>
+                  <li class="pb-1">Azimute: Gera um círculo</li>
+                  <li class="pb-1">Theta: 30°</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div class="ui-g-12">
+            <h3>Exemplo</h3>
+
+            <div class="ui-g-offset-1 ui-g-8 ui-sm-12">
+              <p>06S590222; 34W495664; 1000; 10; 30</p>
+              <p>06S591120; 34W494620; 2000; 180; 60</p>
+              <p>07S001400; 34W494100; 1000; 190; 30</p>
+              <p>07S002700; 34W494981; 2000; 200; 10</p>
+              <p>07S005900; 34W500430; 2000; 230; 90</p>
+              <p>07S011310; 34W495110; 3000; 160; 45</p>
+              <p>07S014710; 34W501104; 5000; 130; 15</p>
+              <p>07S020840; 34W502490; 1500; 45; 30</p>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!mostraMapa">
+    <div class="p-card p-0 b-0">
+      <p-panel
+          header="Parâmetros de rastreamento"
+          [toggleable]="true">
+
+        <div class="ui-g ui-fluid">
+
+          <div class="ui-g-6 ui-sm-12">
+            <div class="ui-g-12">
+                <h3>Escolha um separador</h3>
+                <p-dropdown
+                    [style]="{'width':'100%'}"
+                    [options]="separadores"
+                    [(ngModel)]="separadorSelecionado">
+                </p-dropdown>
+            </div>
+
+            <div class="ui-g-12">
+                <h3>Intervalo do timer</h3>
+                <p-dropdown
+                    [style]="{'width':'100%'}"
+                    [options]="intervalos"
+                    [(ngModel)]="intervaloSelecionado">
+                </p-dropdown>
+            </div>
+          </div>
+
+          <div class="ui-g-6 ui-sm-12">
+              <h3>Latitude | Longitude | Raio * | Azimute * | Theta *</h3>
+              <textarea
+                  #parametros
+                  [(ngModel)]="vazio"
+                  rows="8"
+                  cols="30"
+                  pInputTextarea>
+              </textarea>
+          </div>
+
+          <div class="ui-g-12 mt-2">
+              <div class="ui-g-4 ui-sm-12"></div>
+              <div class="ui-g-4 ui-sm-12">
+                  <button
+                      pButton
+                      (click)="onClick(parametros)"
+                      type="button"
+                      icon="pi pi-search"
+                      label="Rastrear">
+                  </button>
+              </div>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="mostraMapa">
+    <div class="p-card p-0">
+      <!-- <h1>Rastreamento</h1> -->
+
+      <p-gmap
+        *ngIf="mostraMapa"
+        (onOverlayClick)="handleOverlayClick($event)"
+        [options]="options"
+        [overlays]="overlays"
+        [style]="{'width':'100%','height':'480px'}" >
+      </p-gmap>
+    </div>
+  </div>
+
+</div>

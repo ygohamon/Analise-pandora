@@ -1,0 +1,77 @@
+<p-table
+    #dt_exportacao
+    [columns]="colunasTabela"
+    [value]="values"
+    exportFilename="exportFilename">
+</p-table>
+
+<p-dataView
+    #dt
+    [value]="values"
+    [paginator]="true"
+    [rows]="1"
+    [rowsPerPageOptions]="[1, 5, 10]"
+    emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+    <p-header *ngIf="!!header">
+      <div class="p-card-subtitulo my-2 text-left d-flex">
+        {{header}}
+<!--
+        <div class="to-right text-primary export-button pointer" (click)="dt_exportacao.exportCSV()">
+          <span>CSV</span>
+          <i class="pi pi-download"></i>
+        </div>
+
+        <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+          <span>PDF</span>
+          <i class="pi pi-download"></i>
+        </div>
+
+        <div class="export-button pointer text-primary ml-2" (click)="exportExcel()">
+          <span>Excel</span>
+          <i class="pi pi-download"></i>
+        </div> -->
+
+        <div class="export-button pointer text-primary ml-auto" (click)="dt_exportacao.exportCSV()">
+          <span>CSV</span>
+          <i class="pi pi-download"></i>
+        </div>
+
+        <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+          <span>PDF</span>
+          <i class="pi pi-download"></i>
+        </div>
+
+        <div class="export-button pointer text-primary ml-2" (click)="exportExcel()">
+          <span>Excel</span>
+          <i class="pi pi-download"></i>
+        </div>
+      </div>
+    </p-header>
+    <p-footer>{{utils.getFooterResultado(dt.totalRecords)}}</p-footer>
+
+    <ng-template let-data let-i="index" pTemplate="listItem">
+
+        <div class="ui-g w-100" style="padding:20px;border-bottom:1px solid #D5D5D5;">
+            <div class="ui-g-12 ui-sm-12">
+              <ng-container *ngFor="let d of dict | keyvalue: manterOrdem">
+                <div class="ui-g-12 pandora-linha-dataview" *ngIf="!!data[d.key]">
+                  <div class="ui-g-4 font-weight-bold">{{d.value.nome}}</div>
+                  <div class="ui-g-8" *ngIf="!d.value.fn && !d.value.fnRow && !d.value.url && !d.value.cpf && !d.value.cnpj">{{data[d.key]}}</div>
+                  <div class="ui-g-8" *ngIf="!!d.value.cnpj">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(data[d.key])}' style="color: #3984b8;">{{utils.formataDado(data[d.key], '##.###.###/####-##')}}</a>
+                  </div>
+                  <div class="ui-g-8" *ngIf="!!d.value.cpf">
+                    <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(data[d.key])}' class="primary-text">{{utils.formataDado(data[d.key], '###.###.###-##')}}</a>
+                  </div>
+                  <div class="ui-g-8" *ngIf="!!d.value.url">
+                    <a href="{{data[d.key]}}">{{data[d.key]}}</a>
+                  </div>
+                  <div class="ui-g-8" *ngIf="!!d.value.fn">{{d.value.fn(data[d.key])}}</div>
+                  <div class="ui-g-8" *ngIf="!!d.value.fnRow">{{d.value.fnRow(data)}}</div>
+                </div>
+              </ng-container>
+            </div>
+        </div>
+    </ng-template>
+</p-dataView >

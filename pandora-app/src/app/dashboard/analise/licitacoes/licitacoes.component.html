@@ -1,0 +1,83 @@
+<div class="ui-g">
+
+  <app-campos-busca
+    titulo="Licitação"
+    [nProcesso]="nProcesso"
+    [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+    [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+
+    <div class="ui-g-12">
+      <div class="p-card p-0 b-0">
+          <p-panel header="Informações" [toggleable]="true">
+            <ul class="text-justify">
+              <li class="pb-1">Lista informações sobre as licitações entre órgãos públicos <strong>municipais</strong> e <strong>estaduais</strong> com pessoas físicas ou pessoas jurídicas.</li>
+              <li class="pb-1">Campos apresentados:
+                <ul class="mt-1">
+                  <li class="pb-1">Unidade Gestora;</li>
+                  <li class="pb-1">Tipo, número, ano e valor da licitação;</li>
+                  <li class="pb-1">Valor da proposta e situação da proposta;</li>
+                </ul>
+              </li>
+            </ul>
+          </p-panel>
+      </div>
+    </div>
+
+  </app-campos-busca>
+
+
+
+  <div class="ui-g-12" *ngIf="buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-tabView
+        styleClass="p-0"
+        [controlClose]="true">
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Licitações Municipais" [closable]="true">
+
+          <pandora-table
+            caption="Licitações Municipais"
+            exportFilename="licitacoes_municipais"
+            dataKey="id"
+            sortField='dtHomologacao'
+            sortOrder='-1'
+            [value]="licitacoesMunicipais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpand"
+            [dicionarioDados]="dicionarioDados">
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Licitações Estaduais" [closable]="true">
+
+          <pandora-table
+            caption="Licitações Estaduais"
+            exportFilename="licitacoes_estaduais"
+            dataKey="id"
+            sortField='dtHomologacao'
+            sortOrder='-1'
+            [value]="licitacoesEstaduais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpand"
+            [dicionarioDados]="dicionarioDados">
+          </pandora-table>
+
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+
+</div>

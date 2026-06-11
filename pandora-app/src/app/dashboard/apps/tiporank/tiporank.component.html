@@ -1,0 +1,121 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+        <span class="p-card-titulo">TipoRank</span>
+
+        <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaTipologiasFinalizadaSucesso">
+          <span (click)="resetaBusca()">
+            Retornar
+            <i class="fa fa-reply"></i>
+          </span>
+        </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaTipologiasFinalizada">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Parâmetros de busca" [toggleable]="true">
+        <ul class="text-justify">
+            <li class="pb-1">O TipoRank gera um ranking por município das pessoas jurídicas que se enquadram numa série de tipologias previamente definidas no sistema.</li>
+            <li class="pb-1">Atualmente existem 54 tipologias para <strong>Pessoa Jurídica</strong>.</li>
+            <li class="pb-1">Os resultados apresentam o top 100 das pessoas com maior valor total de peso.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaTipologiasFinalizada">
+    <div class="p-card">
+        <div class="ui-g ui-fluid">
+          <div class="p-card-subtitulo mb-3 ui-g-12">Selecione uma UF</div>
+
+          <div class="ui-g-3">
+              <p-dropdown [style]="{'width':'100%'}" [options]="ufs" [(ngModel)]="ufSelecionado"></p-dropdown>
+          </div>
+
+          <div class="ui-g-6 ui-sm-9">
+              <p-autoComplete
+                [(ngModel)]="municipio" [suggestions]="municipiosEncontrados" (completeMethod)="pesquisaMunicipio($event)"
+                field="municipio" placeholder="Municípios" [minLength]="1" [dropdown]="true" forceSelection="true" required="true">
+              </p-autoComplete>
+          </div>
+
+          <div class="ui-g-3 ui-sm-12">
+              <button pButton (click)="onGerar()" type="button" icon="pi pi-search" label="Enviar">
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaTipologiasFinalizadaSucesso">
+    <div class="p-card p-0 b-0">
+      <pandora-table
+        #dta
+        [dicionarioDados]="dicionarioDados"
+        [value]="tipologias.tipologia_pj"
+        [caption]="municipio.municipio"
+        [autoLayout]="false"
+        exportFilename="tiporank_pj">
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th *ngFor="let col of columns" [ngSwitch]="col.field">
+              <input *ngSwitchCase="'razaoSocial'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dta.filter($event.target.value, col.field, 'contains')">
+              <input *ngSwitchCase="'cnpj'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dta.filter($event.target.value, col.field, 'contains')">
+              <input *ngSwitchCase="'nomeFantasia'" placeholder="Busca" pInputText type="text" style="width:100%" (input)="dta.filter($event.target.value, col.field, 'contains')">
+              <div *ngSwitchCase="'totalPeso'">
+                  Peso > {{filtroPeso}}
+                  <i class="pi pi-times" (click)="filtroPeso=null;dta.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="filtroPeso"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="filtroPeso" [min]="0" [max]="600" (onChange)="onPesoChange($event, dta)"></p-slider>
+              </div>
+              <div *ngSwitchCase="'totalOcorrencias'">
+                  Ocorrências > {{filtroOcorrencias}}
+                  <i class="pi pi-times" (click)="filtroOcorrencias=null;dta.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="filtroOcorrencias"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="filtroOcorrencias" [min]="0" [max]="10" (onChange)="onOcorrenciasChange($event, dta)"></p-slider>
+              </div>
+              <div *ngSwitchCase="'doacaoEleitoral'">
+                  Doação > {{getInformacaoDinheiro(filtroDoacoes)}}
+                  <i class="pi pi-times" (click)="filtroDoacoes=null;dta.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="filtroDoacoes"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="filtroDoacoes" [min]="0" [max]="1000000" (onChange)="onDoacoesChange($event, dta)"></p-slider>
+              </div>
+              <div *ngSwitchCase="'totalTCS'">
+                  TCS > {{getInformacaoDinheiro(filtroTCS)}}
+                  <i class="pi pi-times" (click)="filtroTCS=null;dta.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="filtroTCS"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="filtroTCS" [min]="0" [max]="1000000" (onChange)="onTCSChange($event, dta)"></p-slider>
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'totalTCS'">{{getInformacaoDinheiro(rowData.totalTCS)}}</span>
+              <span *ngSwitchCase="'doacaoEleitoral'">{{getInformacaoDinheiro(rowData.doacaoEleitoral)}}</span>
+              <span *ngSwitchCase="'cnpj'">
+                <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cnpj, '##.###.###/####-##')}}</a>
+              </span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+          </tr>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaTipologiasFinalizadaFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

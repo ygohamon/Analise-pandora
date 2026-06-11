@@ -1,0 +1,295 @@
+<p-confirmDialog acceptLabel="Sim" rejectLabel="Não"></p-confirmDialog>
+
+<p-dialog
+    *ngIf="telaDetalhesBool"
+    header="Detalhes da Requisição"
+    [modal]="true"
+    appendTo="body"
+    [(visible)]="telaDetalhesBool"
+    showEffect="fade"
+    [style]="utils.getDialogStyle()">
+
+    <div class="ui-g">
+        <div class="ui-g-12">
+                <div class="ui-g-12">
+                    <div class="ui-g-4 pandora-atributo"><label for="nome">Nome</label></div>
+                    <div class="ui-g-8">{{requisicaoSelecionada.nome}}</div>
+                </div>
+
+                <div class="ui-g-12 linha-escura">
+                    <div class="ui-g-4 pandora-atributo"><label for="promotoria">Promotoria</label></div>
+                    <div class="ui-g-8">{{requisicaoSelecionada.promotoria}}</div>
+                </div>
+
+                <div class="ui-g-12">
+                    <div class="ui-g-4 pandora-atributo"><label for="tipoReferencia">Referência</label></div>
+                    <div class="ui-g-8">{{getLabel(opcoesTipoReferencia, requisicaoSelecionada.tipoReferencia)}}</div>
+                </div>
+
+                <div class="ui-g-12 linha-escura">
+                    <div class="ui-g-4 pandora-atributo"><label for="doc">Número</label></div>
+                    <div class="ui-g-8">{{requisicaoSelecionada.doc}}</div>
+                </div>
+        </div>
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="button" pButton icon="pi pi-times" (click)="telaDetalhesBool=false" label="Cancelar"></button>
+            <button type="button" pButton icon="pi pi-check" (click)="onFinalizarRequisicao()" label="Finalizar"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Integra - Painel</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pb-1">Clique na seta para visualizar os detalhes da requisição.</li>
+          <li class="pb-1">Clique na linha da tabela para mostrar o painel e finalizar a requisição.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf='buscaFinalizada'>
+    <div class="p-card p-0 b-0">
+      <pandora-table
+        dataKey="idRequisicao"
+        caption="Requisições"
+        [value]="requisicoesEncontradas"
+        [dicionarioDados]="dicionarioDados"
+        sortField="dataRequisicao"
+        sortOrder="-1"
+        [mostraFiltroColunas]="true"
+        [mostraEspacamentoExpand]="true"
+        [rows]="20">
+
+        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+          <tr>
+            <td [attr.colspan]="columns.length + 1">
+              <div class="ui-g caixa">
+                <div class="ui-g-12 ui-sm-12">
+                  <div class="ui-g-12" style="text-align: center;"><p><strong>Detalhes</strong></p></div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 atributo">Nome</div>
+                    <div class="ui-g-8">{{rowData.nome | uppercase}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                    <div class="ui-g-4 atributo">E-mail</div>
+                    <div class="ui-g-8">{{rowData.email}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 atributo">Promotoria</div>
+                    <div class="ui-g-8">{{rowData.promotoria}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                    <div class="ui-g-4 atributo">Referência</div>
+                    <div class="ui-g-8">{{getLabel(opcoesTipoReferencia, rowData.tipoReferencia)}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 atributo">Número</div>
+                    <div class="ui-g-8">{{rowData.doc}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Área</div>
+                      <div class="ui-g-8">{{getLabel(opcoesArea, rowData.tipoArea)}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Grupo</div>
+                      <div class="ui-g-8">{{getLabel(opcoesGrupo, rowData.tipoGrupo)}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Resumo dos Fatos</div>
+                      <div class="ui-g-8">{{rowData.detalhesResumoDosFatos}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 atributo">Fatores Adversos</div>
+                      <div class="ui-g-8">{{rowData.detalhesFatoresAdversos}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Finalidade</div>
+                      <div class="ui-g-8">{{rowData.detalhesFinalidade}}</div>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 atributo" style="height: 100%;">Pessoas Físicas</div>
+                    <div class="ui-g-8" *ngIf="!rowData.pessoasFisicas.length">
+                        Não declarado.
+                    </div>
+                    <div class="ui-g-8" *ngIf="rowData.pessoasFisicas.length">
+                        <div class="ui-g-12" style="word-wrap: break-word;" [ngClass]="{'linha-escura': (i)%2 }" *ngFor="let pf of rowData.pessoasFisicas; let i = index">
+                            <div class="ui-g-12 atributo"><span>{{i+1}}.</span></div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>CPF</span></div>
+                                <div class="ui-g-8"><span>{{utils.formataDado(pf.cpf, '###.###.###-##')}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Identidade</span></div>
+                                <div class="ui-g-8"><span>{{pf.identidade}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Nome</span></div>
+                                <div class="ui-g-8"><span>{{pf.nome}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Nome Mãe</span></div>
+                                <div class="ui-g-8"><span>{{pf.nomeMae}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Nome Pai</span></div>
+                                <div class="ui-g-8"><span>{{pf.nomePai}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Necessidade</span></div>
+                                <div class="ui-g-8"><span>{{pf.necessidade}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 linha-escura atributo" style="height: 100%;">Pessoas Jurídicas</div>
+                    <div class="ui-g-8 linha-escura" *ngIf="!rowData.pessoasJuridicas.length">
+                        Não declarado.
+                    </div>
+                    <div class="ui-g-8" *ngIf="rowData.pessoasJuridicas.length">
+                        <div class="ui-g-12" style="word-wrap: break-word;" [ngClass]="{'linha-escura': (i+1)%2 }" *ngFor="let pj of rowData.pessoasJuridicas; let i = index">
+                            <div class="ui-g-12 atributo"><span>{{i+1}}.</span></div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>CNPJ</span></div>
+                                <div class="ui-g-8"><span>{{utils.formataDado(pj.cnpj, '##.###.###/####-##')}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Nome Fantasia</span></div>
+                                <div class="ui-g-8"><span>{{pj.nomeFantasia}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Razão Social</span></div>
+                                <div class="ui-g-8"><span>{{pj.razaoSocial}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Necessidade</span></div>
+                                <div class="ui-g-8"><span>{{pj.necessidade}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-g-12" >
+                    <div class="ui-g-4 atributo" style="height: 100%;">Veículos</div>
+                    <div class="ui-g-8" *ngIf="!rowData.veiculos.length">
+                        Não declarado.
+                    </div>
+                    <div class="ui-g-8" *ngIf="rowData.veiculos.length">
+                        <div class="ui-g-12" style="word-wrap: break-word;" [ngClass]="{'linha-escura': (i)%2 }" *ngFor="let veiculo of rowData.veiculos; let i = index">
+                            <div class="ui-g-12 atributo"><span>{{i+1}}.</span></div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>CPF Proprietário</span></div>
+                                <div class="ui-g-8"><span>{{utils.formataDado(veiculo.cpf, '###.###.###-##')}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Placa</span></div>
+                                <div class="ui-g-8"><span>{{veiculo.placa}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Necessidade</span></div>
+                                <div class="ui-g-8"><span>{{veiculo.necessidade}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 linha-escura atributo" style="height: 100%;">Imóveis</div>
+                    <div class="ui-g-8 linha-escura" *ngIf="!rowData.imoveis.length">
+                        Não declarado.
+                    </div>
+                    <div class="ui-g-8" *ngIf="rowData.imoveis.length">
+                        <div class="ui-g-12" style="word-wrap: break-word;" [ngClass]="{'linha-escura': (i+1)%2 }" *ngFor="let imovel of rowData.imoveis; let i = index">
+                            <div class="ui-g-12 atributo"><span>{{i+1}}.</span></div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Endereço</span></div>
+                                <div class="ui-g-8"><span>{{imovel.endereco}}</span></div>
+                            </div>
+
+                            <div class="ui-g-12">
+                                <div class="ui-g-4 atributo"><span>Necessidade</span></div>
+                                <div class="ui-g-8"><span>{{imovel.necessidade}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <div class="ui-g-4 atributo" style="height: 100%;">Anexos</div>
+                    <div class="ui-g-8" *ngIf="!rowData.anexos.length">
+                        Não declarado.
+                    </div>
+                    <div class="ui-g-8" *ngIf="rowData.anexos.length">
+                        <div class="ui-g-12" style="word-wrap: break-word;" [ngClass]="{'linha-escura': (i)%2 }"  *ngFor="let anexo of rowData.anexos; let i = index">
+                            <span><a [routerLink]="" (click)="mostraAnexo(anexo.idAnexo, anexo.nomeArquivo)" style="color: #3984b8;">{{i+1}}. {{anexo.nomeArquivo}}</a></span>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                    <div class="ui-g-4 atributo">Tempo da Informação</div>
+                    <div class="ui-g-8">{{getLabel(opcoesTempoInformacao, rowData.tempoInformacao)}}</div>
+                  </div>
+
+                  <div class="ui-g-12 ">
+                      <div class="ui-g-4 atributo">Data da Requisição</div>
+                      <div class="ui-g-8">{{utils.formataData(rowData.dataRequisicao)}}</div>
+                  </div>
+
+                  <div class="ui-g-12 linha-escura">
+                      <div class="ui-g-4 atributo">Finalizado</div>
+                      <div class="ui-g-8">{{(rowData.finalizado) ? 'Sim' : 'Não'}}</div>
+                  </div>
+
+                </div>
+
+                <div class="ui-g-12 ui-sm-12 ui-fluid" *ngIf="!rowData.finalizado">
+                  <div class="ui-g-12 ui-sm-12">
+                    <button pButton type="submit" icon="pi pi-lock" label="Finalizar Requisição" (click)="onRowSelect(rowData)"></button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+      </pandora-table>
+</div>

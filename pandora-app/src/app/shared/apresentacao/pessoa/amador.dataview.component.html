@@ -1,0 +1,123 @@
+<div class="ui-g">
+  <div class="ui-g-12 p-0">
+
+    <p-dataView #data [value]="amador"
+      emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+      <p-header style="text-align: center;">
+        <strong>Informações do amado</strong>
+      </p-header>
+
+      <ng-template let-amado pTemplate="listItem">
+        <div class="ui-g-12 ui-sm-12">
+          <p-fieldset>
+            <!-- Informações de pessoa -->
+            <div class="ui-g-12 ui-sm-12">
+
+              <!-- Nome -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.nomeAmador">
+                <div class="ui-g-4 pandora-atributo">Nome:</div>
+                <div class="ui-g-8">{{amado.nomeAmador}}</div>
+              </div>
+
+              <!-- RG -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview"
+                *ngIf="!!amado.numeroIdentidadeAmador && !!amado.orgaoEmissorIdentidade">
+                <div class="ui-g-4 pandora-atributo">RG:</div>
+                <div class="ui-g-8">{{amado.numeroIdentidadeAmador}} {{amado.orgaoEmissorIdentidade}}</div>
+              </div>
+
+              <!-- CPF -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.cpfAmador">
+                <div class="ui-g-4 pandora-atributo">CPF:</div>
+                <div class="ui-g-8">{{amado.cpfAmador}}</div>
+              </div>
+
+              <!-- Data de Nascimento -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.dataNascimento">
+                <div class="ui-g-4 pandora-atributo">Data de Nascimento:</div>
+                <div class="ui-g-8">{{utils.formataData(amado.dataNascimento)}}</div>
+              </div>
+
+              <!-- Categoria Habilitação amado -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.categoriaHabilitacaoAmador">
+                <div class="ui-g-4 pandora-atributo">Categoria da Habilitação:</div>
+                <div class="ui-g-8">{{amado.categoriaHabilitacaoAmador}}</div>
+              </div>
+
+              <!-- Data de Emissão da Carteira amado -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.dataEmissaoCarteiraAmador">
+                <div class="ui-g-4 pandora-atributo">Data de Emissão da Carteira:</div>
+                <div class="ui-g-8">{{utils.formataData(amado.dataEmissaoCarteiraAmador)}}</div>
+              </div>
+
+              <!-- Data de Validade da Carteira amado -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.dataValidadeCarteiraAmador">
+                <div class="ui-g-4 pandora-atributo">Data de Validade da Carteira:</div>
+                <div class="ui-g-8">{{utils.formataData(amado.dataValidadeCarteiraAmador)}}</div>
+              </div>
+
+              <!-- Motivo da Emissão da Carteira amado -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.motivoEmissaoCarteiraAmador">
+                <div class="ui-g-4 pandora-atributo">Motivo da Emissão da Carteira:</div>
+                <div class="ui-g-8">{{amado.motivoEmissaoCarteiraAmador}}</div>
+              </div>
+
+              <!-- Situação da Carteira do amado -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.situacaoCarteiraAmador">
+                <div class="ui-g-4 pandora-atributo">Situação da Carteira:</div>
+                <div class="ui-g-8">{{amado.situacaoCarteiraAmador}}</div>
+              </div>
+
+              <!-- Codigo de Barras -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.codigoBarras">
+                <div class="ui-g-4 pandora-atributo">Codigo de Barras:</div>
+                <div class="ui-g-8">{{amado.codigoBarras}}</div>
+              </div>
+
+              <!-- Status da Data de Validade do amado -->
+              <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.statusDataValidade">
+                <div class="ui-g-4 pandora-atributo">Status da Data de Validade:</div>
+                <div class="ui-g-8">{{amado.statusDataValidade}}</div>
+              </div>
+
+              <!-- Contatos -->
+              <p-fieldset legend="Contatos" [toggleable]="true" [collapsed]="true">
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.telefoneAmador">
+                  <div class="ui-g-4 pandora-atributo">Telefone:</div>
+                  <div class="ui-g-8">{{utils.formataDado(amado.telefoneAmador, '(##) ####-####')}}</div>
+                </div>
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.celularAmador">
+                  <div class="ui-g-4 pandora-atributo">Celular:</div>
+                  <div class="ui-g-8">{{utils.formataDado(amado.celularAmador, '(##) #####-####')}}</div>
+                </div>
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.emailAmador">
+                  <div class="ui-g-4 pandora-atributo">Email:</div>
+                  <div class="ui-g-8">{{amado.emailAmador}}</div>
+                </div>
+              </p-fieldset>
+
+              <!-- Endereço -->
+              <p-fieldset legend="Endereço" [toggleable]="true" [collapsed]="true">
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.enderecoAmador">
+                  <div class="ui-g-4 pandora-atributo">Logadouro:</div>
+                  <div class="ui-g-8">{{amado.enderecoAmador}}</div>
+                </div>
+                <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!amado.bairroEnderecoAmador">
+                  <div class="ui-g-4 pandora-atributo">Bairro:</div>
+                  <div class="ui-g-8">{{amado.bairroEnderecoAmador}}</div>
+                </div>
+                <div class="ui-g-12 py-0 pandora-linha-dataview"
+                  *ngIf="!!amado.municipioEnderecoAmador && !!amado.ufEnderecoAmador">
+                  <div class="ui-g-4 pandora-atributo">Municipio:</div>
+                  <div class="ui-g-8">{{amado.municipioEnderecoAmador}}/{{amado.ufEnderecoAmador}}</div>
+                </div>
+              </p-fieldset>
+
+            </div>
+          </p-fieldset>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </div>
+</div>

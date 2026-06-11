@@ -1,0 +1,242 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+        <span class="p-card-titulo">SefazRank - Maiores fornecedores</span>
+
+        <div class="to-right text-primary export-button pointer link-retornar">
+          <span (click)="iniciar()">
+            Retornar
+            <i class="fa fa-reply"></i>
+          </span>
+        </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Parâmetros de busca" [toggleable]="true">
+        <ul class="text-justify">
+            <li class="pb-1">Analisa os 100 maiores fornecedores de produtos a entes públicos no último período.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div  class="ui-g-12 ui-fluid">
+    <div class="p-card">
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Nome do produto</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <p-autoComplete
+              [(ngModel)]="produtoSelecionado" [suggestions]="produtosEncontrados" (completeMethod)="pesquisaProduto($event)"
+              field="NomeProduto" placeholder="digite o nome do produto" [minLength]="3" forceSelection="true" required="true">
+            </p-autoComplete>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Município destinatário</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <p-autoComplete
+              [(ngModel)]="municipioDestinatario" [suggestions]="municipiosEncontrados" (completeMethod)="pesquisaMunicipio($event)"
+              field="municipio" placeholder="digite o nome do município" [minLength]="1" forceSelection="true" required="true">
+            </p-autoComplete>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+            <span style="font-size: 16px; font-weight: 600;">CNPJ Destinatário</span>
+          </div>
+
+          <div class="ui-g-12 ui-md-8">
+            <p-inputMask
+            [(ngModel)]="cnpjDestinatario"
+            mask="99.999.999/9999-99"
+            tooltipPosition="bottom"></p-inputMask >
+          </div>
+        </div>
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+            <span style="font-size: 16px; font-weight: 600;">Classe do produto</span>
+          </div>
+
+          <div class="ui-g-12 ui-md-8">
+            <p-multiSelect display="chip" defaultLabel="Selecione uma classe" [options]="classesProduto" [(ngModel)]="classesSelecionada" optionLabel="nome" optionValue="tipo"></p-multiSelect>
+          </div>
+
+        </div>
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+            <span style="font-size: 16px; font-weight: 600;">Período (Meses)</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <p-dropdown (onChange)="onChangePeriodo($event)" [options]="periodos" [showClear]="false" placeholder="Selecione" [(ngModel)]="periodoSelecionado" optionLabel="desc"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">          
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Período</span>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <p-calendar
+            [(ngModel)]="dtInicio"
+            [locale]="pt_br"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"            
+            placeholder="Data inicial"
+            (keyup)="onKeyDate($event)"
+            (onSelect)="onChange()"
+            >
+            </p-calendar>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <p-calendar
+            [(ngModel)]="dtFim"
+            [locale]="pt_br"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"            
+            placeholder="Data final"
+            (keyup)="onKeyDate($event)"
+            (onSelect)="onChange()"
+            >
+            </p-calendar>
+          </div>
+
+
+        <!-- <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Período:</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+              <p-calendar
+                  [(ngModel)]="intervaloAnalise"
+                  [locale]="pt_br"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  selectionMode="range">
+              </p-calendar>
+          </div>          
+        </div>-->
+
+        <div class="ui-g-12 mt-4 left">
+
+          <div class="ui-g-4 ui-sm-12">
+            <button pButton type="button" icon="pi pi-search" label="Pesquisar Todos" (click)="Buscar(false)"></button>
+          </div>
+          <div class="ui-g-4 ui-sm-12">
+            <button pButton type="button" icon="pi pi-search" label="Pesquisar Suspeitos" (click)="Buscar(true)"></button>
+          </div>
+          <div class="ui-g-4 ui-sm-12"></div>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizadaSucesso">
+    <div class="p-card p-0 b-0">
+      <p-table
+            #dt        
+            [columns]="dicionarioBase"
+            [value]="topFornecedores"           
+            exportFilename="topFornecedores"
+            [responsive]="true"
+            [paginator]="true"
+            [autoLayout]="true"
+            dataKey="key"
+            [rows]="50">
+
+            <ng-template pTemplate="caption">
+              <div class="p-card-subtitulo my-2 text-left d-flex">
+                Top Fornecedores
+    
+                <div class="export-button pointer text-primary ml-auto" (click)="dt.exportCSV()">
+                  <span>CSV</span>
+                  <i class="pi pi-download"></i>
+                </div>
+    
+                <!--
+                <div class="export-button pointer text-primary ml-2" (click)="exportPdf()">
+                  <span>PDF</span>
+                  <i class="pi pi-download"></i>
+                </div> -->
+              </div>
+    
+              <div style="text-align: left; padding: 10px 0px 5px 0px;" *ngIf="utils.isMobile()">
+                <i class="pi pi-search mr-2"></i>
+                <input type="text" pInputText placeholder="Filtro Global" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:90%">
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th style="width: 3.25em"></th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+              </tr>
+              <tr>
+                <th style="width: 3.25em"></th>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">                  
+                  <input *ngSwitchDefault placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">              
+              <tr>
+
+                <td>
+                  <span href="#" [pRowToggler]="rowData" (click)="graficoTopVendas(rowData)">
+                    <i class="pointer" [ngClass]="expanded ? 'fa fa-chevron-circle-down' : 'fa fa-chevron-circle-right'"></i>
+                  </span>
+                </td>
+
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">                
+                  
+                  <span *ngSwitchCase="'SomaTotalItens'">
+                    <div *ngIf="!itensSuspeitos"> {{utils.converteEmDinheiroFormatoBrasileiro(rowData.SomaTotalItens)}}</div>
+                    <a pTooltip="Listar todos os produtos com preços suspeitos para os parâmetros selecionados, independentemente da classe do produto." *ngIf="itensSuspeitos" target='_blank' [routerLink]="['/dashboard/apps/sefazML/']" [queryParams]='{cnpjEmitente: utils.codificaDado(rowData.CNPJEmitente), cnpjDestinatario: utils.codificaDado(rowData.CNPJDestinatario), municipioDestinatario: getMunicipioDestinatario(), dtIni: dtIniParam, dtFim: dtFimParam, produto:getProdutoSelecionado()}' class="primary-text">{{utils.converteEmDinheiroFormatoBrasileiro(rowData.SomaTotalItens)}}</a>
+                  </span>                  
+                  <span *ngSwitchCase="'CNPJEmitente'">
+                    <a target="blank" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.CNPJEmitente)}' style="color: #3984b8;">{{utils.formataDado(rowData.CNPJEmitente, '##.###.###/####-##')}}</a>
+                  </span>
+                  <span *ngSwitchCase="'CNPJDestinatario'">
+                    {{utils.formataDado(rowData.CNPJDestinatario, '##.###.###/####-##')}}
+                  </span>
+                  <span *ngSwitchCase="'OcorrenciaMaisRecente'">{{utils.formataData(rowData.OcorrenciaMaisRecente)}}</span>
+                  <span *ngSwitchCase="'OcorrenciaMaisAntiga'">{{utils.formataData(rowData.OcorrenciaMaisAntiga)}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+              <tr>
+                <td [attr.colspan]="columns.length + 1">
+                  <div class="ui-g caixa">
+                    <div class="ui-g-12">
+                      <div echarts [options]="rowData.vendasFornecedor" ></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizadaFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+.centraliza-conteudo {
+  text-align: center;
+}
+
+.card-default-border {
+  padding: 1em;
+  background-color: #ffffff;
+  border: 1px solid #c7cdd1;
+}
+
+.border-top {
+  border-top: 8px solid #dee4e9;
+}
+
+.img-resize {
+  max-width: 100%; 
+  max-height: 100%;
+  height: auto;
+}
+
+.padding-login {
+  padding: 15px 50px;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+/* 
+  Template antigo
+ */
+
+.login-body {
+  background: none;
+}
+
+.login-body .login-panel {
+  width: 450px;
+}
+
+.login-body .login-panel .logo {
+  height: 80px;
+}
+
+#solicitaAcesso {
+  text-align: center;
+  font-weight: 800;
+}
+
+.resize-captcha {
+
+  transform: scale(0.84);
+  -webkit-transform: scale(0.84);
+
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+}
+
+@media (max-width: 640px) {
+  .login-body .login-panel {
+    margin-top: 0px;
+    width: 100%;
+  }
+  .ui-g-12.logo-container {
+    padding-top: 25px;
+  }
+  .ui-g-12.campos-login {
+    padding-bottom: 0px;
+  }
+  .resize-captcha {
+    transform:scale(0.901442);
+    -webkit-transform:scale(0.901442);
+    transform-origin:0 0;
+    -webkit-transform-origin:0 0;
+  }
+}

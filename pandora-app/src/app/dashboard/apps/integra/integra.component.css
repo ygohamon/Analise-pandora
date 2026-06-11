@@ -1,0 +1,12 @@
+.formulario-pf-mobile {
+    left: 10px;
+    right: 10px;
+}
+.linha-impar {
+    background-color: #eaeeef;
+}
+.aviso-tamanho-textarea {
+    font-size: 10px;
+    font-weight: 400;
+    font-style: italic;
+}

@@ -1,0 +1,29 @@
+<div class="ui-g">
+
+  <app-campos-busca
+    titulo="Imóvel"
+    [nProcesso]="nProcesso"
+    [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+    [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+  </app-campos-busca>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-tabView styleClass="p-0" [controlClose]="true">
+
+        <p-tabPanel styleClass="p-0" header="ITBI" [closable]="true">
+          <app-imovel-itbi-table [dados]="imoveisEncontrados"></app-imovel-itbi-table>
+        </p-tabPanel>
+
+        <p-tabPanel styleClass="p-0" header="DOI" [closable]="true">
+          <app-imovel-doi-table [dados]="imoveisEncontrados"></app-imovel-doi-table>
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+</div>

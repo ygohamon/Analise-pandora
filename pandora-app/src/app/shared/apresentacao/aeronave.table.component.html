@@ -1,0 +1,252 @@
+<div class="ui-g">
+
+  <ng-container *ngIf="dadosProprietario.length">
+    <div class="ui-g-12">
+      <pandora-table
+        caption="Aeronaves - Proprietário"
+        exportFilename="tabela_proprietario_aeronave"
+        dataKey="id"
+        [mostraEspacamentoExpand]="true"
+        [value]="dadosProprietario"
+        [dicionarioDados]="dicionarioDadosProprietario">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                  <a href="#" [pandoraRowToggler]="rowData">
+                      <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                  </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+                <span *ngSwitchCase="'cpf_cnpj2'">
+                    <a *ngIf="rowData.cpf_cnpj2?.length === 11" [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf_cnpj2)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj2, '###.###.###-##')}}</a>
+                    <a *ngIf="rowData.cpf_cnpj2?.length === 14" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cpf_cnpj2)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj2, '##.###.###/####-##')}}</a>
+                </span>
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+            <tr>
+                <td [attr.colspan]="columns.length + 1">
+                    <div class="ui-g ui-fluid">
+                        <div class="ui-g-12">
+                            <b>Operador:</b> {{rowData.operador}}
+                        </div>
+                        <div class="ui-g-12" *ngIf="rowData.cpf_cnpj2.length === 11">
+                            <b>CPF:</b> <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf_cnpj2)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj2, '###.###.###-##')}}</a>
+                        </div>
+                        <div class="ui-g-12" *ngIf="rowData.cpf_cnpj2.length === 14">
+                            <b>CNPJ:</b> <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cpf_cnpj2)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj2, '##.###.###/####-##')}}</a>
+                        </div>
+                        <div class="ui-g-12">
+                            <b>UF:</b> {{rowData.uf2}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Marca:</b> {{rowData.marca}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Matrícula:</b> {{rowData.matricula}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Número de Série:</b> {{rowData.num_serie}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Categoria:</b> {{rowData.categoria}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Tipo Certificado:</b> {{rowData.tipo_cert}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Modelo:</b> {{rowData.modelo}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Fabricante:</b> {{rowData.fabricante}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Classe:</b> {{rowData.classe}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Peso Máximo Decolagem:</b> {{rowData.pmd}} kg
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Tripulação Mínima:</b> {{rowData.trip_min}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Número Máximo de Passageiros:</b> {{rowData.pax_max}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Número de Assentos:</b> {{rowData.assentos}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Ano de Fabricação:</b> {{rowData.ano_fab}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Data de Inspeção Anual de Manutenção:</b> {{rowData.dt_iam}}
+                        </div>
+                        <!-- <div class="ui-g-12">
+                            <b>Número de Assentos:</b> {{rowData.dt_seg}}
+                        </div> -->
+                        <div class="ui-g-12">
+                            <b>Data de Cancelamento:</b> {{rowData.dt_can}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Motivo do Cancelamento:</b> {{rowData.motivo}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Situação de Aeronavegabilidade:</b> {{rowData.cd_interdicao}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Marcas Nacionais anteriores:</b> {{rowData.marca_nac_1}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Marcas Nacionais anteriores:</b> {{rowData.marca_nac_2}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Marcas Nacionais anteriores:</b> {{rowData.marca_nac_3}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Marcas estrangeiras anteriores:</b> {{rowData.marca_est}}
+                        </div>
+                        <div class="ui-g-12">
+                            <b>Restrições de Direitos Reais sobre a aeronave:</b> {{rowData.descricao_gravame}}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+          </ng-template>
+
+      </pandora-table>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="dadosOperador.length">
+    <div class="ui-g-12">
+      <pandora-table
+        caption="Aeronaves - Operador"
+        exportFilename="tabela_operador_aeronave"
+        dataKey="id"
+        [mostraEspacamentoExpand]="true"
+        [value]="dadosOperador"
+        [dicionarioDados]="dicionarioDadosOperador">
+
+        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td>
+              <a href="#" [pandoraRowToggler]="rowData">
+                <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+              </a>
+            </td>
+
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <!-- <span *ngSwitchCase="'dataAtualizacao'">{{utils.formataData(rowData.dataAtualizacao)}}</span> -->
+              <span *ngSwitchCase="'cpf_cnpj'">
+                <a *ngIf="rowData.cpf_cnpj?.length === 11" [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf_cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj, '###.###.###-##')}}</a>
+                <a *ngIf="rowData.cpf_cnpj?.length === 14" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cpf_cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj, '##.###.###/####-##')}}</a>
+              </span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+        <tr>
+            <td [attr.colspan]="columns.length + 1">
+                <div class="ui-g ui-fluid">
+
+                    <div class="ui-g-12">
+                        <b>Proprietário:</b> {{rowData.proprietario}}
+                    </div>
+                    <div class="ui-g-12" *ngIf="rowData.cpf_cnpj.length === 11">
+                        <b>CPF:</b> <a [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf_cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj, '###.###.###-##')}}</a>
+                    </div>
+                    <div class="ui-g-12" *ngIf="rowData.cpf_cnpj.length === 14">
+                        <b>CNPJ:</b> <a [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cpf_cnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf_cnpj, '##.###.###/####-##')}}</a>
+                    </div>
+                    <div class="ui-g-12">
+                        <b>UF:</b> {{rowData.uf}}
+                    </div>
+
+                    <div class="ui-g-12">
+                        <b>Marca:</b> {{rowData.marca}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Matrícula:</b> {{rowData.matricula}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Número de Série:</b> {{rowData.num_serie}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Categoria:</b> {{rowData.categoria}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Tipo Certificado:</b> {{rowData.tipo_cert}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Modelo:</b> {{rowData.modelo}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Fabricante:</b> {{rowData.fabricante}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Classe:</b> {{rowData.classe}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Peso Máximo Decolagem:</b> {{rowData.pmd}} kg
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Tripulação Mínima:</b> {{rowData.trip_min}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Número Máximo de Passageiros:</b> {{rowData.pax_max}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Número de Assentos:</b> {{rowData.assentos}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Ano de Fabricação:</b> {{rowData.ano_fab}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Data de Inspeção Anual de Manutenção:</b> {{rowData.dt_iam}}
+                    </div>
+                    <!-- <div class="ui-g-12">
+                        <b>Número de Assentos:</b> {{rowData.dt_seg}}
+                    </div> -->
+                    <div class="ui-g-12">
+                        <b>Data de Cancelamento:</b> {{rowData.dt_can}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Motivo do Cancelamento:</b> {{rowData.motivo}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Situação de Aeronavegabilidade:</b> {{rowData.cd_interdicao}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Marcas Nacionais anteriores:</b> {{rowData.marca_nac_1}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Marcas Nacionais anteriores:</b> {{rowData.marca_nac_2}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Marcas Nacionais anteriores:</b> {{rowData.marca_nac_3}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Marcas estrangeiras anteriores:</b> {{rowData.marca_est}}
+                    </div>
+                    <div class="ui-g-12">
+                        <b>Restrições de Direitos Reais sobre a aeronave:</b> {{rowData.descricao_gravame}}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </ng-container>
+</div>

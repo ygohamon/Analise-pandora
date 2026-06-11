@@ -1,0 +1,19 @@
+[
+  {
+    "nome": "BD_PANDORA",
+    "ativado": true,
+    "vars": {
+      "PESSOA": "BD_PANDORA.dbo.pessoa",
+      "LOG": "BD_PANDORA.dbo.log",
+      "USUARIO": "BD_PANDORA.dbo.usuario",
+      "USUARIO_ITEM": "BD_PANDORA.dbo.usuario_item",
+      "USUARIO_GRUPO": "BD_PANDORA.dbo.usuario_grupo",
+      "PERFIL": "BD_PANDORA.dbo.perfil",
+      "PERFIL_ITEM": "BD_PANDORA.dbo.perfil_item",
+      "GRUPO": "BD_PANDORA.dbo.grupo",
+      "ITEM": "BD_PANDORA.dbo.item",
+      "SECAO": "BD_PANDORA.dbo.secao",
+      "AUTHAPP": "BD_PANDORA.dbo.auth_aplicativos"
+    }
+  }
+]

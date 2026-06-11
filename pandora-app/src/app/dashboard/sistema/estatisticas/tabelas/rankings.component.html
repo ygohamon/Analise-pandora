@@ -1,0 +1,43 @@
+<div class="ui-g">
+  <div class="ui-g-12 titulo">
+      Rankings de Utilização do Sistema
+  </div>
+
+  <div class="ui-g-4 ui-sm-12" *ngFor="let p of periodosAnalise">
+    <pandora-table
+      [caption]="p.descricao"
+      exportFilename="rankinguso"
+      [mostraFiltroColunas]="true"
+      [value]="dadosPeriodo[p.periodo]"
+      [dicionarioDados]="dicionarioDados">
+    </pandora-table>
+  </div>
+
+  <div class="ui-g-12 titulo" style="padding-top: 30px;">
+    Mais Pesquisados no Sistema
+  </div>
+
+  <div class="ui-g-12 subtitulo">
+    Pessoas Físicas
+  </div>
+
+  <div class="ui-g-12 ui-sm-12">
+    <app-log-ranking-top-pf [data]="dadosParametro['cpf']"></app-log-ranking-top-pf>
+  </div>
+
+  <div class="ui-g-12 subtitulo" style="padding-top: 30px;">
+    Pessoas Jurídicas
+  </div>
+
+  <div class="ui-g-12 ui-sm-12">
+    <app-log-ranking-top-pj [data]="dadosParametro['cnpj']"></app-log-ranking-top-pj>
+  </div>
+
+  <div class="ui-g-12 subtitulo" style="padding-top: 30px;">
+    Geral
+  </div>
+
+  <div class="ui-g-12 ui-sm-12">
+    <app-log-ranking-top-geral [data]="dadosParametro['geral']"></app-log-ranking-top-geral>
+  </div>
+</div>

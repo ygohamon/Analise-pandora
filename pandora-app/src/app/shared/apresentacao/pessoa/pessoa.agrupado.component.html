@@ -1,0 +1,217 @@
+<div class="ui-g">
+  <div class="ui-g-12 p-0" *ngIf="mostraPessoaAgrupado">
+
+    <div class="card card-w-title">
+      <h1>Pessoa - Dados Agrupados</h1>
+
+      <div class="ui-g ui-fluid pandora-caixa">
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.foto">
+            <div class="ui-g-4 pandora-atributo">Foto</div>
+            <div class="ui-g-8">
+                <img [src]="sanitize(pessoaAgrupado.foto)" style="width: 80px;">
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.nome">
+            <div class="ui-g-4 pandora-atributo">Nome</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.nome; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.dataNascimento">
+            <div class="ui-g-4 pandora-atributo" >Data de Nascimento</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.dataNascimento; let i = index">{{utils.formataData(dado)}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.naturalidade">
+            <div class="ui-g-4 pandora-atributo">Naturalidade</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.naturalidade; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.ufNaturalidade">
+            <div class="ui-g-4 pandora-atributo">UF Naturalidade</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.ufNaturalidade; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.sexo">
+            <div class="ui-g-4 pandora-atributo">Sexo</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.sexo; let i = index">{{utils.formataSexo(dado)}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.cpf">
+            <div class="ui-g-4 pandora-atributo">CPF</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.cpf; let i = index">{{utils.formataDado(dado, '###.###.###-##')}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.situacaoCadastral">
+            <div class="ui-g-4 pandora-atributo">Situação Cadastral</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.situacaoCadastral; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.rg">
+            <div class="ui-g-4 pandora-atributo">Identidade</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.rg; let i = index">
+                    {{dado}}  {{(pessoaAgrupado.orgEmissorRg) ? pessoaAgrupado.orgEmissorRg : ''}}
+                    {{(pessoaAgrupado.ufOrgEmissorRG) ? ' '+pessoaAgrupado.ufOrgEmissorRG : ''}}
+                </div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.dataExpedicao">
+            <div class="ui-g-4 pandora-atributo">Data Expedição Identidade</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.dataExpedicao; let i = index">{{utils.formataData(dado)}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.nomeMae">
+            <div class="ui-g-4 pandora-atributo">Nome da Mãe</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.nomeMae; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.nomePai">
+            <div class="ui-g-4 pandora-atributo">Nome do Pai</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.nomePai; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.tituloEleitor">
+                <div class="ui-g-4 pandora-atributo">Título de Eleitor</div>
+                <div class="ui-g-8">
+                    <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.tituloEleitor; let i = index">{{dado}}</div>
+                </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.estadoCivil">
+                <div class="ui-g-4 pandora-atributo">Estado Civil</div>
+                <div class="ui-g-8">
+                    <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.estadoCivil; let i = index">{{dado}}</div>
+                </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.escolaridade">
+                <div class="ui-g-4 pandora-atributo">Escolaridade</div>
+                <div class="ui-g-8">
+                    <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.escolaridade; let i = index">{{dado}}</div>
+                </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.estrangeiro">
+            <div class="ui-g-4 pandora-atributo">Estrangeiro</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.estrangeiro; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.residenteExterior">
+            <div class="ui-g-4 pandora-atributo">Residente Exterior</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.residenteExterior; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.nomePaisExterior">
+            <div class="ui-g-4 pandora-atributo">Nome País</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.nomePaisExterior; let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-3" style="font-size: 1.3em;" *ngIf="!!pessoaAgrupado.ocupacaoPrincipal || !!pessoaAgrupado.naturezaOcupacao" ><strong>Informações de Ocupação</strong></div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.naturezaOcupacao">
+            <div class="ui-g-4 pandora-atributo">Natureza Ocupação</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.naturezaOcupacao; let i = index">{{utils.toUpperCase(dado)}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.anoExercicioOcupacao">
+            <div class="ui-g-4 pandora-atributo">Exercício Ocupação</div>
+            <div class="ui-g-8">
+              <div class="ui-g-12">
+                <ng-container *ngFor="let dado of utils.sort(pessoaAgrupado.anoExercicioOcupacao); let i = index; let first = first">
+                  <span *ngIf="first">{{dado}}</span>
+                  <span *ngIf="!first"> - {{dado}}</span>
+                </ng-container>
+              </div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.tipoOcupacaoPrincipal">
+            <div class="ui-g-4 pandora-atributo">Tipo Ocupação Principal</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.tipoOcupacaoPrincipal; let i = index">{{utils.toUpperCase(dado)}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.ocupacaoPrincipal">
+            <div class="ui-g-4 pandora-atributo">Ocupação Principal</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.ocupacaoPrincipal; let i = index">{{utils.toUpperCase(dado)}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-3" *ngIf="!!pessoaAgrupado.cnh" style="font-size: 1.3em;"><strong>Informações do DETRAN</strong></div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.cnh">
+            <div class="ui-g-4 pandora-atributo">CNH</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.cnh; let i = index">{{dado}} {{(pessoaAgrupado.catAtual) ? ' - Categoria: '+pessoaAgrupado.catAtual : ''}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.renach">
+            <div class="ui-g-4 pandora-atributo">Renach</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of utils.sort(pessoaAgrupado.renach); let i = index">{{dado}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.dtPsicotecnico">
+            <div class="ui-g-4 pandora-atributo">Exame Psicotécnico</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.dtPsicotecnico; let i = index">{{utils.formataData(dado)}} {{(pessoaAgrupado.resPsicotecnico) ? ' - '+pessoaAgrupado.resPsicotecnico : ''}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 py-0 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.dtMedico">
+            <div class="ui-g-4 pandora-atributo">Exame Médico</div>
+            <div class="ui-g-8">
+                <div class="ui-g-12" *ngFor="let dado of pessoaAgrupado.dtMedico; let i = index">{{utils.formataData(dado)}} {{(pessoaAgrupado.resMedico) ? ' - '+pessoaAgrupado.resMedico : ''}}</div>
+            </div>
+        </div>
+
+        <div class="ui-g-12 pandora-linha-dataview" *ngIf="!!pessoaAgrupado.fonte">
+            <div class="ui-g-4 pandora-atributo">Fonte</div>
+            <div class="ui-g-8 font-weight-bold">
+              <div class="ui-g-12">
+                <ng-container *ngFor="let dado of utils.sort(pessoaAgrupado.fonte); let i = index; let first = first">
+                  <span *ngIf="first">{{dado}}</span>
+                  <span *ngIf="!first"> - {{dado}}</span>
+                </ng-container>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

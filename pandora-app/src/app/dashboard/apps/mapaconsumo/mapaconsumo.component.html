@@ -1,0 +1,83 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+      <div class="p-card mb-0">
+          <span class="p-card-titulo">Mapa de Rastros</span>
+
+          <div class="to-right text-primary export-button pointer link-retornar" *ngIf="isMobile || (!isMobile && mostraMapa)">
+            <span (click)="resetaBusca()">
+              Retornar
+              <i class="fa fa-reply"></i>
+            </span>
+          </div>
+      </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!mostraMapa">
+    <div class="p-card p-0 b-0">
+        <p-panel
+          header="Informações"
+          [collapsed]="buscaMapaSucesso"
+          [toggleable]="true">
+
+          <div class="ui-g">
+              <div class="ui-g-12">
+                  <ul class="text-justify">
+                    <li class="pb-1">O Mapa de Rastros apresenta locais por onde o alvo passou.</li>
+                    <li class="pt-1">Os dados são mostrados numa visão de mapa de calor, os dados podem ser segmentados por períodos do dia.</li>
+                  </ul>
+              </div>
+          </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!mostraMapa">
+    <div class="p-card">
+      <div class="p-card-subtitulo mb-3">Parâmetros de Busca</div>
+
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-g-3 ui-sm-12">
+          <h3 class="mt-0">Escolha um Período</h3>
+          <p-calendar
+            [(ngModel)]="intervaloAnalise"
+            [locale]="pt_br"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"
+            selectionMode="range">
+          </p-calendar>
+        </div>
+
+        <div class="ui-g-9 ui-sm-12">
+          <div class="ui-g-12">
+            <h3 class="mt-0">CPF</h3>
+            <p-inputMask [(ngModel)]="cpfAnalise" mask="999.999.999-99"></p-inputMask>
+          </div>
+
+          <div class="ui-g-12">
+            <h3 class="mt-0">Placa</h3>
+            <input type="text" pInputText [(ngModel)]="placaAnalise"/>
+          </div>
+        </div>
+
+        <div class="ui-g-12">
+            <div class="ui-g-4 ui-sm-12"></div>
+            <div class="ui-g-4 ui-sm-12">
+                <button pButton (click)="buscar()" type="button" icon="pi pi-search" label="Rastrear"></button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="mostraMapa">
+      <div class="p-card p-0 b-0">
+        <app-gmap
+          [dados]="dadosMapa"
+          (onBuscaCpf)="buscaMovimentacaoPessoa($event)">
+        </app-gmap>
+      </div>
+  </div>
+
+</div>

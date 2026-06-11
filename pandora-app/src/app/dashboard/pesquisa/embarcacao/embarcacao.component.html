@@ -1,0 +1,54 @@
+<div class="ui-g">
+
+    <app-campos-busca
+        titulo="Embarcação"
+        [nProcesso]="nProcesso"
+        [campos]="campos"
+        style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+        [(buscaFinalizada)]="buscaFinalizada"
+        (pesquisa)="onPesquisa($event)">
+    </app-campos-busca>
+
+    <div class="ui-g-12" *ngIf='buscaFinalizada'>
+      <div class="p-card p-0 b-0">
+
+        <pandora-table
+          caption="Resultados"
+          exportFilename="embarcacacoes"
+          dataKey="id"
+          [value]="embarcacoesEncontradas"
+          [mostraEspacamentoExpand]="true"
+          [dicionarioDadosExpand]="dicionarioDadosExpand"
+          [dicionarioDados]="dicionarioDados">
+
+          <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+            <tr>
+              <td>
+                <a href="#" [pandoraRowToggler]="rowData">
+                  <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </a>
+              </td>
+
+              <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                <span class="ui-column-title">{{col.header}}</span>
+                
+                <span *ngSwitchCase="'inscricao'">{{rowData.inscricao}}</span>
+                <span *ngSwitchCase="'cpfCnpj'">
+                    <a *ngIf="rowData.cpfCnpj.length === 11" [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpfCnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpfCnpj, '###.###.###-##')}}</a>
+                    <a *ngIf="rowData.cpfCnpj.length === 14" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.cpfCnpj)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpfCnpj, '##.###.###/####-##')}}</a>
+                </span>
+
+                <span *ngSwitchCase="'valor'">R$ {{utils.converteEmDinheiro(rowData.valor)}}</span>
+                <span *ngSwitchCase="'dataAquisicao'">{{utils.formataData(rowData.dataAquisicao)}}</span>
+                <span *ngSwitchCase="'dataValidade'">{{utils.formataData(rowData.dataValidade)}}</span>
+                <span *ngSwitchCase="'fonte'" style="font-weight: bold;">{{rowData.fonte}}</span>
+                <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+              </td>
+            </tr>
+          </ng-template>
+
+        </pandora-table>
+      </div>
+    </div>
+
+</div>

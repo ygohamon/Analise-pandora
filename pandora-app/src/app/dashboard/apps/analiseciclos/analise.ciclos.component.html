@@ -1,0 +1,103 @@
+<div class="ui-g dashboard">
+
+    <div class="ui-g-12">
+        <div class="ui-g card overview-box overview-box-1 mb-0">
+            <div class="overview-box-details">
+                <span class="overview-box-details-count">Análise Ciclos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="!buscaRelacionamentosSucesso">
+        <div class="card card-w-title mb-0">
+            <p-panel header="Informações" [toggleable]="true">
+                <ul>
+                    <li style="padding-top:15px">Pode-se inserir uma lista de <strong>CPFs</strong> ou
+                        <strong>CNPJs</strong>, o sistema tentará encontrar vínculos comuns entre as entidades.
+                        <ul>
+                            <li style="padding-top:10px">Dependendo da quantidade de vínculos, a pesquisa por relacionamentos pode demorar.</li>
+                        </ul>
+                    </li>
+                    <li style="padding-top:10px">Pode-se realizar buscas adicionais segurando o botão direito do mouse e escolhendo algum tipo de busca.</li>
+                </ul>
+            </p-panel>
+        </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="!buscaRelacionamentosSucesso">
+      <div class="ui-g card card-w-title mb-0">
+
+        <div class="ui-g-3 ui-sm-3">
+          <span style="font-weight: bold">Órgão:</span>
+        </div>
+
+        <div class="ui-g-9 ui-sm-9">
+          <p-autoComplete [(ngModel)]="orgao" [suggestions]="orgaosEncontrados" (completeMethod)="buscaOrgao($event)" field="ugestora"
+            placeholder="Órgão" [minLength]="1" [dropdown]="true" forceSelection="true" required="true"></p-autoComplete>
+        </div>
+
+        <div class="ui-g-12 ui-sm-12">
+          <button pButton (click)="onGerarAnalise()" type="button" icon="pi pi-search" label="Analisar"></button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="buscaRelacionamentosSucesso">
+        <div class="card card-w-title">
+            <!-- <div class="ui-g">
+                <div class="ui-g-6 ui-sm-12">
+                    <button pButton (click)="geraRelatorio()" type="button" icon="pi pi-download" label="Gerar Relatório" style="margin-bottom: 20px;"></button>
+                </div>
+            </div> -->
+
+            <div class="graph-container" [ngClass]="{'config-closed': escondeConfig}">
+                <div id="cy"></div>
+
+                <span class="pi pi-bars config-toggle" (click)="toggleBarraConfig()"></span>
+                <div id="config" class="config">
+
+                    <div class="preamble">
+                        <span class="label label-info">Relacionamentos</span>
+
+                        <p>Ferramenta de busca.</p>
+                    </div>
+                    <div class="param">
+                      <button pButton title="Reinicializa Grafo" (click)="atualizaPosicoes()" type="button" icon="pi pi-refresh"></button>
+                      <button pButton title="Gera Imagem" (click)="downloadImagem()" type="button" icon="fa fa-picture-o"></button>
+                      <button pButton title="Gera Relatório" (click)="downloadRelatorio(null)" type="button" icon="fa fa-file-pdf-o"></button>
+                      <button pButton title="Gera JSON" (click)="downloadJson()" type="button" icon="fa fa-database"></button>
+                    </div>
+                    <!-- <div class="param">
+                      <button pButton (click)="geraRelatorio()" type="button" icon="pi pi-download" label="Gerar Relatório"></button>
+                    </div> -->
+
+                    <div class="param">
+                      <span class="label label-default label-espacamento">Comprimento das arestas</span>
+                      <p-slider [(ngModel)]="comprimentoArestas" [min]="1" [max]="1000" [style]="{'width':'170px'}" (onChange)="onTrocaSliderComprimentoArestas($event)"></p-slider>
+                    </div>
+
+                    <div class="param">
+                      <span class="label label-default label-espacamento">Espaçamento dos nós</span>
+                      <p-slider [(ngModel)]="espacamentoNos" [min]="1" [max]="100" [style]="{'width':'170px'}" (onChange)="onTrocaSliderEspacamentoNos($event)"></p-slider>
+                    </div>
+
+                    <div class="param">
+                      <button pButton title="Expande Nós" (click)="expandirNodes()" type="button" icon="fa fa-podcast"></button>
+                    </div>
+
+                    <div class="param">
+                      <button pButton title="Encontra Caminho" (click)="encontraCaminho()" type="button" icon="fa fa-location-arrow"></button>
+                    </div>
+
+                    <!-- <div class="param">
+                      <span class="label label-default label-espacamento">Layouts</span>
+                      <button pButton (click)="expandirNodes()" type="button" icon="fa fa-genderless"></button>
+                      <button pButton (click)="expandirNodes()" type="button" icon="fa fa-podcast"></button>
+                    </div> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

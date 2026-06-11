@@ -1,0 +1,19 @@
+<div class="ui-g">
+  <div class="ui-g-4 py-2 font-weight-bold">
+    <label for="drop">Recursos</label>
+  </div>
+  <div class="ui-g-8 py-2">
+    <p-dropdown id="drop" [options]="recursos" [(ngModel)]="recursoSelecionado"></p-dropdown>
+  </div>
+
+  <div class="ui-g-4 py-2 font-weight-bold">
+    <label for="dado">Dado</label>
+  </div>
+  <div class="ui-g-8 py-2">
+    <input id="dado" type="text" pInputText [(ngModel)]="dado"/>
+  </div>
+
+  <div class="ui-g-12 py-2 text-center" style="border-top: 1px solid #c7cdd1;">
+    <button pButton type="button" label="Adicionar" (click)="buscarRecurso()"></button>
+  </div>
+</div>

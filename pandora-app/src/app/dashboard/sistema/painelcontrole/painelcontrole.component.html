@@ -1,0 +1,213 @@
+<div class="ui-g dashboard">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Painel de Controle</span>
+    </div>
+  </div>
+
+  <!-- <div class="ui-g-12">
+    <div class="ui-g p-card mb-0">
+      <div class="p-card-subtitulo pb-3">Banco de Dados</div>
+    </div>
+  </div>
+
+  <div class="ui-g-4 ui-sm-12">
+    <div class="ui-g p-card mb-0">
+      <div class="p-card-subtitulo pb-3">Engine</div>
+      <div class="ui-g-12 font-weight-bold">{{painelDB.engine}}</div>
+    </div>
+  </div>
+
+  <div class="ui-g-4 ui-sm-12">
+    <div class="ui-g p-card mb-0">
+      <div class="p-card-subtitulo pb-3">Conectado</div>
+    </div>
+  </div>
+
+  <div class="ui-g-4 ui-sm-12">
+    <div class="ui-g p-card mb-0">
+      <div class="p-card-subtitulo pb-3">Configurações</div>
+    </div>
+  </div> -->
+
+  <div class="ui-g-6 ui-sm-12">
+    <div class="ui-g p-card mb-0">
+      <div class="p-card-subtitulo pb-3">Banco de Dados</div>
+      <div class="ui-g-12 p-0" *ngIf="mostraPainelDB">
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 font-weight-bold">Engine</div>
+          <div class="ui-g-9 font-weight-bold">{{painelDB.engine}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 font-weight-bold">Conectado</div>
+          <div class="ui-g-9">
+            <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelDB.connected"></i>
+            <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelDB.connected"></i>
+          </div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-12 font-weight-bold" style="font-size: 0.8rem;">Configurações</div>
+
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Server</span> {{painelDB.config.server}}</div>
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Porta</span> {{painelDB.config.port}}</div>
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Database</span> {{painelDB.config.database}}</div>
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Request Timeout</span> {{painelDB.config.requestTimeout}}</div>
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Connection Timeout</span> {{painelDB.config.connectionTimeout}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-6 ui-sm-12">
+    <div class="ui-g p-card mb-0 h-100">
+      <div class="p-card-subtitulo pb-3">Mailer</div>
+      <div class="ui-g-12 p-0 h-100" *ngIf="mostraPainelMail">
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 font-weight-bold">Serviço</div>
+          <div class="ui-g-9 font-weight-bold">{{painelMail.method}}</div>
+        </div>
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-3 font-weight-bold">Conectado</div>
+          <div class="ui-g-9">
+            <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelMail.connected"></i>
+            <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelMail.connected"></i>
+          </div>
+        </div>
+
+        <div class="ui-g-12">
+          <span class="font-weight-bold px-3">Habilitado</span>
+          <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelMail.enabled"></i>
+          <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelMail.enabled"></i>
+        </div>
+
+        <div class="ui-g-12">
+          <span class="font-weight-bold px-3">Debug</span>
+          <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelMail.debug"></i>
+          <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelMail.debug"></i>
+        </div>
+
+
+        <div class="ui-g-12 p-0">
+          <div class="ui-g-12 font-weight-bold" style="font-size: 0.8rem;">Configurações</div>
+
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Host</span> {{painelMail.config.host}}</div>
+          <div class="ui-g-12"><span class="font-weight-bold px-3">Porta</span> {{painelMail.config.port}}</div>
+          <div class="ui-g-12"><span class="font-weight-bold px-3">User</span> {{painelMail.config.user}}</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-6 ui-sm-12">
+    <div class="ui-g p-card mb-0 h-100">
+      <div class="p-card-subtitulo pb-3">APICache</div>
+      <div class="ui-g-12 p-0 h-100" *ngIf="mostraPainelAPICache">
+
+        <div class="ui-g-6 ui-sm-12 p-0">
+          <div class="ui-g-12 p-0">
+            <div class="ui-g-3 font-weight-bold">Tamanho</div>
+            <div class="ui-g-9">{{(painelAPICache.keysCount) ? painelAPICache.keysCount : 0 }} registros</div>
+          </div>
+
+          <div class="ui-g-12 p-0">
+            <div class="ui-g-12 font-weight-bold" style="font-size: 0.8rem;">Configurações</div>
+
+            <div class="ui-g-12">
+              <span class="font-weight-bold px-3">Conectado</span>
+              <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelAPICache.connected"></i>
+              <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelAPICache.connected"></i>
+            </div>
+            <div class="ui-g-12">
+              <span class="font-weight-bold px-3">Habilitado</span>
+              <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelAPICache.enabled"></i>
+              <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelAPICache.enabled"></i>
+            </div>
+            <div class="ui-g-12">
+              <span class="font-weight-bold px-3">Debug</span>
+              <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelAPICache.debug"></i>
+              <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelAPICache.debug"></i>
+            </div>
+            <div class="ui-g-12"><span class="font-weight-bold px-3">Método</span> {{painelAPICache.method}}</div>
+            <div class="ui-g-12"><span class="font-weight-bold px-3">Duração</span> {{painelAPICache.duration}}</div>
+
+            <div class="ui-g-12" *ngIf="!!painelAPICache.redis">
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Host</span> {{painelAPICache.redis.host}}:{{painelAPICache.redis.port}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Versão</span> {{painelAPICache.redis.version}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Memória alocada</span> {{painelAPICache.redis.mem.used_memory_human}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Memória alocada RSS</span> {{painelAPICache.redis.mem.used_memory_rss_human}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Limite de memória</span> {{painelAPICache.redis.mem.maxmemory_human}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Política de substituição</span> {{painelAPICache.redis.mem.maxmemory_policy}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g-6 ui-sm-12 p-0 text-right">
+          <button pButton type="submit" icon="fa fa-times" label="Limpar Cache" (click)="limparAPICache()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-6 ui-sm-12">
+    <div class="ui-g p-card mb-0 h-100">
+      <div class="p-card-subtitulo pb-3">ModelCache</div>
+
+      <div class="ui-g-12 p-0 h-100" *ngIf="mostraPainelModelCache">
+
+        <div class="ui-g-6 ui-sm-12 p-0">
+          <div class="ui-g-12 p-0">
+            <div class="ui-g-3 font-weight-bold">Tamanho</div>
+            <div class="ui-g-9">{{painelModelCache.keysCount}} registros</div>
+          </div>
+
+          <div class="ui-g-12 p-0">
+            <div class="ui-g-12 font-weight-bold" style="font-size: 0.8rem;">Configurações</div>
+
+            <div class="ui-g-12">
+              <span class="font-weight-bold px-3">Conectado</span>
+              <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelModelCache.connected"></i>
+              <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelModelCache.connected"></i>
+            </div>
+            <div class="ui-g-12">
+              <span class="font-weight-bold px-3">Habilitado</span>
+              <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelModelCache.enabled"></i>
+              <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelModelCache.enabled"></i>
+            </div>
+            <div class="ui-g-12">
+              <span class="font-weight-bold px-3">Debug</span>
+              <i class="fa fa-check ativado" aria-hidden="true" *ngIf="painelModelCache.debug"></i>
+              <i class="fa fa-times desativado" aria-hidden="true" *ngIf="!painelModelCache.debug"></i>
+            </div>
+            <div class="ui-g-12"><span class="font-weight-bold px-3">Método</span> {{painelModelCache.method}}</div>
+            <div class="ui-g-12"><span class="font-weight-bold px-3">Duração</span> {{painelModelCache.duration}}</div>
+
+            <div class="ui-g-12" *ngIf="!!painelModelCache.redis">
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Host</span> {{painelModelCache.redis.host}}:{{painelModelCache.redis.port}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Versão</span> {{painelModelCache.redis.version}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Memória alocada</span> {{painelModelCache.redis.mem.used_memory_human}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Memória alocada RSS</span> {{painelModelCache.redis.mem.used_memory_rss_human}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Limite de memória</span> {{painelModelCache.redis.mem.maxmemory_human}}</div>
+              <div class="ui-g-12"><span class="font-weight-bold px-3">Política de substituição</span> {{painelModelCache.redis.mem.maxmemory_policy}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g-6 ui-sm-12 p-0 text-right">
+          <button pButton type="submit" icon="fa fa-times" label="Limpar Cache" (click)="limparModelCache()"></button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

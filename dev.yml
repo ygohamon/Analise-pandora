@@ -1,0 +1,73 @@
+version: '3'
+services:
+
+  app-dev:
+    container_name: app-dev
+    build:
+      context: ./pandora-app/
+      dockerfile: ./compose/local/Dockerfile
+    image: app-dev
+    depends_on:
+      - server-dev
+    links:
+      - server-dev
+    # user: "1000:1000"
+    volumes:
+      - ./pandora-app/:/app
+    env_file:
+      - ./pandora-app/.envs/.local/app.env
+    ports:
+      - "4200:4200"
+    command: /start
+
+  server-dev:
+    container_name: server-dev
+    build:
+      context: ./pandora-server/
+      dockerfile: ./compose/local/Dockerfile
+    image: server-dev
+    depends_on:
+      - apicache-dev
+      - modelcache-dev
+      - crawlers-dev
+    # user: "1000:1000"
+    volumes:
+      - ./pandora-server/:/server
+    env_file:
+      - ./pandora-server/.envs/.local/server.env
+    ports:
+      - "3000:3000"
+    command: /start
+
+  apicache-dev:
+    container_name: apicache-dev
+    build:
+      context: ./pandora-redis/
+      dockerfile: ./Dockerfile
+    ports:
+      - "16379:6379"
+
+  modelcache-dev:
+    container_name: modelcache-dev
+    build:
+      context: ./pandora-redis/
+      dockerfile: ./Dockerfile
+    ports:
+      - "16380:6379"
+
+  crawlers-dev:
+    container_name: crawlers-dev
+    build:
+      context: ./pandora-crawlers/
+      dockerfile: ./compose/local/Dockerfile
+    volumes:
+      - ./pandora-crawlers/:/home/pptruser/pandora-crawler
+    ports:
+      - "3123:3123"
+
+# networks:
+#   default:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 172.177.57.0/24

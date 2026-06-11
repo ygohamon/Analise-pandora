@@ -1,0 +1,63 @@
+#mapa {
+  /* position: absolute; */
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.mapa-container {
+  border: 1px solid black;
+  position: relative;
+}
+
+.config {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 17em;
+  background: rgba(0, 0, 0, 0.75);
+  box-sizing: border-box;
+  padding: 1em;
+  color: #fff;
+  transition-property: opacity;
+  transition-duration: 250ms;
+  transition-timing-function: ease-out;
+  overflow: auto;
+  z-index: 1;
+  max-width: 250px;
+  min-width: 250px;
+}
+
+p {
+  margin: 0.5em 0;
+  font-size: 0.8em;
+}
+
+  /* .param button {
+    background-color: #777;
+    margin-right: 4px;
+    margin-bottom: 5px;
+  } */
+
+
+.config-toggle {
+  position: absolute;
+  right: 5px;
+  top: 40px;
+  padding: 1em;
+  margin: 0.2em;
+  cursor: pointer;
+  color: #fff;
+  z-index: 9999999;
+}
+
+.config-closed .config {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.botao-periodo {
+  width: 100%;
+}

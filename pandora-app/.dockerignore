@@ -1,0 +1,19 @@
+#Pastas
+node_modules
+dist/
+_build/
+.git
+.vscode
+*/*/environment*
+
+# Arquivos
+.dockerignore
+Dockerfile
+local.yml
+production.yml
+.editorconfig
+.gitignore
+npm-debug.log
+README.md
+DEPLOY.md
+build.sh

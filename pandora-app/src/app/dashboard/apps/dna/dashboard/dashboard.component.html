@@ -1,0 +1,250 @@
+<!-- Tabelas contendo informações básicas da empresa -->
+<div class="ui-g-12">
+  <app-dna-informacoes-gerais
+      [dados]="dados">
+  </app-dna-informacoes-gerais>
+</div>
+
+<!-- Tabelas contendo os setores de atuação da empresa -->
+<div class="ui-g-12">
+  <app-dna-atividade-economica
+      [dados]="dados">
+  </app-dna-atividade-economica>
+</div>
+
+<!-- Endereço encontrado para a empresa -->
+<div class="ui-g-12">
+  <div class="ui-g p-card mb-0">
+    <div class="p-card-subtitulo pb-3">Endereço</div>
+
+    <div class="ui-g-12 text-justify" *ngIf="dnaInformacoesEndereco">
+      {{dnaInformacoesEndereco.tipoLogradouro}} {{dnaInformacoesEndereco.logradouro}}, {{dnaInformacoesEndereco.numero}}, {{dnaInformacoesEndereco.complemento}} - {{dnaInformacoesEndereco.bairro}} - {{utils.formataDado(dnaInformacoesEndereco.cep,'#####-###')}}
+    </div>
+  </div>
+</div>
+
+<!-- Geocoordenadas da empresa -->
+<div class="ui-g-12">
+  <div class="p-card p-0 mb-0">
+    <p-gmap
+        [options]="mapaOptions"
+        [overlays]="mapaOverlays"
+        [style]="{'width':'100%','height':'320px'}">
+    </p-gmap>
+  </div>
+</div>
+
+<!-- Painel contendo informações do quadro societário da empresa -->
+
+<div class="ui-g-12">
+  <div class="p-card mb-0 iguala-alturas">
+    <div class="p-card-subtitulo text-center">Quadro Societário</div>
+  </div>
+</div>
+
+<div class="ui-g-6 ui-sm-12">
+  <app-dna-socios-pf
+    [dados]="dados">
+  </app-dna-socios-pf>
+</div>
+
+<div class="ui-g-6 ui-sm-12">
+  <app-dna-socios-pj
+    [dados]="dados">
+  </app-dna-socios-pj>
+</div>
+
+<div class="ui-g-12">
+  <app-dna-informacoes-socios
+    [dados]="dados">
+  </app-dna-informacoes-socios>
+</div>
+
+
+<div class="ui-g-12">
+  <div class="p-card mb-0 iguala-alturas">
+    <div class="p-card-subtitulo text-center">Contadores</div>
+  </div>
+</div>
+
+<div class="ui-g-12">
+  <app-dna-contadores
+    [dados]="dados">
+  </app-dna-contadores>
+</div>
+
+<div class="ui-g-12">
+  <app-dna-pagas-contadores
+    [dados]="dados">
+  </app-dna-pagas-contadores>
+</div>
+
+<div class="ui-g-12">
+  <app-dna-licitantes-contadores
+    [dados]="dados">
+  </app-dna-licitantes-contadores>
+</div>
+
+
+<div class="ui-g-12">
+  <div class="p-card mb-0 iguala-alturas">
+    <div class="p-card-subtitulo text-center">Licitações e Contratos</div>
+  </div>
+</div>
+
+<div class="ui-lg-6 ui-g-12">
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <span class="p-card-titulo">Municipal</span>
+    </div>
+  </div>
+
+  <div class="ui-g-6">
+    <div class="p-card mb-0">
+      <div class="p-card-subtitulo">Empenhado</div>
+      <div class="pt-2 text-center" style="font-size: 20px;">
+        <i class="pi pi-dollar"></i>
+        <span>{{formataValores(dnaInformacoesTotalEmpenhoMunicipal.totalEmpenho)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-6">
+    <div class="p-card mb-0">
+      <div class="p-card-subtitulo">Pago</div>
+      <div class="pt-2 text-center" style="font-size: 20px;">
+        <i class="pi pi-dollar"></i>
+        <span>{{formataValores(dnaInformacoesTotalEmpenhoMunicipal.totalPago)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Distribuição dos Empenhos Municipais Pagos por Modalidade" [toggleable]="true">
+        <p-chart type="bar" [data]="dnaGraficoModalidadesMunicipal" [options]="graficoBarrasModalidadesOptions" responsive="true"></p-chart>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Distribuição dos Empenhos Municipais Pagos por Valores" [toggleable]="true">
+        <p-chart type="bar" [data]="dnaGraficoValoresMunicipal" [options]="graficoBarrasValoresOptions" responsive="true"></p-chart>
+      </p-panel>
+    </div>
+  </div>
+
+</div>
+
+<div class="ui-lg-6 ui-g-12">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <span class="p-card-titulo">Estadual</span>
+    </div>
+  </div>
+
+  <div class="ui-g-6">
+    <div class="p-card mb-0">
+      <div class="p-card-subtitulo">Empenhado</div>
+      <div class="pt-2 text-center" style="font-size: 20px;">
+        <i class="pi pi-dollar"></i>
+        <span>{{formataValores(dnaInformacoesTotalEmpenhoEstadual.totalEmpenho)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-6">
+    <div class="p-card mb-0">
+      <div class="p-card-subtitulo">Pago</div>
+      <div class="pt-2 text-center" style="font-size: 20px;">
+        <i class="pi pi-dollar"></i>
+        <span>{{formataValores(dnaInformacoesTotalEmpenhoEstadual.totalPago)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Distribuição dos Empenhos Estaduais Pagos por Modalidades" [toggleable]="true">
+        <p-chart type="bar" [data]="dnaGraficoModalidadesEstadual" [options]="graficoBarrasModalidadesOptions" responsive="true"></p-chart>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Distribuição dos Empenhos Estaduais Pagos por Valores" [toggleable]="true">
+        <p-chart type="bar" [data]="dnaGraficoValoresEstadual" [options]="graficoBarrasValoresOptions" responsive="true"></p-chart>
+      </p-panel>
+    </div>
+  </div>
+</div>
+
+<div class="ui-g-12">
+  <div class="p-card p-0 b-0">
+    <p-panel header="Distribuição dos Empenhos Municipais Pagos por Localidade" [toggleable]="true">
+      <app-mapa-dna [dados]="dados"></app-mapa-dna>
+    </p-panel>
+  </div>
+</div>
+
+<div class="ui-g-6 ui-sm-12">
+  <app-dna-ranking-empenho
+    [dados]="dados"
+    tipo="topempenhomunicipal"
+    cabecalho="Top 5 de Empenhos Municipais Pagos">
+  </app-dna-ranking-empenho>
+</div>
+
+<div class="ui-g-6 ui-sm-12">
+  <app-dna-ranking-empenho
+    [dados]="dados"
+    tipo="topempenhoestadual"
+    cabecalho="Top 5 de Empenhos Estaduais Pagos">
+  </app-dna-ranking-empenho>
+</div>
+
+<div class="ui-g-12">
+  <div class="p-card mb-0 iguala-alturas">
+    <div class="p-card-subtitulo text-center">Análises de Vínculos</div>
+  </div>
+</div>
+
+<div class="ui-g-12">
+  <app-dna-empresas-mesmo-email
+    [dados]="dados">
+  </app-dna-empresas-mesmo-email>
+</div>
+
+<div class="ui-g-12">
+  <app-dna-empresas-mesmo-telefone
+    [dados]="dados">
+  </app-dna-empresas-mesmo-telefone>
+</div>
+
+<div class="ui-g-12">
+  <div class="p-card mb-0 iguala-alturas">
+    <div class="p-card-subtitulo text-center">Dados Eleitorais</div>
+  </div>
+</div>
+
+<app-dna-informacoes-eleitorais
+  [dados]="dados">
+</app-dna-informacoes-eleitorais>
+
+
+<div class="ui-g-12">
+  <div class="p-card mb-0">
+    <div class="p-card-subtitulo text-center">Tipologias</div>
+  </div>
+</div>
+
+<div class="ui-g-12">
+  <div class="p-card p-0 b-0">
+    <app-dna-tipologias
+      [dados]="dados">
+    </app-dna-tipologias>
+  </div>
+</div>

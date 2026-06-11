@@ -1,0 +1,51 @@
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="p-card mb-0 text-center ui-corner-all">
+      <span class="p-card-titulo">Organizações Criminosas</span>
+
+      <div class="to-right">
+        <a *ngIf="isMobile" (click)="resetaBusca()" class="to-right text-primary export-button pointer link-retornar" ><span>Retornar</span></a>
+        <a *ngIf="!isMobile && buscaFinalizada" (click)="resetaBusca()" class="to-right text-primary export-button pointer link-retornar"><span>Refazer</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-corner-all">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pt-2">As informações veiculadas quanto eventual participação do alvo pesquisado em uma organização criminosa, não devem ser colacionadas em procedimentos, uma vez que trata-se de informações de inteligência, logo são reservadas.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaFinalizada">
+    <div class="p-card b-0 p-0">
+      <p-panel header="Parâmetros de Busca" [toggleable]="true">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-g-2 ui-sm-12">
+              <span style="font-weight: bold">Organização Criminosa:</span>
+            </div>
+
+            <div class="ui-g-4 ui-sm-12">
+              <p-dropdown [options]="organizacoesCriminosasList" [(ngModel)]="organizacaoSelecionada" filter="true" [showClear]="true" placeholder="Escolha uma Organização Criminosa"></p-dropdown>
+            </div>
+
+            <div class="ui-g-6 ui-sm-12 ui-fluid">
+              <button pButton (click)="onPesquisarOrganizacao()" type="button" icon="pi pi-search" label="Buscar"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <div *ngIf="buscaSucesso">
+    <app-orcrim-dashboard
+      [dados]="dadosOrganizacaCriminosa">
+    </app-orcrim-dashboard>
+  </div>
+
+</div>

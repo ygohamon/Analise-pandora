@@ -1,0 +1,222 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+        <span class="p-card-titulo">SEFAZML - Itens com preços suspeitos</span>
+
+        <div class="to-right text-primary export-button pointer link-retornar">
+          <span (click)="iniciar()">
+            Retornar
+            <i class="fa fa-reply"></i>
+          </span>
+        </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Parâmetros de busca" [toggleable]="true">
+        <ul class="text-justify">
+            <li class="pb-1">Analisa a aquisição de produtos pelo ente público com preços suspeitos (a mais ou a menos), considerada a média de preços do produto.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div  class="ui-g-12 ui-fluid">
+    <div class="p-card">
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Nome do produto</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <p-autoComplete
+              [(ngModel)]="produtoSelecionado" [suggestions]="produtosEncontrados" (completeMethod)="pesquisaProduto($event)"
+              field="NomeProduto" placeholder="digite o nome do produto" [minLength]="3" forceSelection="true" required="true">
+            </p-autoComplete>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Município do ente publico</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <p-autoComplete
+              [(ngModel)]="municipioDestinatario" [suggestions]="municipiosEncontrados" (completeMethod)="pesquisaMunicipio($event)"
+              field="municipio" placeholder="digite o nome do município" [minLength]="1" [dropdown]="false" forceSelection="true" required="true">
+            </p-autoComplete>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+            <span style="font-size: 16px; font-weight: 600;">CNPJ fornecedor</span>
+          </div>
+
+          <div class="ui-g-12 ui-md-8">
+            <p-inputMask
+            [(ngModel)]="cnpjEmitente"
+            mask="99.999.999/9999-99"
+            tooltipPosition="bottom"></p-inputMask >
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+            <span style="font-size: 16px; font-weight: 600;">CNPJ Destinatário</span>
+          </div>
+
+          <div class="ui-g-12 ui-md-8">
+            <p-inputMask
+            [(ngModel)]="cnpjDestinatario"
+            mask="99.999.999/9999-99"
+            tooltipPosition="bottom"></p-inputMask >
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Período</span>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <p-calendar
+            [(ngModel)]="dtInicio"
+            [locale]="pt_br"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"            
+            placeholder="Data inicial"
+            (keyup)="utils.onKeyDate($event)"
+            >
+            </p-calendar>
+          </div>
+          <div class="ui-g-12 ui-md-4">
+            <p-calendar
+            [(ngModel)]="dtFim"
+            [locale]="pt_br"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"            
+            placeholder="Data final"
+            (keyup)="utils.onKeyDate($event)"
+            >
+            </p-calendar>
+          </div>
+          <!-- <div class="ui-g-12 ui-md-3">
+            <p-inputMask placeholder="Data Final" [(ngModel)]="dtFim" mask="99/99/9999"></p-inputMask>
+          </div> -->
+          
+
+          <!-- <div class="ui-g-12 ui-md-8">
+              <p-calendar
+                  [(ngModel)]="intervaloAnalise"
+                  [locale]="pt_br"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  selectionMode="range"
+                  (keyup)="onKeyDate($event)"
+                  >
+              </p-calendar>
+          </div>
+           -->
+        </div>
+
+        
+       
+        <!-- <div class="ui-sm-12 ui-g-6 ui-xl-4">
+          <div class="ui-g-12 ui-md-4">
+              <span style="font-size: 16px; font-weight: 600;">Município do ente publico:</span>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <p-autoComplete
+              [(ngModel)]="municipioDestinatario" [suggestions]="municipiosEncontrados" (completeMethod)="pesquisaMunicipio($event)"
+              field="municipio" placeholder="Municípios" [minLength]="1" [dropdown]="true" forceSelection="true" required="true">
+            </p-autoComplete>
+          </div>
+        </div>     -->
+
+
+          <div class="ui-g-12 mt-4">
+
+            <div class="ui-g-4 ui-sm-12"></div>
+            <div class="ui-g-4 ui-sm-12">
+              <button pButton type="button" icon="pi pi-search" label="Buscar" (click)="Buscar()"></button>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizadaSucesso">
+    <div class="p-card p-0 b-0">
+      <p-table
+            #dt        
+            [columns]="dicionarioBase"
+            [value]="itensAnomalos"           
+            exportFilename="itensDiscrepantes"
+            [responsive]="true"
+            [paginator]="true"
+            [autoLayout]="true"
+            [rows]="50">
+
+            <ng-template pTemplate="caption">
+              <div class="p-card-subtitulo my-2 text-left d-flex">
+                Itens suspeitos
+    
+                <div class="export-button pointer text-primary ml-auto" (click)="dt.exportCSV()">
+                  <span>CSV</span>
+                  <i class="pi pi-download"></i>
+                </div>
+              </div>
+    
+              <div style="text-align: left; padding: 10px 0px 5px 0px;" *ngIf="utils.isMobile()">
+                <i class="pi pi-search mr-2"></i>
+                <input type="text" pInputText placeholder="Filtro Global" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:90%">
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+              </tr>
+              <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">                  
+                  <input *ngSwitchDefault placeholder="Busca" pInputText type="text" style="width:100%" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">              
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span title="Detalhar produto" *ngSwitchCase="'nomeProduto'">
+                    <a target='_blank' [routerLink]="['/dashboard/apps/sefazML/dashboard']" [queryParams]='{idItem: utils.codificaDado(rowData.IdItem)}' class="primary-text">{{rowData.nomeProduto}}</a>
+                  </span>
+
+                  <span *ngSwitchCase="'CNPJEmitente'">
+                    <a target="blank" [routerLink]="['/dashboard/pesquisa/integrado/empresa']" [queryParams]='{cnpj: utils.codificaDado(rowData.CNPJEmitente)}' style="color: #3984b8;">{{utils.formataDado(rowData.CNPJEmitente, '##.###.###/####-##')}}</a>
+                  </span>
+                  <span *ngSwitchCase="'CNPJDestinatario'">
+                    {{utils.formataDado(rowData.CNPJDestinatario, '##.###.###/####-##')}}
+                  </span>
+                  <span *ngSwitchCase="'ValorUnitario'">
+                    {{utils.converteEmDinheiroFormatoBrasileiro(rowData.ValorUnitario)}}
+                  </span>
+                  <span *ngSwitchCase="'dataEmissao'">{{utils.formataData(rowData.dataEmissao)}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizadaFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

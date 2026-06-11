@@ -1,0 +1,49 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Cadastro de Endereços</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+          <ul class="text-justify">
+            <li class="pb-1">Preencha todos os campos para o cadastro do registro.</li>
+          </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <div class="ui-g form-group ui-fluid" >
+        <form #cadastroForm="ngForm" (ngSubmit)="onCadastroSubmit(cadastroForm)" style="width: 100%; width: -webkit-fill-available; width: -moz-available;">
+
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="cpf">CPF: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <p-inputMask name="cpf"  mask="999.999.999-99" placeholder="999.999.999-99" maxlength="14" minLength="14" ngModel required></p-inputMask>
+              </div>
+          </div>
+
+
+
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="telefone">Telefone: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <p-inputMask name="telefone" [(ngModel)]="telefoneMask" mask="(99) 9999-9999?9"  placeholder="(99) 9999-9999" required></p-inputMask>
+              </div>
+          </div>
+
+          <div class="ui-g-4 ui-sm-12"></div>
+          <div class="ui-g-4 ui-sm-12" style="margin-top: 40px;">
+              <button pButton type="submit" icon="fa fa-paper-plane" label="Enviar" [disabled]="!cadastroForm.valid"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,182 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-dataView #dv [value]="boletimOcorrencia" 
+            [paginator]="true"
+            [rows]="1"
+            [rowsPerPageOptions]="[1, 5, 10]"
+            emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+            <p-header style="text-align: center;">Boletins de Ocorrência</p-header>
+            <p-footer>{{utils.getFooterResultado(dv.totalRecords)}}</p-footer>
+
+            <ng-template let-bo pTemplate="listItem">
+                <div class="ui-g-12 ui-sm-12">
+                    <div class="ui-g-12" *ngIf="!!bo.numeroBo">
+                        <div class="ui-g-4 pandora-atributo">Número do Boletim de Ocorrência</div>
+                        <div class="ui-g-8">{{bo.numeroBo}}</div>
+                    </div>
+                    
+                    <div class="ui-g-12" *ngIf="!!bo.nome">
+                        <div class="ui-g-4 pandora-atributo">Nome</div>
+                        <div class="ui-g-8">{{bo.nome}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.alcunha">
+                        <div class="ui-g-4 pandora-atributo">Alcunha</div>
+                        <div class="ui-g-8">{{bo.alcunha}}</div>
+                    </div>
+                
+                    <div class="ui-g-12" *ngIf="!!bo.qualificacao">
+                        <div class="ui-g-4 pandora-atributo">Qualificação</div>
+                        <div class="ui-g-8">{{bo.qualificacao}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.estadoCivil">
+                        <div class="ui-g-4 pandora-atributo">Estado Cívil</div>
+                        <div class="ui-g-8">{{bo.estadoCivil}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.orientacaoSexual">
+                        <div class="ui-g-4 pandora-atributo">Orientação Sexual</div>
+                        <div class="ui-g-8">{{bo.orientacaoSexual}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.genero">
+                        <div class="ui-g-4 pandora-atributo">Gênero</div>
+                        <div class="ui-g-8">{{bo.genero}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.nacionalidade">
+                        <div class="ui-g-4 pandora-atributo">Nacionalidade</div>
+                        <div class="ui-g-8">{{bo.nacionalidade}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.profissao">
+                        <div class="ui-g-4 pandora-atributo">Profissão</div>
+                        <div class="ui-g-8">{{bo.profissao}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.naturalidade">
+                        <div class="ui-g-4 pandora-atributo">Naturalidade</div>
+                        <div class="ui-g-8">{{bo.naturalidade}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.cor">
+                        <div class="ui-g-4 pandora-atributo">Cor</div>
+                        <div class="ui-g-8">{{bo.cor}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.escolaridade">
+                        <div class="ui-g-4 pandora-atributo">Escolaridade</div>
+                        <div class="ui-g-8">{{bo.escolaridade}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.nomeMae">
+                        <div class="ui-g-4 pandora-atributo">Nome da Mãe</div>
+                        <div class="ui-g-8">{{bo.nomeMae}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.nomePai">
+                        <div class="ui-g-4 pandora-atributo">Nome do Pai</div>
+                        <div class="ui-g-8">{{bo.nomePai}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.foneResidencial">
+                        <div class="ui-g-4 pandora-atributo">Fone Residencial</div>
+                        <div class="ui-g-8">{{bo.foneResidencial}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.endereco">
+                        <div class="ui-g-4 pandora-atributo">Endereço</div>
+                        <div class="ui-g-8">{{bo.endereco}}, {{bo.numero}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.complemento">
+                        <div class="ui-g-4 pandora-atributo">Complemento</div>
+                        <div class="ui-g-8">{{bo.complemento}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.bairro">
+                        <div class="ui-g-4 pandora-atributo">Bairro</div>
+                        <div class="ui-g-8">{{bo.bairro}}</div>
+                    </div>
+
+                    <div class="ui-g-12" *ngIf="!!bo.pontoReferencia">
+                        <div class="ui-g-4 pandora-atributo">Ponto de Referência</div>
+                        <div class="ui-g-8">{{bo.pontoReferencia}}</div>
+                    </div>
+                </div>
+
+                <div class="ui-g-12" style="text-align: center; font-size: 1.3em;" *ngIf="!!bo.dados_ocorrencias">
+                    <p-header><strong>Ocorrências</strong></p-header>
+                </div>
+
+                <div class="ui-g-12 ui-sm-12" *ngFor="let ocorr of bo.dados_ocorrencias; let i = index">
+                    <p-fieldset>
+                        <div class="ui-g-12" *ngIf="!!ocorr.natureza">
+                            <div class="ui-g-4 pandora-atributo">Natureza</div>
+                            <div class="ui-g-8">{{ocorr.natureza}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.tipificacao">
+                            <div class="ui-g-4 pandora-atributo">Tipificação</div>
+                            <div class="ui-g-8">{{ocorr.tipificacao}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.situacaoCrime">
+                            <div class="ui-g-4 pandora-atributo">Situação Crime</div>
+                            <div class="ui-g-8">{{ocorr.situacaoCrime}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.ocorrenciaLocal">
+                            <div class="ui-g-4 pandora-atributo">Local da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.ocorrenciaLocal}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.ocorrenciaBairro">
+                            <div class="ui-g-4 pandora-atributo">Bairro da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.ocorrenciaBairro}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.ocorrenciaCidade">
+                            <div class="ui-g-4 pandora-atributo">Cidade da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.ocorrenciaCidade}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.ocorrenciaAnoRegistro">
+                            <div class="ui-g-4 pandora-atributo">Ano da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.ocorrenciaAnoRegistro}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.statusOcorrencia">
+                            <div class="ui-g-4 pandora-atributo">Status da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.statusOcorrencia}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.dataOcorrencia">
+                            <div class="ui-g-4 pandora-atributo">Data da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.dataOcorrencia}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.horaOcorrencia">
+                            <div class="ui-g-4 pandora-atributo">Hora da Ocorrência</div>
+                            <div class="ui-g-8">{{ocorr.horaOcorrencia}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.nomeDelegaciaCadastro">
+                            <div class="ui-g-4 pandora-atributo">Delegacia de Cadastro</div>
+                            <div class="ui-g-8">{{ocorr.nomeDelegaciaCadastro}}</div>
+                        </div>
+                        
+                        <div class="ui-g-12" *ngIf="!!ocorr.nomeDelegaciaResponsavel">
+                            <div class="ui-g-4 pandora-atributo">Delegacia Responsável</div>
+                            <div class="ui-g-8">{{ocorr.nomeDelegaciaResponsavel}}</div>
+                        </div>
+
+                        <div class="ui-g-12" *ngIf="!!ocorr.nomeDelegaciaResponsavel"></div>
+                    </p-fieldset>
+                </div>
+            </ng-template>
+        </p-dataView>
+    </div>
+</div>

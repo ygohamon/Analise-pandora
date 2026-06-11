@@ -1,0 +1,188 @@
+<div class="ui-g">
+
+    <div class="ui-g-12 pb-2" *ngIf="dataProcessoTJPB.length > 0">
+
+        <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 12px; font-size: 12px; font-weight: 600; text-align: justify;">
+            Atenção: As buscas por processos são feitas através do nome, portanto são sujeitas a ocorrência de homônimos. <br>
+            As informações aqui apresentadas revelam apenas a presença de uma pessoa como parte de um processo, porém não expõe a posição dela no mesmo.<br>
+            Para maiores informações consultar o processo em <a href="https://app.tjpb.jus.br/consultaprocessual2/views/inicio.jsf" style="color: #3984b8;">TJ/PB</a>.
+        </div>
+
+        <div class="ui-g-12 py-2">
+          <pandora-table
+            caption="Processos - Fonte: TJPB (SISCOM, PJE, EJUS, etc)"
+            exportFilename="processos_tjpb"
+            [value]="dataProcessoTJPB"
+            [dicionarioDados]="dicionarioDadosTJPB">
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                  <span class="ui-column-title">{{col.header}}</span>
+
+                  <span *ngSwitchCase="'dataDistribuicao'">{{rowData.dataDistribuicao * 1000 | date:'dd/MM/yyyy'}}</span>
+                  <span *ngSwitchCase="'sigilo'">{{utils.formataSimNao(rowData.sigilo)}}</span>
+                  <span *ngSwitchCase="'transitouJulgado'">{{utils.formataSimNao(rowData.transitouJulgado)}}</span>
+                  <span *ngSwitchCase="'valorAcao'">{{utils.converteEmDinheiro(rowData.valorAcao)}}</span>
+                  <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </pandora-table>
+        </div>
+
+        <div class="ui-g-12" style="height: 30px;"></div>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataProcesso.length > 0">
+      <pandora-table
+        caption="Processos - Fonte: JUDPB (VEP)"
+        exportFilename="processos_vep"
+        [value]="dataProcesso"
+        [dicionarioDados]="dicionarioDadosVEP">
+      </pandora-table>
+
+      <div class="ui-g-12" style="height: 30px;"></div>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataProgressaoPena.length > 0">
+      <pandora-table
+        caption="Progressão Pena - Fonte: JUDPB (VEP)"
+        exportFilename="progressao_pena"
+        [value]="dataProgressaoPena"
+        [dicionarioDados]="dicionarioDadosPP">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEI.length > 0">
+      <pandora-table
+        caption="Contas Eleitorais Irregulares"
+        exportFilename="progressao_pena"
+        [value]="dataCEI"
+        [dicionarioDados]="dicionarioDadosCEI">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataTREPB.length > 0">
+      <pandora-table
+        caption="Condenações - Fonte: TCE-PB"
+        exportFilename="condenacoes_tcepb"
+        [value]="dataTREPB"
+        [dicionarioDados]="dicionarioDados_TCEPB">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataTRF5.length > 0">
+      <pandora-table
+        caption="Condenações - Fonte: TRF5-PB"
+        exportFilename="condenacoes_trf5"
+        [value]="dataTRF5"
+        [dicionarioDados]="dicionarioDados_TRF5">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEIS.length > 0">
+      <pandora-table
+        caption="CEIS"
+        exportFilename="condenacoes_ceis"
+        [value]="dataCEIS"
+        [dicionarioDados]="dicionarioDadosCEIS">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCNEP.length > 0">
+      <pandora-table
+        caption="CNEP - Fonte: Transparência Federal"
+        exportFilename="cnep"
+        [value]="dataCNEP"
+        [dicionarioDados]="dicionarioDadosCNEP">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEAF.length > 0">
+      <pandora-table
+        caption="CEAF - Fonte: Transparência Federal"
+        exportFilename="ceaf"
+        [value]="dataCEAF"
+        [dicionarioDados]="dicionarioDadosCEAF">
+      </pandora-table>
+    </div>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCEIST.length > 0">
+      <pandora-table
+        caption="CEIS - Fonte: Transparência Federal"
+        exportFilename="ceis_transparencia"
+        [value]="dataCEIST"
+        [dicionarioDados]="dicionarioDadosCEIST">
+      </pandora-table>
+    </div>
+
+    <app-pgfn-dividaativa-table
+      [dados]=data>
+    </app-pgfn-dividaativa-table>
+
+    <div class="ui-g-12 pb-2" *ngIf="dataCadicon.length > 0">
+      <pandora-table
+        caption="Cadicon - Fonte: BD"
+        exportFilename="condenacoes_cadicon"
+        [value]="dataCadicon"
+        [dicionarioDados]="dicionarioDadosCadicon">
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+
+              <span *ngSwitchCase="'dataTransitoJulgado'">{{utils.formataData(rowData.dataTransitoJulgado)}}</span>
+              <span *ngSwitchCase="'acordao'">
+                <a href="{{rowData.urlAcordao}}" style="color: #3984b8;">{{rowData.acordao}}</a>
+              </span>
+              <span *ngSwitchCase="'processo'">
+                <a href="{{rowData.urlProcesso}}" style="color: #3984b8;">{{rowData.processo}}</a>
+              </span>
+              <span *ngSwitchCase="'vDebito'">R$ {{utils.converteEmDinheiro(rowData.vDebito)}}</span>
+              <span *ngSwitchCase="'vMulta'">R$ {{utils.converteEmDinheiro(rowData.vMulta)}}</span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </pandora-table>
+    </div>
+
+    <ng-container *ngIf="dataCondenacaoTCU.length > 0">
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+        Os dados abaixo foram coletados em tempo real diretamente do webservice do TCU
+      </div>
+
+      <div class="ui-g-12 pb-2">
+        <app-tcu-condenacao-table
+          [dados]=dataCondenacaoTCU>
+        </app-tcu-condenacao-table>
+      </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="dataAcordaoTCU.length > 0">
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+        Os dados abaixo foram coletados em tempo real diretamente do webservice do TCU
+      </div>
+
+      <div class="ui-g-12 pb-2">
+        <app-tcu-acordao-table
+          [dados]=dataAcordaoTCU>
+        </app-tcu-acordao-table>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="dataProcessoTCU.length > 0">
+      <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+        Os dados abaixo foram coletados em tempo real diretamente do webservice do TCU
+      </div>
+
+      <div class="ui-g-12 pb-2">
+        <app-tcu-processo-table
+          [dados]=dataProcessoTCU>
+        </app-tcu-processo-table>
+      </div>
+    </ng-container>
+</div>

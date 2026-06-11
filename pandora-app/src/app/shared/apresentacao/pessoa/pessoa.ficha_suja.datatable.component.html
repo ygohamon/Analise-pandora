@@ -1,0 +1,58 @@
+<div class="ui-g">
+  <div class="ui-g-12 my-2 pl-3 font-weight-bold text-justify" style="font-size: 12px">
+    A tabela abaixo apresenta os dados detalhados referente as informações que constam na base de dados de Ficha Suja.
+  </div>
+
+  <div class="ui-g-12">
+    <pandora-table
+      #dt_fichasuja
+      caption="Ficha Suja - Detalhado"
+      exportFilename="tabela_fichasuja"
+      dataKey="id"
+      [value]="fichaSuja"
+      [dicionarioDados]="dicionarioDadosCompleto"
+      [dicionarioDadosExpand]="dicionarioDadosExpandCompleto"
+    >
+
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 3em"></th>
+          <th *ngFor="let col of columns" [pandoraSortableColumn]="col.field">
+            {{col.header}}
+            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+        <tr>
+          <td>
+            <a href="#" [pandoraRowToggler]="rowData">
+              <i class="pointer" [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+              <!-- aqui é onde ẽ chamado os items -->
+            </a>
+          </td>
+
+          <td *ngFor="let col of columns" [ngSwitch]="col.field">
+            <span class="ui-column-title">{{col.header}}</span>
+
+            <!-- <span *ngSwitchCase="'dataAtualizacao'">{{utils.formataData(rowData.dataAtualizacao)}}</span> -->
+            <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+          </td>
+        </tr>
+      </ng-template>
+    </pandora-table>
+  </div>
+
+  <div class="ui-g-12 my-2 pl-3 text-justify" style="font-size: 12px">
+    <strong>ATENÇÃO:</strong> Em todos os casos, é necessária a verificação com o tribunal de origem sobre a manutenção da
+    decisão que se enquadra como ficha-suja e confirmação que ela se adequa ao normativo da Lei Complementar nº 135, de 2010.
+    Nos casos do Tribunais de Contas, é necessária verificação dos fundamentos e dispositivo da condenação do
+    Tribunal de Contas, bem como inexistência de processo judicial anulatório, pois a norma define como inelegíveis
+    para as eleições dos próximos oito anos, contados a partir da decisão tomada, aqueles que tiverem suas contas de
+    exercício de cargos ou funções públicas rejeitadas por <strong>irregularidade insanável</strong> que configure
+    <strong>ato doloso de improbidade administrativa</strong>, e por <strong>decisão irrecorrível</strong> do
+    órgão competente (Tribunal de Contas, por exemplo), salvo se esta houver sido suspensa ou anulada pelo Poder Judiciário.
+  </div>
+
+</div>

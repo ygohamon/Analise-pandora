@@ -1,0 +1,166 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Caça Fantasmas</span>
+
+      <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaTipologiasFinalizadaSucesso">
+        <span (click)="resetaBusca()">
+          Retornar
+          <i class="fa fa-reply"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaTipologiasFinalizadaSucesso">
+
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true" [collapsed]="esconderPainel">
+          <ul class="text-justify">
+              <li class="pb-1">O Caça Fantasmas analisa um órgão em busca de indícios de servidores 'fantasmas'.</li>
+              <li class="pb-1">O sistema aplica diversas regras de forma a gerar uma matriz de riscos.</li>
+              <li class="pb-1 font-weight-bold">O presente cruzamento de dados se funda em tipologias e tem por objetivo apontar um caminho a ser observado, não revela conclusões, mas tão somente hipóteses que devem ser confirmadas segundo metodologias próprias.</li>
+              <li class="pb-1">Atualmente existem <strong>15</strong> tipologias analisando os órgãos.</li>
+
+              <li class="pb-1"><strong>T1:</strong> Lista os servidores que receberam pagamentos pela folha do órgão após sua data de óbito.</li>
+              <li class="pb-1"><strong>T2:</strong> Lista os servidores que foram empenhados junto ao órgão após sua data de óbito.</li>
+
+              <li class="pb-1"><strong>T3:</strong> Lista os servidores que apresentam residência declarada na Receita Federal em uma microrregião diferente da microrregião do órgão analisado.</li>
+              <li class="pb-1"><strong>T4:</strong> Lista os servidores que apresentam residência pela Receita Estadual em uma microrregião diferente da microrregião do órgão analisado.</li>
+
+              <li class="pb-1"><strong>T5:</strong> Lista os servidores que sejam sócios em Pessoa Jurídica.</li>
+              <li class="pb-1"><strong>T6:</strong> Lista os servidores que sejam responsáveis por Pessoa Jurídica.</li>
+
+              <li class="pb-1"><strong>T7:</strong> Lista os servidores que tenham vínculos em outros órgãos enquanto servidor do órgão analisado.</li>
+              <li class="pb-1"><strong>T8:</strong> Lista os servidores que tenham vínculos em empresas privadas enquanto servidor do órgão analisado.</li>
+
+              <li class="pb-1"><strong>T9:</strong> Lista os servidores que tenham declaração de analfabetos.</li>
+              <li class="pb-1"><strong>T10:</strong> Lista os servidores que receberam Bolsa Família.</li>
+              <li class="pb-1"><strong>T11:</strong> Lista os servidores que receberam Bolsa Família e são proprietários de veículos automotores.</li>
+
+              <li class="pb-1"><strong>T12:</strong> Lista os servidores que apresentam conta bancária idêntica a de outros servidores.</li>
+
+              <li class="pb-1"><strong>T13:</strong> Lista os servidores que tenham score nas tipologias do TCU.</li>
+              <li class="pb-1"><strong>T14:</strong> Lista os servidores que tenham score de doadores de campanha nas tipologias do TCU.</li>
+              <li class="pb-1"><strong>T15:</strong> Lista os servidores que apresentem um CPF inexistente na RF.</li>
+
+              <!-- <li class="pb-1"><strong>T8:</strong> Lista os servidores que apresentam vínculos diversos aos do órgão durante o período analisado.</li> -->
+          </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaTipologiasFinalizadaSucesso">
+    <div class="p-card">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <h3>Selecione os parâmetros para análise:</h3>
+            <!-- <span style="font-size: 16px; font-weight: 600;">Selecione um intervalo de tempo e órgão para análise</span> -->
+        </div>
+
+        <div class="ui-g-6 ui-sm-12">
+            <!-- <div class="ui-g-12">
+                <div class="ui-g-3 ui-sm-3">
+                    <span style="font-weight: bold">Tipo:</span>
+                </div>
+                <div class="ui-g-9 ui-sm-9">
+                    <p-dropdown [style]="{'width':'100%'}" [options]="tiposAnalise" [(ngModel)]="tipoAnaliseSelecionada"></p-dropdown>
+                </div>
+            </div> -->
+
+            <div class="ui-g-12">
+                <div class="ui-g-3 ui-sm-3">
+                    <span style="font-weight: bold">Período:</span>
+                </div>
+                <div class="ui-g-9 ui-sm-9">
+                    <p-calendar
+                        [(ngModel)]="intervaloAnalise"
+                        [locale]="pt_br"
+                        [showIcon]="true"
+                        dateFormat="dd/mm/yy"
+                        selectionMode="range">
+                    </p-calendar>
+                </div>
+            </div>
+
+            <div class="ui-g-12">
+                <div class="ui-g-3 ui-sm-3">
+                    <span style="font-weight: bold">Órgão:</span>
+                </div>
+                <div class="ui-g-9 ui-sm-9">
+                    <p-autoComplete [(ngModel)]="orgao" [suggestions]="orgaosEncontrados" (completeMethod)="buscaOrgao($event)" field="ugestora"
+                        placeholder="Órgão" [minLength]="1" [dropdown]="true" forceSelection="true" required="true"></p-autoComplete>
+                </div>
+            </div>
+
+            <div class="ui-g-12 ui-sm-12">
+                <button pButton (click)="onGerarAnalise()" type="button" icon="pi pi-search" label="Analisar"></button>
+            </div>
+        </div>
+
+        <div class="ui-g-6 ui-sm-12" style="border: 1px solid #e0e0e0;">
+            <h3>{{resumoAnalise[tipoAnaliseSelecionada].titulo}}</h3>
+            <div class="ui-g-12 ui-sm-12" style="text-align: justify">
+                <span style="font-style: italic">
+                    {{resumoAnalise[tipoAnaliseSelecionada].conteudo}}
+                </span>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaTipologiasFinalizadaSucesso">
+
+    <app-cacafantasmas-analise-geral
+      *ngIf="tipoAnaliseSelecionada === 'geral'"
+      [orgao]="orgao.ugestora"
+      [data]="resultadoAnalise">
+    </app-cacafantasmas-analise-geral>
+<!--
+        <app-cacafantasmas-analise-fp-sisobi
+          *ngIf="tipoAnaliseSelecionada === 't1'"
+          [orgao]="orgao.ugestora"
+          [data]="resultadoAnalise">
+        </app-cacafantasmas-analise-fp-sisobi> -->
+<!--
+        <app-cacafantasmas-analise-empenhos-sisobi
+          *ngIf="tipoAnaliseSelecionada === 't2'"
+          [orgao]="orgao.ugestora"
+          [data]="resultadoAnalise">
+        </app-cacafantasmas-analise-empenhos-sisobi> -->
+<!--
+        <app-cacafantasmas-analise-fp-municipio-rf
+          *ngIf="tipoAnaliseSelecionada === 't3'"
+            [orgao]="orgao.ugestora"
+            [data]="resultadoAnalise">
+        </app-cacafantasmas-analise-fp-municipio-rf> -->
+<!--
+        <app-cacafantasmas-analise-fp-municipio-re
+          *ngIf="tipoAnaliseSelecionada === 't4'"
+            [orgao]="orgao.ugestora"
+            [data]="resultadoAnalise">
+        </app-cacafantasmas-analise-fp-municipio-re> -->
+<!--
+        <app-cacafantasmas-analise-fp-socio-pj
+          *ngIf="tipoAnaliseSelecionada === 't5'"
+            [orgao]="orgao.ugestora"
+          [data]="resultadoAnalise">
+        </app-cacafantasmas-analise-fp-socio-pj> -->
+
+        <!-- <app-cacafantasmas-analise-fp-responsavel-pj
+          *ngIf="tipoAnaliseSelecionada === 't5'"
+          [data]="resultadoAnalise[tipoAnaliseSelecionada]">
+        </app-cacafantasmas-analise-fp-responsavel-pj> -->
+<!--
+        <app-cacafantasmas-analise-fp-extravinculo
+          *ngIf="tipoAnaliseSelecionada === 't8'"
+          [data]="resultadoAnalise">
+        </app-cacafantasmas-analise-fp-extravinculo> -->
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaTipologiasFinalizadaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

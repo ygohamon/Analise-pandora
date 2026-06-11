@@ -1,0 +1,40 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Estatísticas</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-tabView (onChange)="onTabChange($event)">
+
+        <p-tabPanel header="Rankings">
+          <app-sistema-rankings></app-sistema-rankings>
+        </p-tabPanel>
+
+        <p-tabPanel header="Recursos">
+          <app-sistema-recursos></app-sistema-recursos>
+        </p-tabPanel>
+
+        <p-tabPanel header="Distribuição">
+          <app-sistema-parametros-pesquisa></app-sistema-parametros-pesquisa>
+        </p-tabPanel>
+
+        <p-tabPanel header="Estatísticas">
+          <app-sistema-utilizacao></app-sistema-utilizacao>
+        </p-tabPanel>
+
+        <p-tabPanel header="Não Encontrados">
+          <app-sistema-naoencontrados></app-sistema-naoencontrados>
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+</div>

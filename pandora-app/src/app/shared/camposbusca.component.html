@@ -1,0 +1,81 @@
+<div class="ui-g-12" *ngIf="titulo">
+    <div class="p-card">
+        <span class="p-card-titulo">{{titulo}}</span>
+
+        <div class="to-right text-primary export-button pointer" *ngIf="isMobile || (!isMobile && buscaFinalizada)">
+          <span (click)="desconfirmaCampoSelecionado()" class="link-retornar">
+            Retornar
+            <i class="fa fa-reply"></i>
+          </span>
+        </div>
+    </div>
+</div>
+
+<ng-content></ng-content>
+
+<div class="ui-g-12 ui-fluid" *ngIf="isMobile && !mostraInput && !buscaFinalizada">
+  <div class="p-card">
+    <div class="ui-g ui-fluid">
+
+      <div class="ui-g-6" *ngFor="let campo of mobileCampos">
+        <button pButton (click)="setaCampoSelecionado(campo)" label="{{campo.label}}"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui-g-12 ui-fluid" *ngIf="isMobile && mostraInput && !buscaFinalizada">
+  <div class="p-card">
+    <div class="ui-g">
+      <div class="ui-g-12 p-card-subtitulo">
+        <span>{{getCampoData().nome}}</span>
+      </div>
+      <div class="ui-g-12">
+        <input type="text" [(ngModel)]="mobileConteudoCampo" pTooltip="{{getCampoData().dica}}" tooltipPosition="top" tooltipEvent="focus" pInputText/>
+      </div>
+      <div class="ui-g-12">
+        <button pButton (click)="confirmaConteudoBusca()" label="Busca"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui-g-12 ui-fluid" *ngIf="!isMobile && !buscaFinalizada">
+
+  <div class="p-card b-0 p-0">
+    <p-panel
+        header="Parâmetros de busca"
+        [toggleable]="true"
+        [collapsed]="buscaFinalizada">
+
+      <form (ngSubmit)="onPesquisa(pesquisaForm)" #pesquisaForm="ngForm">
+          <div class="ui-g ui-fluid">
+
+              <div class="ui-sm-12 ui-g-6 ui-xl-4" *ngFor="let fCampo of campos; let i = index">
+                  <div class="ui-g-12 ui-md-4">
+                      <label class="pandora-atributo" for="{{fCampo.id}}">{{fCampo.nome}}</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-8">
+                      <input
+                          type="text"
+                          id="{{fCampo.id}}"
+                          name="{{fCampo.id}}"
+                          [disabled]="desabilitaCampo(pesquisaForm, i)"
+                          pTooltip="{{fCampo.dica}}"
+                          tooltipPosition="bottom" ngModel pInputText/>
+                  </div>
+              </div>
+
+              <div class="ui-g-12 mt-4">
+
+                  <div class="ui-g-4 ui-sm-12"></div>
+                  <div class="ui-g-4 ui-sm-12">
+                      <button pButton type="submit" icon="pi pi-search" label="Buscar" [disabled]="desabilitaButao(pesquisaForm)"></button>
+                  </div>
+              </div>
+          </div>
+
+      </form>
+    </p-panel>
+  </div>
+</div>

@@ -1,0 +1,1 @@
+export * from './painelcovid.model';

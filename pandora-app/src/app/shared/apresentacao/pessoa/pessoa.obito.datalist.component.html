@@ -1,0 +1,214 @@
+<div class="ui-g">
+
+  <div class="ui-g-12 p-0">
+    <p-dataView #dt [value]="obitos" [paginator]="true" [rows]="1" emptyMessage="{{msgRegistroNaoEncontrado}}">
+
+      <p-header>
+        <div class="w-100 text-center">
+          Registro de Óbito
+        </div>
+      </p-header>
+      <!-- <p-footer>{{dt.totalRecords}} registros encontrados</p-footer> -->
+
+      <ng-template let-obito let-i="index" pTemplate="listItem">
+        <div class="ui-g" style="border-bottom:1px solid #D5D5D5;">
+          <div class="ui-g-12 ui-sm-12">
+
+            <div class="ui-g-12 text-center font-weight-bold">
+              Registro {{obito.index+1}}
+            </div>
+
+              <div class="ui-g-12 py-3 font-weight-bold text-center">Informações do Cartório</div>
+              <div class="ui-g-12 ui-sm-12">
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_cnpjServentia">
+                  <div class="ui-g-4 pandora-atributo">CNPJ:</div>
+                  <div class="ui-g-8">{{utils.formataDado(obito.obito_cnpjServentia, '##.###.###/####-##')}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_nomeFantasia">
+                  <div class="ui-g-4 pandora-atributo">Fantasia:</div>
+                  <div class="ui-g-8">{{obito.obito_nomeFantasia}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_razaoSocial">
+                  <div class="ui-g-4 pandora-atributo">Razão Social:</div>
+                  <div class="ui-g-8">{{obito.obito_razaoSocial}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_endereco && !!obito.obito_numero">
+                  <div class="ui-g-4 pandora-atributo">Endereço:</div>
+                  <div class="ui-g-8">{{obito.obito_endereco}} , {{obito.obito_numero}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_complemento">
+                  <div class="ui-g-4 pandora-atributo">Complemento:</div>
+                  <div class="ui-g-8">{{obito.obito_complemento}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_bairro">
+                  <div class="ui-g-4 pandora-atributo">Bairro:</div>
+                  <div class="ui-g-8">{{obito.obito_bairro}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_municipioServentia && !!obito.obito_ufServentia">
+                  <div class="ui-g-4 pandora-atributo">Município:</div>
+                  <div class="ui-g-8">{{obito.obito_municipioServentia}} / {{obito.obito_ufServentia}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_cep">
+                  <div class="ui-g-4 pandora-atributo">CEP:</div>
+                  <div class="ui-g-8">{{obito.obito_cep}}</div>
+                </div>
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_distrito">
+                  <div class="ui-g-4 pandora-atributo">Distrito:</div>
+                  <div class="ui-g-8">{{obito.obito_distrito}}</div>
+                </div>
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_subDistrito">
+                  <div class="ui-g-4 pandora-atributo">Sub Distrito:</div>
+                  <div class="ui-g-8">{{obito.obito_subDistrito}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_fax">
+                  <div class="ui-g-4 pandora-atributo">FAX:</div>
+                  <div class="ui-g-8">{{obito.obito_fax}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_site">
+                  <div class="ui-g-4 pandora-atributo">Site:</div>
+                  <div class="ui-g-8">{{obito.obito_site}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_emailServentia">
+                  <div class="ui-g-4 pandora-atributo">Email:</div>
+                  <div class="ui-g-8">{{obito.obito_emailServentia}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_numeroTelefonePrincipal">
+                  <div class="ui-g-4 pandora-atributo">Telefone Principal:</div>
+                  <div class="ui-g-8">{{obito.obito_numeroTelefonePrincipal}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_numeroTelefoneSecundario">
+                  <div class="ui-g-4 pandora-atributo">Telefone Secundario:</div>
+                  <div class="ui-g-8">{{obito.obito_numeroTelefoneSecundario}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_dataInicioAtividades">
+                  <div class="ui-g-4 pandora-atributo">Data do Inicio das Atividades:</div>
+                  <div class="ui-g-8">{{utils.formataData(obito.obito_dataInicioAtividades)}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_dataExclusao">
+                  <div class="ui-g-4 pandora-atributo">Data de Exclusão:</div>
+                  <div class="ui-g-8">{{utils.formataData(obito.obito_dataExclusao)}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_dataAtualizacao">
+                  <div class="ui-g-4 pandora-atributo">Ultima Atualização:</div>
+                  <div class="ui-g-8">{{utils.formataData(obito.obito_dataAtualizacao)}}</div>
+                </div>
+              </div>
+
+              <div class="ui-g-12 py-3 font-weight-bold text-center">Informações do Óbito</div>
+
+              <div class="ui-g-12 ui-sm-12">
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_livro">
+                  <div class="ui-g-4 pandora-atributo">Livro:</div>
+                  <div class="ui-g-8">{{obito.obito_livro}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_folha">
+                  <div class="ui-g-4 pandora-atributo">Folha:</div>
+                  <div class="ui-g-8">{{obito.obito_folha}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_termo">
+                  <div class="ui-g-4 pandora-atributo">Termo:</div>
+                  <div class="ui-g-8">{{obito.obito_termo}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_matricula">
+                  <div class="ui-g-4 pandora-atributo">Matricula:</div>
+                  <div class="ui-g-8">{{obito.obito_matricula}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_tipoOperacao">
+                  <div class="ui-g-4 pandora-atributo">Tipo de Operação:</div>
+                  <div class="ui-g-8">{{obito.obito_tipoOperacao}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_dataObito">
+                  <div class="ui-g-4 pandora-atributo">Data do Óbito:</div>
+                  <div class="ui-g-8">{{utils.formataData(obito.obito_dataObito)}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_dataOperacao">
+                  <div class="ui-g-4 pandora-atributo">Data da Operação:</div>
+                  <div class="ui-g-8">{{utils.formataData(obito.obito_dataOperacao)}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_municipioObito && !!obito.obito_ufObito">
+                  <div class="ui-g-4 pandora-atributo">Município:</div>
+                  <div class="ui-g-8">{{obito.obito_municipioObito}} / {{obito.obito_ufObito}}</div>
+                </div>
+              </div>
+
+              <div class="ui-g-12 py-3 font-weight-bold text-center">Informações do Falecido</div>
+
+              <div class="ui-g-12 ui-sm-12">
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_nome">
+                  <div class="ui-g-4 pandora-atributo">Nome:</div>
+                  <div class="ui-g-8">{{obito.obito_nome}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_cpf">
+                  <div class="ui-g-4 pandora-atributo">CPF:</div>
+                  <div class="ui-g-8">{{utils.formataDado(obito.obito_cpf, '###.###.###-##')}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_nomeMae">
+                  <div class="ui-g-4 pandora-atributo">Nome da Mãe:</div>
+                  <div class="ui-g-8">{{obito.obito_nomeMae}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_nomePai">
+                  <div class="ui-g-4 pandora-atributo">Nome do Pai:</div>
+                  <div class="ui-g-8">{{obito.obito_nomePai}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_sexo">
+                  <div class="ui-g-4 pandora-atributo">Sexo:</div>
+                  <div class="ui-g-8">{{obito.obito_sexo}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_dataNascimento">
+                  <div class="ui-g-4 pandora-atributo">Data de Nascimento:</div>
+                  <div class="ui-g-8">{{utils.formataData(obito.obito_dataNascimento)}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.obito_municipioNaturalidade && !!obito.obito_ufNaturalidade">
+                  <div class="ui-g-4 pandora-atributo">Naturalidade:</div>
+                  <div class="ui-g-8">{{obito.obito_municipioNaturalidade}} / {{obito.obito_ufNaturalidade}}</div>
+                </div>
+
+                <div class="ui-g-12 py-0" *ngIf="!!obito.fonte">
+                  <div class="ui-g-4 pandora-atributo">Fonte:</div>
+                  <div class="ui-g-8">{{obito.fonte}}</div>
+                </div>
+              </div>
+
+          </div>
+          <div class="ui-g-12 ui-sm-12 ui-fluid" *ngIf="obito.fonte == 'SISOBI'">
+            <div class="ui-g-4"></div>
+            <div class="ui-g-4 ui-sm-12">
+              <button pButton type="button" icon="pi pi-times" class="ui-button-danger" label="Remover Registro"
+                (click)="onRemoverObito(obito.index)" ></button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </div>
+</div>

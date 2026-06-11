@@ -1,0 +1,181 @@
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="p-card mb-0 ui-corner-all">
+      <span class="p-card-titulo">SADEP</span>
+
+      <div class="to-right text-primary export-button pointer" *ngIf="detalhaMandado">
+          <span class="link-retornar" (click)="resetaBusca()">Retornar <i class="fa fa-reply"></i></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações Gerais" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pt-2">O SADEP é um sistema de análise contínua de rastros / paradeiros deixados por criminosos com mandado de prisão em aberto</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!detalhaMandado">
+    <div class="p-card b-0 p-0">
+      <p-panel header="Parâmetros de Busca" [toggleable]="true">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-g-2 ui-sm-12">
+              <span style="font-weight: bold">Estado:</span>
+            </div>
+
+            <div class="ui-g-3 ui-sm-12">
+              <p-dropdown [options]="ufs" [(ngModel)]="ufSelecionado" (onChange)="buscaPorOutraUF()" filter="true" [showClear]="true" placeholder="Escolha um estado"></p-dropdown>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="totalizadores && !!detalhaMandado">
+  </div>
+
+  <div class="ui-g-12" *ngIf="mandadosList">
+    <div class="p-card b-0 p-0">
+      <pandora-table
+        #dt
+        caption="Mandados em aberto"
+        [value]="mandados"
+        [dicionarioDados]="dicionarioDados"
+        dataKey="id"
+        [rows]="20"
+      >
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th style="width: 3.25em"></th>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th style="width: 3.25em"></th>
+          </tr>
+
+          <tr>
+            <th style="width: 3.25em;"></th>
+            <th  *ngFor="let col of columns" [ngSwitch]="col.field">
+              <input *ngSwitchCase="'cpf'" pInputText data-mask="999.999.999-99" class="w-100 ui-inputtext" (input)="dt.filter($event.target.value, col.field, 'contains')">
+              <input *ngSwitchCase="'nome'" pInputText class="w-100 ui-inputtext" (input)="dt.filter($event.target.value, col.field, 'contains')">
+              <p-multiSelect *ngSwitchCase="'crime'" [options]="opcoesCrimes" [style]="{'width':'100%'}" defaultLabel="Crimes" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+              <p-multiSelect *ngSwitchCase="'municipio'" [options]="municipios" [style]="{'width':'100%'}" defaultLabel="Município" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+              <p-multiSelect *ngSwitchCase="'orgao_expedidor'" [options]="opcoesOrgaos" [style]="{'width':'100%'}" defaultLabel="Órgão Expeditor" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-multiSelect>
+            </th>
+            <th style="width: 3.25em;"></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td>
+              <span href="#" [pandoraRowToggler]="rowData">
+                <i class="pointer" [ngClass]="expanded ? 'fa fa-chevron-circle-down' : 'fa fa-chevron-circle-right'"></i>
+              </span>
+            </td>
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              <span class="ui-column-title">{{col.header}}</span>
+              <span *ngSwitchCase="'numero_mandado_prisao'" class="text-center">{{utils.formataDado(rowData.numero_mandado_prisao, '#######-##.####.#.##.####.##.####-##')}}</span>
+              <span *ngSwitchCase="'cpf'">
+                <a target='_blank' [routerLink]="['/dashboard/pesquisa/integrado/pessoa']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}' style="color: #3984b8;">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</a>
+              </span>
+              <span *ngSwitchDefault>{{rowData[col.field]}}</span>
+            </td>
+            <td>
+              <span href="#">
+                <a pButton type="button" icon="pi pi-map" target="_blank" label="Detalhar" [routerLink]="['/dashboard/apps/sadep/detalhamento']" [queryParams]='{cpf: utils.codificaDado(rowData.cpf)}'></a>
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+          <tr>
+            <td [attr.colspan]="columns.length + 2">
+              <div class="ui-g caixa">
+
+                <div class="ui-g-12">
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Nº do Mandado de Prisão</div>
+                    <div class="ui-g-12 text-center">{{utils.formataDado(rowData.numero_mandado_prisao, '#######-##.####.#.##.####.##.####-##')}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Orgão Expeditor</div>
+                    <div class="ui-g-12 text-center">{{rowData.orgao_expedidor}} - {{utils.toUpperCase(rowData.orgao_expedidor_municipio)}}-{{rowData.orgao_expedidor_uf}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Data de Expedição</div>
+                    <div class="ui-g-12 text-center">{{utils.formataData(rowData.data_expedicao)}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Data de Validade</div>
+                    <div class="ui-g-12 text-center">{{utils.formataData(rowData.data_validade)}}</div>
+                  </div>
+                </div>
+
+                <div class="ui-g-12">
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Crime</div>
+                    <div class="ui-g-12 text-center">{{rowData.crime}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Tipificações Penais</div>
+                    <div class="ui-g-12 text-center">{{rowData.tipificacao_penal}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Espécie de Prisão</div>
+                    <div class="ui-g-12 text-center">{{rowData.tipo_prisao}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Regime Prisional</div>
+                    <div class="ui-g-12 text-center">{{rowData.regime_prisional}}</div>
+                  </div>
+                </div>
+
+                <div class="ui-g-12">
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">CPF</div>
+                    <div class="ui-g-12 text-center">{{utils.formataDado(rowData.cpf, '###.###.###-##')}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Nome</div>
+                    <div class="ui-g-12 text-center">{{rowData.nome}}</div>
+                  </div>
+
+                  <div class="ui-g-3">
+                    <div class="ui-g-12 atributo text-center">Endereço</div>
+                    <div class="ui-g-12 text-center">{{rowData.descricao_tipo_logradouro}} {{rowData.logradouro}}, {{rowData.numero}}, {{rowData.complemento}} - {{rowData.municipio}}-{{rowData.uf}}.</div>
+                  </div>
+                </div>
+
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+      </pandora-table>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-sm-12 ui-fluid" *ngIf="detalhaMandado">
+    <app-detalhamento-sadep
+      [dados]="dadosDetalhamento">
+    </app-detalhamento-sadep>
+  </div>
+
+</div>

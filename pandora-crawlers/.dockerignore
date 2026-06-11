@@ -1,0 +1,22 @@
+# Pastas
+node_modules
+out
+dist
+_build
+doc
+tmp
+.git
+.vscode
+
+# Arquivos
+npm-debug.log
+.dockerignore
+.gitignore
+Dockerfile
+local.yml
+production.yml
+.editorconfig
+.gitignore
+README.md
+DEPLOY.md
+build.sh

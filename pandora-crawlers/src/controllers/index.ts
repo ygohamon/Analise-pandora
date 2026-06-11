@@ -1,0 +1,10 @@
+export * from './yahoo.controller';
+export * from './jusbrasil.controller';
+export * from './duck.controller';
+export * from './google.controller';
+export * from './bing.controller';
+export * from './lukol.controller';
+// export * from './qwant.controller';
+// export * from './startpage.controller';
+export * from './all.controller';
+export * from './presearch.controller';

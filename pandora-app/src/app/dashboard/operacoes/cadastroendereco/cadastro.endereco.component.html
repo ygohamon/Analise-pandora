@@ -1,0 +1,83 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Cadastro de Endereços</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+          <ul class="text-justify">
+            <li class="pb-1">Preencha todos os campos para o cadastro do registro.</li>
+          </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <div class="ui-g form-group ui-fluid">
+        <form #cadastroForm="ngForm" (ngSubmit)="onCadastroSubmit(cadastroForm)">
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="cpf">CPF: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <p-inputMask name="cpf" [(ngModel)]="cpfMask" mask="999.999.999-99"  placeholder="999.999.999-99" required></p-inputMask>
+                  <!-- <input type="text" name="cpf" placeholder="CPF" maxlength="11" minlength="11" pInputText ngModel required> -->
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="logradouro">Logradouro: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <input type="text" name="logradouro" placeholder="Logradouro" pInputText ngModel required>
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="numeroLogradouro">Número: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <input type="text" name="numeroLogradouro" placeholder="Nº" pInputText ngModel required>
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="complemento">Complemento: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <input type="text" name="complemento" placeholder="Complemento" pInputText ngModel required>
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="bairro">Bairro: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <input type="text" name="bairro" placeholder="Bairro" pInputText ngModel required>
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="cep">CEP: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <p-inputMask name="cep" [(ngModel)]="cepMask" mask="99999-999"  placeholder="99999-999" required></p-inputMask>
+                  <!-- <input type="text" name="cep" placeholder="CEP" maxlength="11" minlength="11" pInputText ngModel required> -->
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="municipio">Município: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <input type="text" name="municipio" placeholder="Município" pInputText ngModel required>
+              </div>
+          </div>
+          <div class="ui-g-12">
+              <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="uf">UF: </label></div>
+              <div class="ui-g-8 ui-sm-12">
+                  <p-inputMask name="uf" mask="aa"  placeholder="(PB, PE, RN, ...)" [(ngModel)]="ufMask" required></p-inputMask>
+                  <!-- <input type="text" name="uf" placeholder="UF" pInputText ngModel required> -->
+              </div>
+          </div>
+
+          <div class="ui-g-4 ui-sm-12"></div>
+          <div class="ui-g-4 ui-sm-12" style="margin-top: 40px;">
+              <button pButton type="submit" icon="fa fa-paper-plane" label="Enviar" [disabled]="!cadastroForm.valid"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

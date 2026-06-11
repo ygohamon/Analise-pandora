@@ -1,0 +1,510 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card">
+      <span class="p-card-titulo">Integra</span>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pb-1">O Integra é uma ferramenta utilizada para requisição de informações junto ao Núcleo de Gestão do Conhecimento e Segurança Institucional do Ministério Público da Paraíba.</li>
+          <li class="pb-1">É possível anexar arquivos relevantes à requisição.</li>
+          <li class="pb-1">O resultado da consulta será enviada ao email cadastrado no sistema.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <form
+    *ngIf="infoFinalizado"
+    #integraForm="ngForm"
+    (ngSubmit)="onSubmit(integraForm)"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;">
+
+    <div class="ui-g-12">
+      <div class="p-card p-0 b-0">
+        <p-panel header="Dados do Requerente" [toggleable]="true">
+          <div class="ui-g ui-fluid">
+            <div class="ui-g-12" *ngIf="info.nome">
+                <div class="ui-g-2 ui-sm-12 pandora-atributo">Nome</div>
+                <div class="ui-g-10 ui-sm-12">{{info.nome}}</div>
+            </div>
+
+            <div class="ui-g-12" *ngIf="info.email">
+                <div class="ui-g-2 ui-sm-12 pandora-atributo">Email</div>
+                <div class="ui-g-10 ui-sm-12">{{info.email}}</div>
+            </div>
+
+            <div class="ui-g-12">
+                <div class="ui-g-2 ui-sm-12 pandora-atributo">Promotoria</div>
+                <div class="ui-g-4 ui-sm-12">
+                    <p-autoComplete name="campopromotoria" [(ngModel)]="promotoria" [suggestions]="promotoriasEncontradas" (completeMethod)="buscaPromotoria($event)"
+                    field="descricao" placeholder="Promotorias" [minLength]="1" [dropdown]="true" forceSelection="true" required="true"></p-autoComplete>
+                </div>
+            </div>
+
+            <div class="ui-g-12">
+                <div class="ui-g-6 ui-sm-12">
+                    <div class="ui-g-4 ui-sm-12 pandora-atributo" style="padding-left: 0px;">Tipo Referência</div>
+                    <div class="ui-g-8 ui-sm-12">
+                        <p-dropdown
+                            name="tipoReferencia"
+                            [style]="{'width':'100%'}"
+                            [options]="referencias"
+                            [(ngModel)]="referenciaSelecionada">
+                        </p-dropdown>
+                    </div>
+                </div>
+
+                <div class="ui-g-6 ui-sm-12">
+                    <div class="ui-g-4 ui-sm-12 pandora-atributo"><label for="doc">Número da Referência</label></div>
+                    <div class="ui-g-8 ui-sm-12">
+                        <input type="text" name="doc" pInputText ngModel required>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="p-card b-0 p-0">
+        <p-panel header="Dados para Investigação" [toggleable]="true">
+              <div class="ui-g ui-fluid">
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-6 ui-sm-12">
+                          <div class="ui-g-4 ui-sm-12 pandora-atributo" style="padding-left: 0px;">Área</div>
+                          <div class="ui-g-8 ui-sm-12">
+                              <p-dropdown
+                                  name="tipoArea"
+                                  [style]="{'width':'100%'}"
+                                  [options]="areas"
+                                  [(ngModel)]="areaSelecionada">
+                              </p-dropdown>
+                          </div>
+                      </div>
+
+                      <div class="ui-g-6 ui-sm-12">
+                          <div class="ui-g-4 ui-sm-12 pandora-atributo">Grupo</div>
+                          <div class="ui-g-8 ui-sm-12">
+                              <p-dropdown
+                                  name="tipoGrupo"
+                                  [style]="{'width':'100%'}"
+                                  [options]="grupos"
+                                  [(ngModel)]="grupoSelecionado">
+                              </p-dropdown>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <p-panel header="Detalhes" [style]="{'border':'0px'}" [toggleable]="true">
+                          <div class="ui-g ui-fluid">
+
+                              <div class="ui-g-12">
+                                  <div class="ui-g-2 ui-sm-12 pandora-atributo">
+                                      Resumo dos fatos<br>
+                                      <span class="aviso-tamanho-textarea">(Máximo de 500 caracteres)</span>
+                                  </div>
+                                  <div class="ui-g-10 ui-sm-12">
+                                      <textarea [(ngModel)]="detalhesResumoDosFatos" name="detalhesResumoDosFatos" rows="7" cols="30" maxlength="500" pInputTextarea></textarea>
+                                  </div>
+                              </div>
+
+                              <div class="ui-g-12">
+                                  <div class="ui-g-2 ui-sm-12 pandora-atributo">
+                                      Fatores adversos <br>
+                                      <span class="aviso-tamanho-textarea">(Máximo de 500 caracteres)</span>
+                                  </div>
+                                  <div class="ui-g-10 ui-sm-12">
+                                      <textarea [(ngModel)]="detalhesFatoresAdversos" name="detalhesFatoresAdversos" rows="7" cols="30" maxlength="500" pInputTextarea></textarea>
+                                  </div>
+                              </div>
+
+                              <div class="ui-g-12">
+                                  <div class="ui-g-2 ui-sm-12 pandora-atributo">
+                                      Finalidade <br>
+                                      <span class="aviso-tamanho-textarea">(Máximo de 500 caracteres)</span>
+                                  </div>
+                                  <div class="ui-g-10 ui-sm-12">
+                                      <textarea [(ngModel)]="detalhesFinalidade" name="detalhesFinalidade" rows="7" cols="30" maxlength="500" pInputTextarea></textarea>
+                                  </div>
+                              </div>
+
+                              <div class="ui-g-12">
+                                  <div class="ui-g-2 ui-sm-12 pandora-atributo">Informação útil em até</div>
+                                  <div class="ui-g-4 ui-sm-12">
+                                      <p-dropdown
+                                          name="tempoInformacao"
+                                          [style]="{'width':'100%'}"
+                                          [options]="tempoInfoUtil"
+                                          [(ngModel)]="tempoInfoUtilSelecionado">
+                                      </p-dropdown>
+                                  </div>
+                              </div>
+                          </div>
+                      </p-panel>
+                  </div>
+
+                  <div class="ui-g-12">
+                    <p-panel header="Partes" [toggleable]="true">
+
+                        <p-panel [style]="{'margin': '10px 0px'}" header="Pessoas Físicas" [toggleable]="true" *ngIf="listaPF.length" >
+                            <div class="ui-g ui-fluid">
+
+                                <div class="ui-g-12" [ngClass]="{'linha-impar': (i+1)%2 }" *ngFor="let pf of listaPF; let i = index">
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-4 pandora-atributo">Nome</div>
+                                        <div class="ui-g-7">{{pf.nome}}</div>
+                                        <div class="ui-g-1" (click)="removePF(i)" style="text-align: right;"><i class="pi pi-times" aria-hidden="true"></i></div>
+                                    </div>
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-4 pandora-atributo">CPF</div>
+                                        <div class="ui-g-8">{{utils.formataDado(pf.cpf, '###.###.###-##')}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-panel>
+
+                        <p-panel [style]="{'margin': '10px 0px'}" header="Pessoas Jurídicas" [toggleable]="true" *ngIf="listaPJ.length" >
+                            <div class="ui-g ui-fluid">
+
+                                <div class="ui-g-12" [ngClass]="{'linha-impar': (i+1)%2 }" *ngFor="let pj of listaPJ; let i = index">
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-4 pandora-atributo">Razão Social</div>
+                                        <div class="ui-g-7">{{pj.razaoSocial}}</div>
+                                        <div class="ui-g-1" (click)="removePJ(i)" style="text-align: right;"><i class="pi pi-times" aria-hidden="true"></i></div>
+                                    </div>
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-4 pandora-atributo">CNPJ</div>
+                                        <div class="ui-g-8 ">{{utils.formataDado(pj.cnpj, '##.###.###/####-##')}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-panel>
+
+                        <p-panel [style]="{'margin': '10px 0px'}" header="Imóveis" [toggleable]="true" *ngIf="listaImovel.length" >
+                            <div class="ui-g ui-fluid">
+
+                                <div class="ui-g-12" [ngClass]="{'linha-impar': (i+1)%2 }" *ngFor="let imovel of listaImovel; let i = index">
+                                    <div class="ui-g-4 pandora-atributo">Endereço</div>
+                                    <div class="ui-g-7">{{imovel.endereco}}</div>
+                                    <div class="ui-g-1" (click)="removeImovel(i)" style="text-align: right;"><i class="pi pi-times" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+                        </p-panel>
+
+                        <p-panel [style]="{'margin': '10px 0px'}" header="Veículos" [toggleable]="true" *ngIf="listaVeiculo.length" >
+                            <div class="ui-g ui-fluid">
+
+                                <div class="ui-g-12" [ngClass]="{'linha-impar': (i+1)%2 }" *ngFor="let veiculo of listaVeiculo; let i = index">
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-4 pandora-atributo">CPF</div>
+                                        <div class="ui-g-7">{{utils.formataDado(veiculo.cpf, '###.###.###-##')}}</div>
+                                        <div class="ui-g-1" (click)="removeVeiculo(i)" style="text-align: right;"><i class="pi pi-times" aria-hidden="true"></i></div>
+                                    </div>
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-4 ui-sm-4 pandora-atributo">Placa</div>
+                                        <div class="ui-g-8 ui-sm-8">{{veiculo.placa}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-panel>
+
+                        <div class="ui-g ui-fluid" style="margin-top: 30px;">
+                            <div class="ui-g-6 ui-sm-12">
+                                <button pButton type="button" icon="pi pi-plus" label="Pessoa Física" (click)="formularioPF()"></button>
+                            </div>
+
+                            <div class="ui-g-6 ui-sm-12">
+                                <button pButton type="button" icon="pi pi-plus" label="Pessoa Jurídica" (click)="formularioPJ()"></button>
+                            </div>
+
+                            <div class="ui-g-6 ui-sm-12">
+                                <button pButton type="button" icon="pi pi-plus" label="Imóveis" (click)="formularioImovel()"></button>
+                            </div>
+
+                            <div class="ui-g-6 ui-sm-12">
+                                <button pButton type="button" icon="pi pi-plus" label="Veículos" (click)="formularioVeiculo()"></button>
+                            </div>
+
+                        </div>
+                    </p-panel>
+                </div>
+
+                <div class="ui-g-12">
+                    <p-panel header="Anexos" [toggleable]="true">
+                        <div class="ui-g ui-fluid">
+
+                            <div class="ui-g-4 ui-sm-12">
+                              <div class="ui-g-4 ui-sm-12 pandora-atributo">Anexar arquivos</div>
+                              <div class="ui-g-8 ui-sm-12">
+                                <button pButton type="button" icon="pi pi-cloud-upload" label="Upload" (click)="fileInput.click()"></button>
+                                <span style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+                                      <input #fileInput type="file" name="docs" ng2FileSelect [uploader]="uploader" multiple/>
+                                </span>
+                              </div>
+                            </div>
+
+                            <div class="ui-g-8 ui-sm-12" *ngIf="uploader?.queue?.length !== 0" style="border: 1px solid #e0e0e0;">
+                                <h3>Fila de Espera</h3>
+                                <p>Tamanho da fila: {{ uploader?.queue?.length }}</p>
+
+                                <table class="table" style="width: 100%; table-layout: fixed; word-wrap: break-word;">
+                                    <thead>
+                                        <tr>
+                                            <th width="50%">Nome</th>
+                                            <th>Tamanho</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of uploader.queue">
+                                            <td><strong>{{ item?.file?.name }}</strong></td>
+                                            <td *ngIf="uploader.options.isHTML5">{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                                            <td class="text-center">
+                                                <span *ngIf="item.isSuccess"><i class="pi pi-check"></i></span>
+                                                <span *ngIf="item.isCancel"><i class="pi pi-ban"></i></span>
+                                                <span *ngIf="item.isError"><i class="pi pi-times"></i></span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <!-- <button pButton type="button" icon="pi pi-upload" (click)="item.upload()" class="ui-button-success" [disabled]="item.isReady || item.isUploading || item.isSuccess"></button> -->
+                                                <!-- <button pButton type="button" icon="pi pi-ban" (click)="item.cancel()" class="ui-button-warning" [disabled]="!item.isUploading"></button> -->
+                                                <button pButton type="button" icon="pi pi-check" (click)="item.remove()" class="ui-button-danger"></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- <div class="ui-g-2 ui-sm-12"></div>
+                                <div class="ui-g-8 ui-sm-12">
+                                    <div class="ui-g-4 ui-sm-12">
+                                        <button pButton type="button" icon="pi pi-upload" label="Upload all" (click)="uploader.uploadAll()" class="ui-button-success" [disabled]="!uploader.getNotUploadedItems().length"></button>
+                                    </div>
+                                      <div class="ui-g-4 ui-sm-12">
+                                        <button pButton type="button" icon="pi pi-ban" label="Cancel all" (click)="uploader.cancelAll()" class="ui-button-warning" [disabled]="!uploader.isUploading"></button>
+                                    </div>
+                                    <div class="ui-g-4 ui-sm-12">
+                                        <button pButton type="button" icon="pi pi-check" label="Remove all" (click)="uploader.clearQueue()" class="ui-button-danger" [disabled]="!uploader.queue.length"></button>
+                                    </div>
+                                </div> -->
+
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+
+                <div class="ui-g-12">
+                    <p>Progresso:</p>
+                    <p-progressBar [value]="uploader.progress"></p-progressBar>
+                </div>
+
+                <div class="ui-g-4 ui-sm-12"></div>
+                <div class="ui-g-4 ui-sm-12" style="margin-top: 40px;">
+                    <!-- [disabled]="!integraForm.valid" -->
+                    <button pButton type="submit" icon="fa fa-paper-plane" label="Enviar"></button>
+                </div>
+            </div>
+        </p-panel>
+      </div>
+    </div>
+
+  </form>
+
+  <p-dialog
+      appendTo="body"
+      *ngIf="mostraFormularioPF"
+      header="Informações de Pessoa Física"
+      [(visible)]="mostraFormularioPF"
+      [responsive]="true"
+      showEffect="fade"
+      [modal]="true">
+
+      <form #pfForm="ngForm" style="width: 100%; width: -webkit-fill-available; width: -moz-available;">
+          <div class="ui-g ui-fluid">
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="nome">Nome*</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="nome" pInputText ngModel required>
+                      </div>
+                  </div>
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="cpf">CPF</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="cpf" pInputText ngModel required>
+                      </div>
+                  </div>
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="identidade">Identidade</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="identidade" pInputText ngModel required>
+                      </div>
+                  </div>
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="nomePai">Nome do Pai</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="nomePai" pInputText ngModel required>
+                      </div>
+                  </div>
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="nomeMae">Nome da Mãe</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="nomeMae" pInputText ngModel required>
+                      </div>
+                  </div>
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="necessidade">Necessidade</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="necessidade" pInputText ngModel required>
+                      </div>
+                  </div>
+          </div>
+          <p-footer>
+              <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                  <button type="button" pButton icon="pi pi-times" (click)="mostraFormularioPF = false" label="Cancelar"></button>
+                  <button type="submit" pButton icon="pi pi-check" (click)="adicionarPF(pfForm)" label="Adicionar"></button>
+              </div>
+          </p-footer>
+
+      </form>
+  </p-dialog>
+
+  <p-dialog
+      appendTo="body"
+      *ngIf="mostraFormularioPJ"
+      header="Informações de Pessoa Jurídica"
+      [(visible)]="mostraFormularioPJ"
+      [responsive]="true"
+      showEffect="fade"
+      [modal]="true">
+
+      <form #pjForm="ngForm" style="width: 100%; width: -webkit-fill-available; width: -moz-available;">
+          <div class="ui-g ui-fluid">
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="nome">Nome Fantasia*</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="nome" pInputText ngModel required>
+                      </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="razaoSocial">Razão Social</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="razaoSocial" pInputText ngModel required>
+                      </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="cnpj">CNPJ</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="cnpj" pInputText ngModel required>
+                      </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="necessidade">Necessidade</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="necessidade" pInputText ngModel required>
+                      </div>
+                  </div>
+          </div>
+
+          <p-footer>
+              <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                  <button type="button" pButton icon="pi pi-times" (click)="mostraFormularioPJ = false" label="Cancelar"></button>
+                  <button type="submit" pButton icon="pi pi-check" (click)="adicionarPJ(pjForm)" label="Adicionar"></button>
+              </div>
+          </p-footer>
+
+      </form>
+  </p-dialog>
+
+
+  <p-dialog
+      appendTo="body"
+      *ngIf="mostraFormularioImovel"
+      header="Informações de Imóveis"
+      [(visible)]="mostraFormularioImovel"
+      [responsive]="true"
+      showEffect="fade"
+      [modal]="true">
+
+      <form #imovelForm="ngForm" style="width: 100%; width: -webkit-fill-available; width: -moz-available;">
+          <div class="ui-g ui-fluid">
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="endereco">Endereço*</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="endereco" pInputText ngModel required>
+                      </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="necessidade">Necessidade</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="necessidade" pInputText ngModel required>
+                      </div>
+                  </div>
+          </div>
+
+          <p-footer>
+              <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                  <button type="button" pButton icon="pi pi-times" (click)="mostraFormularioImovel = false" label="Cancelar"></button>
+                  <button type="submit" pButton icon="pi pi-check" (click)="adicionarImovel(imovelForm)" label="Adicionar"></button>
+              </div>
+          </p-footer>
+
+      </form>
+  </p-dialog>
+
+  <p-dialog
+      appendTo="body"
+      *ngIf="mostraFormularioVeiculo"
+      header="Informações de Veículos"
+      [(visible)]="mostraFormularioVeiculo"
+      [responsive]="true"
+      showEffect="fade"
+      [modal]="true">
+
+      <form #veiculoForm="ngForm" style="width: 100%; width: -webkit-fill-available; width: -moz-available;">
+          <div class="ui-g ui-fluid">
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="placa">Placa*</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="placa" pInputText ngModel required>
+                      </div>
+                  </div>
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="cpf">CPF</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="cpf" pInputText ngModel required>
+                      </div>
+                  </div>
+
+                  <div class="ui-g-12">
+                      <div class="ui-g-4 pandora-atributo"><label for="necessidade">Necessidade</label></div>
+                      <div class="ui-g-8">
+                          <input type="text" name="necessidade" pInputText ngModel required>
+                      </div>
+                  </div>
+          </div>
+
+          <p-footer>
+              <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                  <button type="button" pButton icon="pi pi-times" (click)="mostraFormularioVeiculo = false" label="Cancelar"></button>
+                  <button type="submit" pButton icon="pi pi-check" (click)="adicionarVeiculo(veiculoForm)" label="Adicionar"></button>
+              </div>
+          </p-footer>
+
+      </form>
+  </p-dialog>
+
+</div>

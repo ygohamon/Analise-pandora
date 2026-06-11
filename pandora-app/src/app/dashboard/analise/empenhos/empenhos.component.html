@@ -1,0 +1,117 @@
+<div class="ui-g">
+
+  <app-campos-busca
+    titulo="Empenho"
+    [nProcesso]="nProcesso"
+    [campos]="campos"
+    style="width: 100%; width: -webkit-fill-available; width: -moz-available;"
+    [(buscaFinalizada)]="buscaFinalizada"
+    (pesquisa)="onPesquisa($event)">
+
+    <div class="ui-g-12">
+      <div class="p-card p-0 b-0">
+        <p-panel header="Informações" [toggleable]="true">
+          <ul class="text-justify">
+            <li class="pb-1">Lista todos os empenhos que foram celebrados entre órgãos públicos <strong>municipais</strong> e <strong>estaduais</strong> com pessoas físicas ou pessoas jurídicas.</li>
+            <li class="pb-1">Campos apresentados:
+              <ul class="mt-1">
+                <li class="pb-1">Unidade Gestora;</li>
+                <li class="pb-1">Tipo, número, ano e valor da licitação;</li>
+                <li class="pb-1">Número, data de empenho, data de pagamento e descrição do empenho;</li>
+                <li class="pb-1">Valor empenhado, estornado e pago.</li>
+              </ul>
+            </li>
+          </ul>
+        </p-panel>
+      </div>
+    </div>
+  </app-campos-busca>
+
+  <div class="ui-g-12" *ngIf="buscaFinalizada">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-tabView
+        styleClass="p-0"
+        [controlClose]="true">
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Empenhos Municipais" [closable]="true">
+
+          <pandora-table
+            caption="Empenhos Municipais"
+            exportFilename="empenhos_municipais"
+            dataKey="id"
+            sortField='dtEmpenho'
+            sortOrder='-1'
+            [value]="empenhosMunicipais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpand"
+            [dicionarioDados]="dicionarioDadosEmpenhos">
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Pagamentos Municipais" [closable]="true">
+
+          <pandora-table
+            caption="Pagamentos dos Empenhos Municipais"
+            exportFilename="pagamentos_empenhos_municipais"
+            dataKey="id"
+            sortField='dtEmpenho'
+            sortOrder='-1'
+            [value]="pagamentosMunicipais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpandPagamentos"
+            [dicionarioDados]="dicionarioDadosEmpenhosPagamentos">
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Empenhos Estaduais" [closable]="true">
+
+          <pandora-table
+            caption="Empenhos Estaduais"
+            exportFilename="empenhos_estaduais"
+            dataKey="id"
+            sortField='dtEmpenho'
+            sortOrder='-1'
+            [value]="empenhosEstaduais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpand"
+            [dicionarioDados]="dicionarioDadosEmpenhos">
+          </pandora-table>
+
+        </p-tabPanel>
+
+        <p-tabPanel
+          styleClass="p-0"
+          header="Pagamentos Estaduais" [closable]="true">
+
+          <pandora-table
+            caption="Pagamentos dos Empenhos Estaduais"
+            exportFilename="pagamentos_empenhos_estaduais"
+            dataKey="id"
+            sortField='dtEmpenho'
+            sortOrder='-1'
+            [value]="pagamentosEstaduais"
+            [mostraEspacamentoExpand]="true"
+            [dicionarioDadosExpand]="dicionarioDadosExpandPagamentos"
+            [dicionarioDados]="dicionarioDadosEmpenhosPagamentos">
+          </pandora-table>
+
+        </p-tabPanel>
+
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaFalha">
+    <app-mensagem-erro></app-mensagem-erro>
+  </div>
+
+</div>

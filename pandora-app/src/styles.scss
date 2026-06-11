@@ -1,0 +1,215 @@
+@import "assets/layout/css/spacing.css";
+@import "assets/layout/css/sizing.css";
+@import "assets/layout/css/text.css";
+@import "assets/layout/css/display.css";
+
+/* You can add global styles to this file, and also import other style files */
+.pandora-linha-escura {
+  background-color: #f4f4f4;
+}
+.pandora-atributo {
+  font-weight: bold;
+}
+.pandora-caixa {
+  border: 1px solid #e0e0e0;
+}
+.pandora-titulo {
+  font-size: 24px;
+}
+
+.linha-escura {
+  background-color: #f4f4f4;
+}
+.atributo {
+  font-weight: bold;
+}
+.caixa {
+  border: 1px solid #e0e0e0;
+}
+.pandora-linha-dataview:nth-child(even) {
+  background: #f0f0f0;
+}
+ /**
+  Novos estilos
+ */
+
+.p-card {
+  padding: 1em;
+  background: #ffffff;
+  // box-sizing: border-box;
+  border: 1px solid #c7cdd1;
+  // border-radius: 2px;
+}
+
+.p-card-sem-borda {
+  padding: 1em;
+  background: #ffffff;
+  // box-sizing: border-box;
+  // border: 1px solid #c7cdd1;
+  // border-radius: 2px;
+}
+
+.p-card-titulo {
+  font-size: 2rem;
+}
+
+.p-card-subtitulo {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.to-right {
+  float: right;
+}
+
+.link-retornar {
+  margin-top: -7px;
+  font-weight: bold
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.export-button {
+  border: 1px solid;
+  border-radius: 7px;
+  padding: 3px;
+  font-size: 0.6rem;
+}
+ 
+.b-0 {
+  border: none !important;
+}
+
+.bt-0,
+.by-0 {
+  border-top: none !important;
+}
+
+.bb-0,
+.by-0 {
+  border-bottom: none !important;
+}
+
+.bl-0,
+.bx-0 {
+  border-left: none !important;
+}
+
+.br-0,
+.bx-0 {
+  border-right: none !important;
+}
+
+/*
+  Classes para o ngx-loading-bar
+*/
+#loading-bar-spinner {
+  top: 50% !important;
+  left: 50% !important;
+  position: fixed;
+}
+
+#loading-bar-spinner .spinner-icon {
+  width: 4em !important;
+  height: 4em !important;
+  border-top-color: #3984b8 !important;
+  border-left-color: #3984b8 !important;
+}
+
+/*
+  Leaflet style
+*/
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.info h4 {
+  margin: 0 0 5px;
+  color: #777;
+  font-weight: bold;
+}
+
+.legenda {
+  line-height: 18px;
+  color: #555;
+}
+
+/* Menu */
+
+.layout-wrapper .layout-menu-wrapper .layout-menu li .menuitem-badge {
+  width: 15%;
+  border-radius: 20%;
+}
+
+.layout-wrapper .layout-menu-wrapper .layout-menu li.orange-badge>a .menuitem-badge {
+  background-color: white;
+  color: black;
+}
+
+.layout-wrapper .layout-menu-wrapper .layout-menu li.orange-badge>a .menuitem-badge-child {
+  right: 10px;
+}
+
+
+/**
+  Cytoscape
+**/
+.cy-node {
+  text-align: center;
+}
+
+.cy-node p {
+  margin: 0;
+  padding: 0;
+}
+
+.cy-node-icon {
+  color: #000;
+  font-size: 2em;
+  opacity: 0.4;
+}
+
+.cy-node-icon-alvo {
+  opacity: 1;
+  color: #d97b09 !important;
+}
+
+.cy-node-icon-pesquisado {
+  opacity: 1;
+}
+
+.cy-node-icon-user {
+  color: #155c9e;
+}
+
+.cy-node-icon-university {
+  color: #da5a7a;
+}
+
+.cy-node-icon-building {
+  color: #b80c0c;
+}
+
+.cy-node-icon-phone {
+  color: #1a7000;
+}
+
+.cy-node-icon-road {
+  color: #bbab19;
+}
+
+.cy-node-label {
+  font-size: 0.8em;
+  /* font-weight: bold; */
+}
+
+.cy-hide {
+  display: none;
+}

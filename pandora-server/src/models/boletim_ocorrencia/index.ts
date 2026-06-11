@@ -1,0 +1,1 @@
+export * from './boletim_ocorrencia.model';

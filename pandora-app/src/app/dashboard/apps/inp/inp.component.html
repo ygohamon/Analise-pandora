@@ -1,0 +1,130 @@
+<div class="ui-g dashboard">
+  <div class="ui-g-12">
+      <div class="p-card mb-0">
+          <span class="p-card-titulo">I.N.P.</span>
+
+          <div class="to-right text-primary export-button pointer link-retornar" *ngIf="buscaNepotismoSucesso || tipoAnalise">
+            <span (click)="resetaBusca()">
+              Retornar
+              <i class="fa fa-reply"></i>
+            </span>
+          </div>
+      </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaNepotismoSucesso && !tipoAnalise">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true" [collapsed]="!!tipoAnalise">
+          <ul class="text-justify">
+            <li class="pb-1">O I.N.P. é uma ferramenta que lista os parentes de gestores e pessoas importantes do poder público que possuem cargos no setor público.</li>
+            <li class="pb-1">São mostradas as informações de relação, CPF, nome, órgão e esfera de cada um dos parentes encontrados.</li>
+            <li class="pb-1">A análise pode ser feita através de um órgão/unidade gestora ou por um CPF alvo.</li>
+          </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!buscaNepotismoSucesso && !tipoAnalise">
+
+    <div class="ui-g p-card ui-fluid">
+      <div class="p-card-subtitulo mb-3 ui-g-12">Tipo de Análise</div>
+
+      <div class="ui-g-6 ui-sm-12">
+        <button pButton type="button" label="CPF" (click)="selecionaAnalise('cpf')"></button>
+      </div>
+
+      <div class="ui-g-6 ui-sm-12">
+        <button pButton type="button" label="Órgão" (click)="selecionaAnalise('orgao')"></button>
+      </div>
+    </div>
+  </div>
+
+    <div class="ui-g-12" *ngIf="!buscaNepotismoSucesso && !!tipoAnalise">
+
+      <div class="ui-g p-card">
+
+        <div *ngIf="tipoAnalise === 'orgao'">
+          <div class="ui-g-12 ui-fluid">
+            <div class="ui-g-3 ui-sm-12">
+              <span style="font-weight: bold">Órgão:</span>
+            </div>
+
+            <div class="ui-g-9 ui-sm-12">
+              <p-autoComplete [(ngModel)]="orgao" [suggestions]="orgaosEncontrados" (completeMethod)="buscaOrgao($event)" field="ugestora"
+                placeholder="Órgão" [minLength]="1" [dropdown]="true" forceSelection="true" required="true"></p-autoComplete>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-fluid">
+             <div class="ui-g-3 ui-sm-12">
+              <span style="font-weight: bold">Ano:</span>
+            </div>
+
+            <div class="ui-g-9 ui-sm-12">
+              <p-dropdown [options]="opcoesAnoAnalise" [(ngModel)]="anoAnalise" placeholder="Escolha um ano"></p-dropdown>
+            </div>
+          </div>
+
+          <div class="ui-g-6 ui-sm-12 ui-fluid">
+            <button pButton (click)="onGerarAnaliseOrgao()" type="button" icon="pi pi-search" label="Analisar"></button>
+          </div>
+
+          <div class="ui-g-6 ui-sm-12 ui-fluid">
+            <button pButton (click)="tipoAnalise = null" type="button" icon="pi pi-chevron-left" label="Voltar"></button>
+          </div>
+        </div>
+
+        <div *ngIf="tipoAnalise === 'cpf'">
+          <div class="ui-g-12 ui-fluid">
+            <div class="ui-g-3 ui-sm-12">
+              <span style="font-weight: bold">CPF:</span>
+            </div>
+
+            <div class="ui-g-9 ui-sm-12">
+              <input type="text" pInputText [(ngModel)]="cpfAnalise"/>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-fluid">
+             <div class="ui-g-3 ui-sm-12">
+              <span style="font-weight: bold">Ano:</span>
+            </div>
+
+            <div class="ui-g-9 ui-sm-12">
+              <p-dropdown [options]="opcoesAnoAnalise" [(ngModel)]="anoAnalise" placeholder="Escolha um ano"></p-dropdown>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-sm-12 ui-fluid">
+            <button pButton (click)="onGerarAnaliseCPF()" type="button" icon="pi pi-search" label="Analisar"></button>
+          </div>
+
+          <div class="ui-g-6 ui-sm-12 ui-fluid">
+            <button pButton (click)="tipoAnalise = null" type="button" icon="pi pi-chevron-left" label="Voltar"></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="buscaNepotismoSucesso">
+      <div class="ui-g p-card b-0 p-0">
+
+        <app-inp-analise-orgao
+          *ngIf="tipoAnalise === 'orgao'"
+          [dados]="nepotismoEncontrado">
+        </app-inp-analise-orgao>
+
+        <app-inp-analise-cpf
+          *ngIf="tipoAnalise === 'cpf'"
+          [dados]="nepotismoEncontrado">
+        </app-inp-analise-cpf>
+
+      </div>
+    </div>
+
+    <div class="ui-g-12" *ngIf="buscaNepotismoFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div>
+
+</div>

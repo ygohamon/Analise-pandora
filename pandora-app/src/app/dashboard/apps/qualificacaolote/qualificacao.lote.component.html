@@ -1,0 +1,65 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+      <div class="p-card">
+          <span class="p-card-titulo">Qualificação em Lote</span>
+
+          <div class="to-right text-primary export-button pointer link-retornar" *ngIf="!!dadosMontados.length">
+            <span (click)="reset()">
+              Retornar
+              <i class="fa fa-reply"></i>
+            </span>
+          </div>
+      </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul class="text-justify">
+          <li class="pb-1">Esta ferramenta possibilita que o usuário consiga gerar a qualificação de diversas pessoas ao mesmo tempo</li>
+          <li class="pb-1">Permite a exportação dos dados em formato <i>.docx</i>.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="!dadosMontados.length">
+    <div class="p-card">
+      <div class="p-card-subtitulo mb-3">Lista de CPF's</div>
+
+      <textarea class="w-100" [(ngModel)]="campoTexto" rows="10" pInputTextarea></textarea>
+
+      <div class="w-100 text-center my-2">
+        <button pButton (click)="onClick()" type="button" icon="pi pi-search" label="Buscar"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12"  *ngIf="!!dadosMontados.length">
+    <div class="p-card">
+      <div class="p-card-subtitulo mb-3 text-left d-flex">
+        Resultado
+
+        <div class="export-button pointer text-primary ml-auto" (click)="exportDocx()">
+          <span>DOCX</span>
+          <i class="pi pi-download"></i>
+        </div>
+      </div>
+
+      <div class="ui-g" style="max-height: 400px; overflow-y: auto;">
+        <ng-container  *ngFor="let dados of dadosMontados">
+          <div class="ui-g-3 ui-sm-1"></div>
+          <div class="ui-g-6 ui-sm-10 text-justify">
+            <div class="r-card b-0 py-3">
+              <strong>{{dados.nome}}</strong>{{qualificacao.getTemplatePessoa(dados)}}.
+            </div>
+          </div>
+          <div class="ui-g-3 ui-sm-1"></div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+</div>
+

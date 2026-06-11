@@ -1,0 +1,181 @@
+<div class="ui-g">
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <div class="p-card-titulo">Relatório Integrado</div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card mb-0">
+      <div class="p-card-subtitulo">{{tituloRazaoSocial}} {{tituloCNPJ}}</div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0 mb-0">
+      <p-panel header="Informações" [toggleable]="true">
+        <ul class="mt-0">
+            <li class="pt-2">A não exibição de algum registro não significa que o mesmo não exista.</li>
+            <li class="pt-2">Os registros não relevantes podem ser excluídos do relatório.</li>
+        </ul>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="p-card p-0 b-0 mb-0">
+
+      <p-menubar styleClass="bb-0 font-weight-bold back-cinza" [model]="menuItems" *ngIf="cnpjValido && (buscaLocalSucesso || buscaExternaSucesso)"></p-menubar>
+      <p-tabView
+        styleClass="p-0"
+        *ngIf="buscaLocalSucesso || buscaExternaSucesso"
+        [controlClose]="true"
+        (onClose)="fecharAba($event)">
+
+        <p-tabPanel
+            header="{{tituloCategorias[categoria].titulo}}"
+            tooltip="{{tituloCategorias[categoria].tooltip}}"
+            *ngFor="let categoria of categoriasEncontradas; let first = first;"
+            [selected]="first"
+            [closable]="true">
+
+          <app-empresa-dataview
+              *ngIf="categoria === 'empresa'"
+              [(empresas)]="dadosEncontrados[categoria]">
+          </app-empresa-dataview>
+
+          <app-empresa-filial-datatable
+              *ngIf="categoria === 'filial'"
+              [(filiais)]="dadosEncontrados[categoria]">
+          </app-empresa-filial-datatable>
+
+          <app-empresa-atividadeeconomica-table
+              *ngIf="categoria === 'atividadeeconomica'"
+              [(dados)]="dadosEncontrados[categoria]">
+          </app-empresa-atividadeeconomica-table>
+
+          <app-endereco-datatable
+              *ngIf="categoria === 'endereco'"
+              [(enderecos)]="dadosEncontrados[categoria]">
+          </app-endereco-datatable>
+
+          <app-telefone-table
+              *ngIf="categoria === 'telefone'"
+              [(telefones)]="dadosEncontrados[categoria]">
+          </app-telefone-table>
+
+          <app-pessoa-imovel-table
+              *ngIf="categoria === 'imovel'"
+              [dados]="dadosEncontrados[categoria]">
+          </app-pessoa-imovel-table>
+
+          <app-veiculo-datatable
+            *ngIf="categoria === 'veiculo'"
+            [(veiculos)]="dadosEncontrados[categoria]">
+          </app-veiculo-datatable>
+
+          <app-embarcacao-datatable
+            *ngIf="categoria === 'embarcacao'"
+            [(embarcacoes)]="dadosEncontrados[categoria]">
+          </app-embarcacao-datatable>
+
+          <app-aeronave-table
+            *ngIf="categoria === 'aeronave'"
+            [data]="dadosEncontrados[categoria]">
+          </app-aeronave-table>
+
+          <app-empresa-sociopf-datatable
+              *ngIf="categoria === 'socio_pf'"
+              [(socios)]="dadosEncontrados[categoria]">
+          </app-empresa-sociopf-datatable>
+
+          <app-empresa-sociopj-datatable
+              *ngIf="categoria === 'socio_pj'"
+              [(socios)]="dadosEncontrados[categoria]">
+          </app-empresa-sociopj-datatable>
+
+          <app-empresa-socioestrangeiro-datatable
+              *ngIf="categoria === 'socio_estrangeiro'"
+              [(socios)]="dadosEncontrados[categoria]">
+          </app-empresa-socioestrangeiro-datatable>
+
+          <app-empresa-processo
+            *ngIf="categoria === 'processo'"
+            [data]="dadosEncontrados[categoria]">
+          </app-empresa-processo>
+
+          <app-tipologia-datalist
+              *ngIf="categoria === 'tipologia_pj'"
+              [tipo]="'pj'"
+              [(tipologias)]="dadosEncontrados[categoria]">
+          </app-tipologia-datalist>
+
+          <app-empenho-datatable
+              *ngIf="categoria === 'empenho_municipal'"
+              [(empenhos)]="dadosEncontrados[categoria]">
+          </app-empenho-datatable>
+
+          <app-empenho-datatable
+              *ngIf="categoria === 'empenho_estadual'"
+              [(empenhos)]="dadosEncontrados[categoria]">
+          </app-empenho-datatable>
+
+          <app-operacao-datatable
+              *ngIf="categoria === 'operacao'"
+              [(operacoes)]="dadosEncontrados[categoria]">
+          </app-operacao-datatable>
+
+          <app-rif
+              *ngIf="categoria === 'rif'"
+              [data]="dadosEncontrados[categoria]">
+          </app-rif>
+
+          <app-empresa-quadro-societario-datatable
+              *ngIf="categoria === 'historico_quadro_societario'"
+              [(data)]="dadosEncontrados[categoria]">
+          </app-empresa-quadro-societario-datatable>
+
+          <app-empresa-empregadores-datatable
+              *ngIf="categoria === 'empregador'"
+              [(data)]="dadosEncontrados[categoria]">
+          </app-empresa-empregadores-datatable>
+
+          <app-pessoa-virtual-table
+              *ngIf="categoria === 'virtual'"
+              [(data)]="dadosEncontrados[categoria]">
+          </app-pessoa-virtual-table>
+
+          <app-empresa-contador-table
+              *ngIf="categoria === 'contador'"
+              [contadores]="dadosEncontrados[categoria]">
+          </app-empresa-contador-table>
+
+          <app-crawlers-datatable
+              *ngIf="categoria === 'crawler'"
+              [(data)]="dadosEncontrados[categoria]">
+          </app-crawlers-datatable>
+
+          <app-empresa-eleitoral
+            *ngIf="categoria === 'eleitoral'"
+            [(data)]="dadosEncontrados[categoria]">
+          </app-empresa-eleitoral>
+
+          <app-pessoa-vizinhos-empresa-table
+            *ngIf="categoria === 'vizinho'"
+            [(data)]="dadosEncontrados[categoria]">
+          </app-pessoa-vizinhos-empresa-table>
+
+          <app-zoom *ngIf="categoria === 'zoom'" [(data)]="dadosEncontrados[categoria]">
+          </app-zoom>
+
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="buscaLocalFalha && buscaExternaFalha">
+      <app-mensagem-erro></app-mensagem-erro>
+  </div>
+
+</div>

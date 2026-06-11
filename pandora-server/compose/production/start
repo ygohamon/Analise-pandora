@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+
+printf "\n"
+printf "################################\n"
+printf "#   Instalando dependências    #\n"
+printf "################################\n"
+printf "\n\n"
+
+npm install
+
+printf "\n"
+printf "############################\n"
+printf "#   Compilando servidor    #\n"
+printf "############################\n"
+printf "\n\n"
+
+npm run compile
+
+printf "\n"
+printf "################################\n"
+printf "#   Variáveis de ambiente      #\n"
+printf "################################\n"
+printf "\n\n"
+
+export $(grep -v '^#' .envs/.production/server.env | xargs)
+cat .envs/.production/server.env
+
+printf "\n\n"
+printf "###########################\n"
+printf "# Inicializando o SERVER  #\n"
+printf "###########################\n"
+printf "\n"
+
+export NODE_ENV=$SERVER_ENV
+pm2-runtime start compose/production/pm2.config.js --env $SERVER_ENV -i $NUM_NODES
