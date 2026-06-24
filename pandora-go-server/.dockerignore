@@ -1,0 +1,4 @@
+.git
+.envs/
+*.log
+listening-marker
