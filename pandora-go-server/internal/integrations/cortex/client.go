@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -37,7 +36,7 @@ func (c Client) Get(ctx context.Context, endpoint, cpfUsuario string) (any, erro
 	if err != nil {
 		return nil, err
 	}
-	reqCtx, cancel := context.WithTimeout(ctx, timeout(c.model, 20*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, timeout(c.model, 2*time.Minute))
 	defer cancel()
 	start := time.Now()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, endpoint, nil)
@@ -53,7 +52,7 @@ func (c Client) Get(ctx context.Context, endpoint, cpfUsuario string) (any, erro
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "cortex"), "method", http.MethodGet, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, "cortex", http.MethodGet, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
@@ -77,7 +76,7 @@ func (c Client) token(ctx context.Context) (string, error) {
 	if basePessoas == "" {
 		return "", fmt.Errorf("cortex url pessoas not configured")
 	}
-	reqCtx, cancel := context.WithTimeout(ctx, timeout(c.model, 20*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, timeout(c.model, 2*time.Minute))
 	defer cancel()
 	body := strings.NewReader(fmt.Sprintf(`{"email":%q,"senha":%q}`, modelVar(c.model.Vars, "CORTEX_LOGIN"), modelVar(c.model.Vars, "CORTEX_SENHA")))
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, basePessoas+"/login", body)
@@ -85,11 +84,13 @@ func (c Client) token(ctx context.Context) (string, error) {
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
+	start := time.Now()
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer res.Body.Close()
+	sharedintegrations.LogExternalLogin(ctx, "cortex", res.StatusCode, time.Since(start))
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return "", fmt.Errorf("cortex login status %d", res.StatusCode)
 	}
@@ -102,7 +103,6 @@ func (c Client) token(ctx context.Context) (string, error) {
 	}
 	session.token = token
 	session.createdAt = time.Now()
-	slog.InfoContext(ctx, "external api login ok", sharedintegrations.LogAttrs(ctx, "cortex")...)
 	return token, nil
 }
 

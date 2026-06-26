@@ -1,6 +1,5 @@
 // Package integrations agrupa clients de APIs externas.
 //
-// Novas integrações devem nascer aqui, separadas por fornecedor. As integrações
-// de Pessoa ja estao separadas em arquivos por fornecedor no repository e podem
-// ser extraidas para subpacotes conforme estabilizarem.
+// Integrations encapsulam base URL, autenticacao, timeout, erro HTTP e payload
+// bruto. Elas nao devem montar abas de tela nem aplicar regra de permissao.
 package integrations

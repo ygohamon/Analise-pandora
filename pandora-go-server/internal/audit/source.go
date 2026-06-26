@@ -2,7 +2,10 @@ package audit
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"os"
+	"strings"
 	"time"
 
 	"pandora-go-server/internal/middleware"
@@ -32,6 +35,10 @@ func LogSource(ctx context.Context, event SourceEvent) {
 	if event.Err != nil {
 		status = "error"
 	}
+	if os.Getenv("SERVER_ENV") != "production" {
+		printSourceEvent(event, status)
+		return
+	}
 	args := []any{
 		"request_id", middleware.RequestIDFromContext(ctx),
 		"domain", event.Domain,
@@ -47,4 +54,32 @@ func LogSource(ctx context.Context, event SourceEvent) {
 		args = append(args, "error", event.Err.Error())
 	}
 	slog.InfoContext(ctx, "integrated source audited", args...)
+}
+
+func printSourceEvent(event SourceEvent, status string) {
+	message := "SOURCE AUDITED"
+	if status == "blocked" {
+		message = "SOURCE BLOCKED"
+	}
+	if status == "error" {
+		message = "SOURCE ERROR"
+	}
+	detail := fmt.Sprintf("ROWS=%d DURATION=%dMS", event.Rows, event.Duration.Milliseconds())
+	if event.Err != nil {
+		detail += " ERROR=" + event.Err.Error()
+	}
+	fmt.Fprintf(os.Stdout, "%s %s %s [%s] [%s] {%s} %s %s\n",
+		time.Now().Format("15:04:05.000"),
+		blue("[ INFO ]"),
+		message,
+		strings.ToUpper(event.Domain),
+		strings.ToUpper(event.Category),
+		event.Document,
+		strings.ToUpper(status),
+		detail,
+	)
+}
+
+func blue(text string) string {
+	return "\033[34m" + text + "\033[0m"
 }

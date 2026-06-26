@@ -11,13 +11,20 @@ import (
 	"pandora-go-server/internal/config"
 	handlers "pandora-go-server/internal/http/handlers"
 	"pandora-go-server/internal/integrations/bcccs"
+	"pandora-go-server/internal/integrations/crawlers"
 	"pandora-go-server/internal/middleware"
 	"pandora-go-server/internal/modelconfig"
-	"pandora-go-server/internal/repositories"
-	empresarepo "pandora-go-server/internal/repositories/empresa/repository"
-	pessoarepo "pandora-go-server/internal/repositories/pessoa/repository"
+	analiserepo "pandora-go-server/internal/repositories/analise"
+	appsrepo "pandora-go-server/internal/repositories/apps"
+	pesquisarepo "pandora-go-server/internal/repositories/pesquisa"
+	empresarepo "pandora-go-server/internal/repositories/pesquisa/empresa/repository"
+	pessoarepo "pandora-go-server/internal/repositories/pesquisa/pessoa/repository"
+	sistemarepo "pandora-go-server/internal/repositories/sistema"
 	"pandora-go-server/internal/services"
 	"pandora-go-server/internal/usecases"
+	analiseuc "pandora-go-server/internal/usecases/analise"
+	appsuc "pandora-go-server/internal/usecases/apps"
+	pesquisauc "pandora-go-server/internal/usecases/pesquisa"
 )
 
 func NewServer(cfg config.Config, logger *slog.Logger, db *sql.DB, models modelconfig.Registry) *http.Server {
@@ -40,13 +47,32 @@ func NewServer(cfg config.Config, logger *slog.Logger, db *sql.DB, models modelc
 
 	pessoaRepo := pessoarepo.NewSQLRepository(db, models)
 	empresaRepo := empresarepo.NewSQLRepository(db, models)
-	bcccsRepo := repositories.NewSQLBCCCSRepository(db, models)
+	consultaRepo := pesquisarepo.NewConsultaOperacionalRepository(pessoaRepo, empresaRepo)
+	pesquisaRepo := pesquisarepo.NewRepository(db, models)
+	analiseRepo := analiserepo.NewRepository(db, models)
+	appsRepo := appsrepo.NewRepository(db, models)
+	bcccsRepo := pesquisarepo.NewSQLBCCCSRepository(db, models)
 	bcccsModel, _ := models.Get("API_BCCCS")
-	pessoaUseCase := usecases.NewPessoaUseCase(pessoaRepo)
-	empresaUseCase := usecases.NewEmpresaUseCase(empresaRepo)
-	bcccsUseCase := usecases.NewBCCCSUseCase(bcccsRepo, bcccs.NewClient(bcccsModel))
+	var crawlerPort pesquisauc.CrawlerSearchPort
+	if cfg.CrawlersURL != "" {
+		crawlerPort = crawlers.NewClient(cfg.CrawlersURL, cfg.CrawlersTimeout)
+	}
+	pessoaUseCase := pesquisauc.NewPessoaUseCase(pessoaRepo, crawlerPort)
+	empresaUseCase := pesquisauc.NewEmpresaUseCase(empresaRepo, crawlerPort)
+	enderecoUseCase := pesquisauc.NewEnderecoUseCase(consultaRepo)
+	veiculoUseCase := pesquisauc.NewVeiculoConsultaUseCase(consultaRepo)
+	embarcacaoUseCase := pesquisauc.NewEmbarcacaoUseCase(consultaRepo)
+	aeronaveUseCase := pesquisauc.NewAeronaveUseCase(consultaRepo)
+	obitoUseCase := pesquisauc.NewObitoUseCase(consultaRepo)
+	beneficioUseCase := pesquisauc.NewBeneficioUseCase(consultaRepo)
+	telefoneUseCase := pesquisauc.NewTelefoneUseCase(consultaRepo)
+	orcrimUseCase := pesquisauc.NewOrcrimUseCase(consultaRepo)
+	pesquisaUseCases := pesquisauc.NewUseCases(pesquisaRepo)
+	analiseUseCase := analiseuc.NewUseCase(analiseRepo)
+	appsUseCase := appsuc.NewUseCase(appsRepo)
+	bcccsUseCase := pesquisauc.NewBCCCSUseCase(bcccsRepo, bcccs.NewClient(bcccsModel))
 	sistemaUseCase := usecases.NewSistemaUseCase(cfg, db)
-	usuarioRepo := repositories.NewSQLUsuarioRepository(db, models)
+	usuarioRepo := sistemarepo.NewSQLUsuarioRepository(db, models)
 	authService := services.NewAuthService(
 		usuarioRepo,
 		jwtService,
@@ -54,7 +80,7 @@ func NewServer(cfg config.Config, logger *slog.Logger, db *sql.DB, models modelc
 		cfg.Env,
 		cfg.ServerAESPW,
 	)
-	handlers.NewHandler(pessoaUseCase, empresaUseCase, bcccsUseCase, sistemaUseCase, authService, cfg, cacheStore).Register(apiMux, protected, admin)
+	handlers.NewHandler(pessoaUseCase, empresaUseCase, enderecoUseCase, veiculoUseCase, embarcacaoUseCase, aeronaveUseCase, obitoUseCase, beneficioUseCase, telefoneUseCase, orcrimUseCase, pesquisaUseCases, analiseUseCase, appsUseCase, bcccsUseCase, sistemaUseCase, authService, cfg, cacheStore).Register(apiMux, protected, admin)
 
 	mux := http.NewServeMux()
 	mux.Handle("/server/", http.StripPrefix("/server", apiMux))

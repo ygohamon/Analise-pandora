@@ -56,7 +56,7 @@ func Logger(logger *slog.Logger, env string) func(http.Handler) http.Handler {
 }
 
 func printPrettyHTTPLog(requestID string, r *http.Request, status int, duration time.Duration, errorCode, errorKind, errorMessage, cacheStatus string) {
-	statusText := fmt.Sprintf("%s %d", statusIcon(status), status)
+	statusText := fmt.Sprintf("[ %s ] %d", statusIcon(status), status)
 	path := r.URL.Path
 	if r.URL.RawQuery != "" {
 		path += "?" + r.URL.RawQuery
@@ -129,15 +129,15 @@ func statusClass(status int) string {
 func statusIcon(status int) string {
 	switch {
 	case status >= 500:
-		return "ERR"
+		return "ERR "
 	case status >= 400:
-		return "BAD"
+		return "BAD "
 	case status >= 300:
-		return "RED"
+		return "RED "
 	case status >= 200:
 		return "OK "
 	default:
-		return "INF"
+		return "INFO"
 	}
 }
 

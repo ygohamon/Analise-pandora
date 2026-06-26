@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"html"
 	"io"
-	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -38,7 +37,7 @@ func (c Client) ListarSentenciadoPorFiltro(ctx context.Context, nome, cpf string
 	}
 	endpoint := strings.TrimSuffix(wsdl, "?wsdl")
 	body := c.soapEnvelope(nome, cpf)
-	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 50*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, endpoint, strings.NewReader(body))
 	if err != nil {
@@ -53,7 +52,7 @@ func (c Client) ListarSentenciadoPorFiltro(ctx context.Context, nome, cpf string
 	}
 	defer res.Body.Close()
 	raw, _ := io.ReadAll(res.Body)
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "seeu"), "method", http.MethodPost, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds())...)
+	sharedintegrations.LogExternalCall(ctx, "seeu", http.MethodPost, res.StatusCode, time.Since(start), "")
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}

@@ -1,5 +1,5 @@
-// Package mappers concentra transformacoes entre models internos e DTOs.
+// Package mappers converte payloads internos e externos para DTOs/linhas do
+// Pandora.
 //
-// Os mappers maiores ainda estao junto das fontes migradas para evitar mudanca
-// funcional durante o corte arquitetural.
+// Mappers nao devem consultar banco, chamar API externa ou decidir permissao.
 package mappers

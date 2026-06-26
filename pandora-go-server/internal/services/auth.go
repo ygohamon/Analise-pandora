@@ -2,26 +2,37 @@ package services
 
 import (
 	"context"
+	crand "crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"strconv"
 	"strings"
 	"time"
 
 	"pandora-go-server/internal/auth"
-	"pandora-go-server/internal/repositories"
+	repositories "pandora-go-server/internal/repositories/sistema"
 	"pandora-go-server/internal/types"
 	"pandora-go-server/internal/utils"
 	"pandora-go-server/internal/validators"
 )
 
 type AuthService struct {
-	users     repositories.UsuarioRepository
-	jwt       auth.JWTService
-	recaptcha RecaptchaVerifier
-	env       string
-	aesPW     string
+	authRepo       repositories.AuthRepository
+	appRepo        repositories.AplicativoRepository
+	userRepo       repositories.UsuarioConsultaRepository
+	permissionRepo repositories.PermissaoRepository
+	profileRepo    repositories.PerfilRepository
+	logsRepo       repositories.LogsRepository
+	auditRepo      repositories.AuditoriaRepository
+	integraRepo    repositories.IntegraAdminRepository
+	systemRepo     repositories.SistemaAdminRepository
+	preUserRepo    repositories.PreUsuarioRepository
+	jwt            auth.JWTService
+	recaptcha      RecaptchaVerifier
+	env            string
+	aesPW          string
 }
 
 type pendingTFASetup struct {
@@ -31,7 +42,22 @@ type pendingTFASetup struct {
 }
 
 func NewAuthService(users repositories.UsuarioRepository, jwt auth.JWTService, recaptcha RecaptchaVerifier, env string, aesPW string) AuthService {
-	return AuthService{users: users, jwt: jwt, recaptcha: recaptcha, env: env, aesPW: aesPW}
+	return AuthService{
+		authRepo:       users,
+		appRepo:        users,
+		userRepo:       users,
+		permissionRepo: users,
+		profileRepo:    users,
+		logsRepo:       users,
+		auditRepo:      users,
+		integraRepo:    users,
+		systemRepo:     users,
+		preUserRepo:    users,
+		jwt:            jwt,
+		recaptcha:      recaptcha,
+		env:            env,
+		aesPW:          aesPW,
+	}
 }
 
 func (s AuthService) Login(ctx context.Context, req types.LoginRequest, remoteIP string) (types.LoginResponse, error) {
@@ -53,6 +79,10 @@ func (s AuthService) LoginDev(ctx context.Context, req types.LoginRequest) (type
 	if strings.TrimSpace(req.Login) == "" || strings.TrimSpace(req.Senha) == "" {
 		return types.LoginResponse{}, types.ErrInvalidParam
 	}
+	if req.QuerTFA == nil {
+		querTFA := false
+		req.QuerTFA = &querTFA
+	}
 	return s.loginWithoutRecaptcha(ctx, req)
 }
 
@@ -73,6 +103,15 @@ func (s AuthService) isProduction() bool {
 	return strings.EqualFold(strings.TrimSpace(s.env), "production")
 }
 
+func (s AuthService) requiresStagedTFAToken() bool {
+	switch strings.ToLower(strings.TrimSpace(s.env)) {
+	case "production", "ratification", "homologation", "staging":
+		return true
+	default:
+		return false
+	}
+}
+
 func (s AuthService) loginWithoutRecaptcha(ctx context.Context, req types.LoginRequest) (types.LoginResponse, error) {
 	user, err := s.authenticate(ctx, req.Login, req.Senha)
 	if err != nil {
@@ -80,6 +119,13 @@ func (s AuthService) loginWithoutRecaptcha(ctx context.Context, req types.LoginR
 	}
 	if req.QuerTFA != nil && *req.QuerTFA {
 		token, err := s.jwt.SignWithTTL(user.ToToken(), time.Minute)
+		if err != nil {
+			return types.LoginResponse{}, types.ErrInternal.WithCause(err)
+		}
+		return types.LoginResponse{Token: token}, nil
+	}
+	if req.QuerTFA == nil && strings.TrimSpace(req.TokenApp) == "" && s.requiresStagedTFAToken() {
+		token, err := s.jwt.SignWithTTL(user.ToToken(), 5*time.Minute)
 		if err != nil {
 			return types.LoginResponse{}, types.ErrInternal.WithCause(err)
 		}
@@ -93,7 +139,7 @@ func (s AuthService) loginWithoutRecaptcha(ctx context.Context, req types.LoginR
 }
 
 func (s AuthService) authenticate(ctx context.Context, login string, password string) (types.Usuario, error) {
-	status, err := s.users.LoginStatus(ctx, login)
+	status, err := s.authRepo.LoginStatus(ctx, login)
 	if err != nil {
 		return types.Usuario{}, err
 	}
@@ -103,14 +149,14 @@ func (s AuthService) authenticate(ctx context.Context, login string, password st
 	if strings.ToUpper(status.Acesso) != "LOCAL" {
 		return types.Usuario{}, types.ErrNotMigrated.WithCause(types.ErrExternalAccessInvalid)
 	}
-	if err := s.users.AuthenticateLocal(ctx, login, password); err != nil {
+	if err := s.authRepo.AuthenticateLocal(ctx, login, password); err != nil {
 		return types.Usuario{}, err
 	}
-	user, err := s.users.FindByLogin(ctx, login)
+	user, err := s.userRepo.FindByLogin(ctx, login)
 	if err != nil {
 		return types.Usuario{}, err
 	}
-	perms, err := s.users.Permissions(ctx, login, user.ID)
+	perms, err := s.permissionRepo.Permissions(ctx, login, user.ID)
 	if err != nil {
 		return types.Usuario{}, err
 	}
@@ -134,11 +180,11 @@ func (s AuthService) SetupTFAForUser(ctx context.Context, userID int64, password
 	if strings.TrimSpace(password) == "" {
 		return types.SetupTFAResponse{}, types.ErrInvalidParam
 	}
-	user, err := s.users.FindByID(ctx, userID)
+	user, err := s.userRepo.FindByID(ctx, userID)
 	if err != nil {
 		return types.SetupTFAResponse{}, err
 	}
-	if err := s.users.AuthenticateLocal(ctx, user.Login, password); err != nil {
+	if err := s.authRepo.AuthenticateLocal(ctx, user.Login, password); err != nil {
 		return types.SetupTFAResponse{}, err
 	}
 	return s.createPendingTFASetup(user)
@@ -178,7 +224,7 @@ func (s AuthService) VerifyTFA(ctx context.Context, req types.VerifyTFARequest) 
 		return types.LoginResponse{}, types.ErrTFACodeInvalid
 	}
 	if !user.SetupTFA {
-		if err := s.users.MarkTFASetup(ctx, req.Login); err != nil {
+		if err := s.authRepo.MarkTFASetup(ctx, req.Login); err != nil {
 			return types.LoginResponse{}, err
 		}
 		user.SetupTFA = true
@@ -194,7 +240,7 @@ func (s AuthService) VerifyTFAForUser(ctx context.Context, userID int64, tokenTF
 	if strings.TrimSpace(tokenTFA) == "" {
 		return types.LoginResponse{}, types.ErrInvalidParam
 	}
-	user, err := s.users.FindByID(ctx, userID)
+	user, err := s.userRepo.FindByID(ctx, userID)
 	if err != nil {
 		return types.LoginResponse{}, err
 	}
@@ -211,10 +257,10 @@ func (s AuthService) VerifyTFAForUser(ctx context.Context, userID int64, tokenTF
 		if err != nil {
 			return types.LoginResponse{}, types.ErrTFASetupInvalid.WithCause(err)
 		}
-		if err := s.users.StoreTFASecret(ctx, user.Login, protected); err != nil {
+		if err := s.authRepo.StoreTFASecret(ctx, user.Login, protected); err != nil {
 			return types.LoginResponse{}, err
 		}
-		if err := s.users.MarkTFASetup(ctx, user.Login); err != nil {
+		if err := s.authRepo.MarkTFASetup(ctx, user.Login); err != nil {
 			return types.LoginResponse{}, err
 		}
 	} else {
@@ -293,7 +339,7 @@ func (s AuthService) validateAppToken(ctx context.Context, token string) error {
 	if claimName == "" {
 		return types.ErrExternalAccessTokenInvalid
 	}
-	app, err := s.users.AuthorizedAppByToken(ctx, token)
+	app, err := s.appRepo.AuthorizedAppByToken(ctx, token)
 	if err != nil {
 		return err
 	}
@@ -311,26 +357,105 @@ func (s AuthService) validateAppToken(ctx context.Context, token string) error {
 }
 
 func (s AuthService) Me(ctx context.Context, id int64) (types.Usuario, error) {
-	return s.users.FindByID(ctx, id)
+	return s.userRepo.FindByID(ctx, id)
 }
 
 func (s AuthService) User(ctx context.Context, id int64) (types.Usuario, error) {
-	return s.users.FindByID(ctx, id)
+	return s.userRepo.FindByID(ctx, id)
+}
+
+func (s AuthService) ensureSelfOrAdmin(ctx context.Context, actorID int64, targetID int64) error {
+	if actorID <= 0 || targetID <= 0 {
+		return types.ErrInvalidParam
+	}
+	if actorID == targetID {
+		return nil
+	}
+	actor, err := s.userRepo.FindByID(ctx, actorID)
+	if err != nil {
+		return err
+	}
+	if !actor.IsAdmin() {
+		return types.ErrRouteUnauthorized
+	}
+	return nil
+}
+
+func (s AuthService) ValidateCurrentPassword(ctx context.Context, actorID int64, password string) error {
+	if strings.TrimSpace(password) == "" {
+		return types.ErrInvalidParam
+	}
+	user, err := s.userRepo.FindByID(ctx, actorID)
+	if err != nil {
+		return err
+	}
+	return s.authRepo.AuthenticateLocal(ctx, user.Login, password)
+}
+
+func (s AuthService) ChangePassword(ctx context.Context, actorID int64, targetID int64, currentPassword string, newPassword string) error {
+	if err := s.ensureSelfOrAdmin(ctx, actorID, targetID); err != nil {
+		return err
+	}
+	actor, err := s.userRepo.FindByID(ctx, actorID)
+	if err != nil {
+		return err
+	}
+	if actorID == targetID && !actor.IsAdmin() {
+		if err := s.ValidateCurrentPassword(ctx, actorID, currentPassword); err != nil {
+			return err
+		}
+	}
+	if strings.TrimSpace(newPassword) == "" || len(newPassword) < 8 {
+		return types.ErrInvalidParam
+	}
+	return s.authRepo.UpdatePassword(ctx, targetID, newPassword)
+}
+
+func (s AuthService) UpdateUserPreferences(ctx context.Context, actorID int64, targetID int64, patch repositories.UserPreferencePatch) error {
+	if err := s.ensureSelfOrAdmin(ctx, actorID, targetID); err != nil {
+		return err
+	}
+	return s.userRepo.UpdatePreferences(ctx, targetID, patch)
+}
+
+func (s AuthService) UpdatePreUserTerm(ctx context.Context, actorID int64, targetID int64, termo string) error {
+	if err := s.ensureSelfOrAdmin(ctx, actorID, targetID); err != nil {
+		return err
+	}
+	if strings.TrimSpace(termo) == "" {
+		return types.ErrInvalidParam
+	}
+	idPessoa, err := s.preUserRepo.PersonIDByUserID(ctx, targetID)
+	if err != nil {
+		return err
+	}
+	return s.preUserRepo.UpdatePreUserTerm(ctx, idPessoa, termo)
+}
+
+func (s AuthService) MyHistory(ctx context.Context, actorID int64, targetID int64, quantity int, offset int) ([]map[string]any, error) {
+	if err := s.ensureSelfOrAdmin(ctx, actorID, targetID); err != nil {
+		return nil, err
+	}
+	user, err := s.userRepo.FindByID(ctx, targetID)
+	if err != nil {
+		return nil, err
+	}
+	return s.userRepo.UserHistory(ctx, user.Login, quantity, offset)
 }
 
 func (s AuthService) ListUsers(ctx context.Context) ([]types.UsuarioAdmin, error) {
-	return s.users.ListUsers(ctx, "")
+	return s.userRepo.ListUsers(ctx, "")
 }
 
 func (s AuthService) ListUsersPartial(ctx context.Context, search string) ([]types.UsuarioAdmin, error) {
 	if len(strings.TrimSpace(search)) <= 2 {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.ListUsers(ctx, search)
+	return s.userRepo.ListUsers(ctx, search)
 }
 
 func (s AuthService) Permissions(ctx context.Context, id int64) (string, error) {
-	perms, err := s.users.Permissions(ctx, "", id)
+	perms, err := s.permissionRepo.Permissions(ctx, "", id)
 	if err != nil {
 		return "", err
 	}
@@ -350,168 +475,249 @@ func (s AuthService) Permissions(ctx context.Context, id int64) (string, error) 
 }
 
 func (s AuthService) ListProfiles(ctx context.Context) ([]string, error) {
-	return s.users.ListProfiles(ctx)
+	return s.profileRepo.ListProfiles(ctx)
 }
 
 func (s AuthService) ListFullProfiles(ctx context.Context) ([]types.PerfilAdmin, error) {
-	return s.users.ListFullProfiles(ctx)
+	return s.profileRepo.ListFullProfiles(ctx)
 }
 
 func (s AuthService) ListAccesses(ctx context.Context) ([]string, error) {
-	return s.users.ListAccesses(ctx)
+	return s.profileRepo.ListAccesses(ctx)
 }
 
 func (s AuthService) ListGroups(ctx context.Context) ([]string, error) {
-	return s.users.ListGroups(ctx)
+	return s.profileRepo.ListGroups(ctx)
 }
 
 func (s AuthService) ListPermissionCatalog(ctx context.Context) ([]map[string]string, error) {
-	return s.users.ListPermissionCatalog(ctx)
+	return s.permissionRepo.ListPermissionCatalog(ctx)
 }
 
 func (s AuthService) UserPermissionsRaw(ctx context.Context, id int64) ([]types.Permissao, error) {
-	return s.users.Permissions(ctx, "", id)
+	return s.permissionRepo.Permissions(ctx, "", id)
 }
 
 func (s AuthService) ProfilePermissions(ctx context.Context, id int64) ([]types.Permissao, error) {
-	return s.users.ProfilePermissions(ctx, id)
+	return s.permissionRepo.ProfilePermissions(ctx, id)
 }
 
 func (s AuthService) ProfileSchedule(ctx context.Context, id int64) (types.PerfilHorario, error) {
-	return s.users.ProfileSchedule(ctx, id)
+	return s.profileRepo.ProfileSchedule(ctx, id)
 }
 
 func (s AuthService) UsersByProfile(ctx context.Context, id int64) ([]types.PerfilUsuario, error) {
-	return s.users.UsersByProfile(ctx, id)
+	return s.profileRepo.UsersByProfile(ctx, id)
+}
+
+func (s AuthService) UpdateProfilePermissions(ctx context.Context, id int64, perms []types.Permissao) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	return s.profileRepo.UpdateProfilePermissions(ctx, id, perms)
+}
+
+func (s AuthService) UpdateProfileFlag(ctx context.Context, id int64, key string, value any) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	return s.profileRepo.UpdateProfileFlag(ctx, id, key, value)
+}
+
+func (s AuthService) UpdateProfileSchedule(ctx context.Context, id int64, active bool, start int64, end int64) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	return s.profileRepo.UpdateProfileSchedule(ctx, id, active, start, end)
+}
+
+func (s AuthService) UpdateProfileProcess(ctx context.Context, id int64, required bool, limit *int64) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	return s.profileRepo.UpdateProfileProcess(ctx, id, required, limit)
+}
+
+func (s AuthService) UpdateProfileSession(ctx context.Context, id int64, minutes int64) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	return s.profileRepo.UpdateProfileSession(ctx, id, minutes)
+}
+
+func (s AuthService) CreateProfile(ctx context.Context, profile types.PerfilAdmin) error {
+	return s.profileRepo.CreateProfile(ctx, profile)
+}
+
+func (s AuthService) DeleteProfile(ctx context.Context, id int64) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	return s.profileRepo.DeleteProfile(ctx, id)
+}
+
+func (s AuthService) ResetUserPassword(ctx context.Context, id int64, password string) error {
+	if id <= 0 {
+		return types.ErrInvalidParam
+	}
+	if strings.TrimSpace(password) == "" {
+		password = gerarSenhaTemporaria(10)
+	}
+	return s.userRepo.ResetPassword(ctx, id, password)
+}
+
+func (s AuthService) ResetAllPasswords(ctx context.Context, password string) error {
+	if strings.TrimSpace(password) == "" {
+		password = gerarSenhaTemporaria(10)
+	}
+	return s.userRepo.ResetAllLocalPasswords(ctx, password)
+}
+
+func (s AuthService) ResetTFA(ctx context.Context, login string) error {
+	if strings.TrimSpace(login) == "" {
+		return types.ErrInvalidParam
+	}
+	return s.authRepo.ResetTFA(ctx, login)
+}
+
+func (s AuthService) RemoveFalseUser(ctx context.Context, payload map[string]string) error {
+	return s.userRepo.RemoveFalseUser(ctx, payload)
+}
+
+func (s AuthService) SetBlacklistStatus(ctx context.Context, action string, payload map[string]string) error {
+	if action != "bloquear" && action != "ativar" {
+		return types.ErrInvalidParam
+	}
+	return s.userRepo.SetBlacklistStatus(ctx, action, payload)
 }
 
 func (s AuthService) ListDeletedUsers(ctx context.Context) ([]types.UsuarioFalso, error) {
-	return s.users.ListDeletedUsers(ctx)
+	return s.userRepo.ListDeletedUsers(ctx)
 }
 
 func (s AuthService) ListBlacklist(ctx context.Context) ([]types.ListaNegraUsuario, error) {
-	return s.users.ListBlacklist(ctx)
+	return s.userRepo.ListBlacklist(ctx)
 }
 
 func (s AuthService) APIQueriesSummary(ctx context.Context, year *int, month *int) ([]types.APIResumoMensal, error) {
-	return s.users.APIQueriesSummary(ctx, year, month)
+	return s.logsRepo.APIQueriesSummary(ctx, year, month)
 }
 
 func (s AuthService) APIQueriesMonthly(ctx context.Context, year *int, month *int, service string) ([]types.APIConsultaMensal, error) {
-	return s.users.APIQueriesMonthly(ctx, year, month, service)
+	return s.logsRepo.APIQueriesMonthly(ctx, year, month, service)
 }
 
 func (s AuthService) RecentLogs(ctx context.Context, quantity int, offset int) ([]types.LogSistema, error) {
-	return s.users.RecentLogs(ctx, quantity, offset)
+	return s.logsRepo.RecentLogs(ctx, quantity, offset)
 }
 
 func (s AuthService) LegacyNoProfileLogsCount(ctx context.Context) (int64, error) {
-	return s.users.LegacyNoProfileLogsCount(ctx)
+	return s.logsRepo.LegacyNoProfileLogsCount(ctx)
 }
 
 func (s AuthService) ValidTokens(ctx context.Context) ([]map[string]any, error) {
-	return s.users.ValidTokens(ctx, 0)
+	return s.logsRepo.ValidTokens(ctx, 0)
 }
 
 func (s AuthService) AuditPix(ctx context.Context, filters map[string]string) ([]map[string]any, error) {
-	return s.users.AuditPix(ctx, filters)
+	return s.auditRepo.AuditPix(ctx, filters)
 }
 
 func (s AuthService) RecurrentProcesses(ctx context.Context, period string, duration string) ([]map[string]any, error) {
-	return s.users.RecurrentProcesses(ctx, period, duration)
+	return s.auditRepo.RecurrentProcesses(ctx, period, duration)
 }
 
 func (s AuthService) RecurrentProcessDetails(ctx context.Context, login string, process string, period string, duration string) ([]map[string]any, error) {
 	if strings.TrimSpace(login) == "" || strings.TrimSpace(process) == "" {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.RecurrentProcessDetails(ctx, login, process, period, duration)
+	return s.auditRepo.RecurrentProcessDetails(ctx, login, process, period, duration)
 }
 
 func (s AuthService) ErrorLogs(ctx context.Context, filters map[string]string) ([]map[string]any, error) {
-	return s.users.ErrorLogs(ctx, filters)
+	return s.logsRepo.ErrorLogs(ctx, filters)
 }
 
 func (s AuthService) RegisterErrorLog(ctx context.Context, payload types.ErrorLogPayload) error {
 	if strings.TrimSpace(payload.Tipo) == "" || strings.TrimSpace(payload.Mensagem) == "" {
 		return types.ErrInvalidParam
 	}
-	return s.users.UpsertErrorLog(ctx, payload)
+	return s.logsRepo.UpsertErrorLog(ctx, payload)
 }
 
 func (s AuthService) AuditAlerts(ctx context.Context, category string, minimum int, period string) ([]map[string]any, error) {
-	return s.users.AuditAlerts(ctx, category, minimum, period)
+	return s.auditRepo.AuditAlerts(ctx, category, minimum, period)
 }
 
 func (s AuthService) Rankings(ctx context.Context, ranking string, duration string, top string, parameter string) ([]map[string]any, error) {
-	return s.users.Rankings(ctx, ranking, duration, top, parameter)
+	return s.logsRepo.Rankings(ctx, ranking, duration, top, parameter)
 }
 
 func (s AuthService) Resources(ctx context.Context, duration string, withKey string, profile string, year string, month string) ([]map[string]any, error) {
-	return s.users.Resources(ctx, duration, withKey, profile, year, month)
+	return s.logsRepo.Resources(ctx, duration, withKey, profile, year, month)
 }
 
 func (s AuthService) ProcessesMostUsed(ctx context.Context, duration string) ([]map[string]any, error) {
-	return s.users.ProcessesMostUsed(ctx, duration)
+	return s.logsRepo.ProcessesMostUsed(ctx, duration)
 }
 
 func (s AuthService) UsersSearchedValue(ctx context.Context, duration string, key string, value string) ([]map[string]any, error) {
 	if strings.TrimSpace(key) == "" || strings.TrimSpace(value) == "" {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.UsersSearchedValue(ctx, duration, key, value)
+	return s.logsRepo.UsersSearchedValue(ctx, duration, key, value)
 }
 
 func (s AuthService) UsageStats(ctx context.Context, category string, duration string) ([]map[string]any, error) {
 	if category != "pesquisa" && category != "login" {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.UsageStats(ctx, category, duration)
+	return s.logsRepo.UsageStats(ctx, category, duration)
 }
 
 func (s AuthService) NotFoundRecords(ctx context.Context) ([]map[string]any, error) {
-	return s.users.NotFoundRecords(ctx)
+	return s.logsRepo.NotFoundRecords(ctx)
 }
 
 func (s AuthService) IntegraRequests(ctx context.Context) ([]map[string]any, error) {
-	return s.users.IntegraRequests(ctx)
+	return s.integraRepo.IntegraRequests(ctx)
 }
 
 func (s AuthService) FinishIntegraRequest(ctx context.Context, id int64) error {
 	if id <= 0 {
 		return types.ErrInvalidParam
 	}
-	return s.users.FinishIntegraRequest(ctx, id)
+	return s.integraRepo.FinishIntegraRequest(ctx, id)
 }
 
 func (s AuthService) IntegraHistoryByProfile(ctx context.Context, profile string) ([]map[string]any, error) {
 	if strings.TrimSpace(profile) == "" {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.IntegraHistoryByProfile(ctx, profile)
+	return s.integraRepo.IntegraHistoryByProfile(ctx, profile)
 }
 
 func (s AuthService) IntegraServiceHistory(ctx context.Context) ([]map[string]any, error) {
-	return s.users.IntegraServiceHistory(ctx)
+	return s.integraRepo.IntegraServiceHistory(ctx)
 }
 
 func (s AuthService) IntegraDashboard(ctx context.Context) ([]map[string]any, error) {
-	return s.users.IntegraDashboard(ctx)
+	return s.integraRepo.IntegraDashboard(ctx)
 }
 
 func (s AuthService) IntegraAttachment(ctx context.Context, id int64) (types.IntegraAttachment, error) {
 	if id <= 0 {
 		return types.IntegraAttachment{}, types.ErrInvalidParam
 	}
-	return s.users.IntegraAttachment(ctx, id)
+	return s.integraRepo.IntegraAttachment(ctx, id)
 }
 
 func (s AuthService) ActiveMailerUsers(ctx context.Context) ([]map[string]any, error) {
-	return s.users.ActiveMailerUsers(ctx)
+	return s.systemRepo.ActiveMailerUsers(ctx)
 }
 
 func (s AuthService) ListAuthorizedApps(ctx context.Context) ([]types.AplicativoAutorizado, error) {
-	return s.users.ListAuthorizedApps(ctx)
+	return s.appRepo.ListAuthorizedApps(ctx)
 }
 
 func (s AuthService) CreateAuthorizedApp(ctx context.Context, app types.AplicativoPayload) (string, error) {
@@ -522,7 +728,7 @@ func (s AuthService) CreateAuthorizedApp(ctx context.Context, app types.Aplicati
 	if err != nil {
 		return "", types.ErrInternal.WithCause(err)
 	}
-	if err := s.users.CreateAuthorizedApp(ctx, app, token); err != nil {
+	if err := s.appRepo.CreateAuthorizedApp(ctx, app, token); err != nil {
 		return "", err
 	}
 	return token, nil
@@ -533,14 +739,14 @@ func (s AuthService) UpdateAuthorizedApp(ctx context.Context, id int64, app type
 		return types.ErrInvalidParam
 	}
 	app.ID = id
-	return s.users.UpdateAuthorizedApp(ctx, app)
+	return s.appRepo.UpdateAuthorizedApp(ctx, app)
 }
 
 func (s AuthService) DeleteAuthorizedApp(ctx context.Context, id int64) error {
 	if id <= 0 {
 		return types.ErrInvalidParam
 	}
-	return s.users.DeleteAuthorizedApp(ctx, id)
+	return s.appRepo.DeleteAuthorizedApp(ctx, id)
 }
 
 func (s AuthService) AccessLimitIPCurrent(context.Context) ([]map[string]any, error) {
@@ -552,26 +758,26 @@ func (s AuthService) AccessLimitUserCurrent(context.Context) ([]map[string]any, 
 }
 
 func (s AuthService) AccessLimitIPHistory(ctx context.Context, blacklist bool) ([]map[string]any, error) {
-	return s.users.AccessLimitIPHistory(ctx, blacklist)
+	return s.systemRepo.AccessLimitIPHistory(ctx, blacklist)
 }
 
 func (s AuthService) AccessLimitUserHistory(ctx context.Context) ([]map[string]any, error) {
-	return s.users.AccessLimitUserHistory(ctx)
+	return s.systemRepo.AccessLimitUserHistory(ctx)
 }
 
 func (s AuthService) ListInactivePreUsers(ctx context.Context) ([]types.PessoaUsuarioCadastro, error) {
-	return s.users.ListInactivePreUsers(ctx)
+	return s.preUserRepo.ListInactivePreUsers(ctx)
 }
 
 func (s AuthService) PreUser(ctx context.Context, id int64) (types.PessoaUsuarioCadastro, error) {
-	return s.users.FindPreUser(ctx, id)
+	return s.preUserRepo.FindPreUser(ctx, id)
 }
 
 func (s AuthService) UserLogs(ctx context.Context, login string, top *int) ([]types.LogAcessoUsuario, error) {
 	if strings.TrimSpace(login) == "" {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.UserLogs(ctx, login, top)
+	return s.userRepo.UserLogs(ctx, login, top)
 }
 
 func (s AuthService) UserLogsByCPF(ctx context.Context, cpf string, top *int) ([]types.LogAcessoUsuario, error) {
@@ -579,7 +785,7 @@ func (s AuthService) UserLogsByCPF(ctx context.Context, cpf string, top *int) ([
 	if cpf == "" {
 		return nil, types.ErrInvalidParam
 	}
-	return s.users.UserLogsByCPF(ctx, cpf, top)
+	return s.userRepo.UserLogsByCPF(ctx, cpf, top)
 }
 
 func (s AuthService) RegisterPreUser(ctx context.Context, p types.PessoaUsuarioCadastro, remoteIP string) error {
@@ -591,7 +797,7 @@ func (s AuthService) RegisterPreUser(ctx context.Context, p types.PessoaUsuarioC
 			return err
 		}
 	}
-	exists, err := s.users.PreUserExistsByCPFOrEmail(ctx, p)
+	exists, err := s.preUserRepo.PreUserExistsByCPFOrEmail(ctx, p)
 	if err != nil {
 		return err
 	}
@@ -599,7 +805,7 @@ func (s AuthService) RegisterPreUser(ctx context.Context, p types.PessoaUsuarioC
 		return types.ErrCPFAlreadyExists
 	}
 	p.CPF = utils.NormalizeCPF(p.CPF)
-	return s.users.CreatePreUser(ctx, p, false)
+	return s.preUserRepo.CreatePreUser(ctx, p, false)
 }
 
 func (s AuthService) RecadastrarPreUser(ctx context.Context, p types.PessoaUsuarioCadastro, userID int64, remoteIP string) error {
@@ -611,18 +817,18 @@ func (s AuthService) RecadastrarPreUser(ctx context.Context, p types.PessoaUsuar
 			return err
 		}
 	}
-	idPessoa, err := s.users.PersonIDByUserID(ctx, userID)
+	idPessoa, err := s.preUserRepo.PersonIDByUserID(ctx, userID)
 	if err != nil {
 		return err
 	}
 	p.CPF = utils.NormalizeCPF(p.CPF)
-	if err := s.users.UpdatePreUser(ctx, p, idPessoa); err != nil {
+	if err := s.preUserRepo.UpdatePreUser(ctx, p, idPessoa); err != nil {
 		return err
 	}
-	if err := s.users.DeactivateUser(ctx, userID); err != nil {
+	if err := s.preUserRepo.DeactivateUser(ctx, userID); err != nil {
 		return err
 	}
-	return s.users.SetUserRecadastramento(ctx, userID, false)
+	return s.preUserRepo.SetUserRecadastramento(ctx, userID, false)
 }
 
 func (s AuthService) ActivatePreUser(ctx context.Context, p types.PessoaUsuarioCadastro, actorID int64) error {
@@ -632,38 +838,64 @@ func (s AuthService) ActivatePreUser(ctx context.Context, p types.PessoaUsuarioC
 	if p.IDCadastrador == 0 {
 		p.IDCadastrador = actorID
 	}
-	idUsuario, err := s.users.UserIDByPersonID(ctx, p.ID)
+	if strings.EqualFold(p.Acesso, "LOCAL") && strings.TrimSpace(p.Senha) == "" {
+		p.Senha = gerarSenhaTemporaria(8)
+	}
+	idUsuario, err := s.preUserRepo.UserIDByPersonID(ctx, p.ID)
 	if err == nil && idUsuario > 0 {
-		if err := s.users.ActivateUser(ctx, idUsuario); err != nil {
+		if strings.EqualFold(p.Acesso, "LOCAL") {
+			if err := s.preUserRepo.UpdateUserPasswordReset(ctx, idUsuario, p.Senha); err != nil {
+				return err
+			}
+		}
+		if err := s.preUserRepo.ActivateUser(ctx, idUsuario); err != nil {
 			return err
 		}
 	} else {
-		if err := s.users.CreateUserFromActivation(ctx, p); err != nil {
+		if err := s.preUserRepo.CreateUserFromActivation(ctx, p); err != nil {
 			return err
 		}
 	}
-	return s.users.ActivatePreUser(ctx, p.ID)
+	return s.preUserRepo.ActivatePreUser(ctx, p.ID)
+}
+
+func gerarSenhaTemporaria(length int) string {
+	const chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*-+ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	if length <= 0 {
+		length = 8
+	}
+	out := make([]byte, length)
+	max := big.NewInt(int64(len(chars)))
+	for i := range out {
+		n, err := crand.Int(crand.Reader, max)
+		if err != nil {
+			out[i] = chars[time.Now().UnixNano()%int64(len(chars))]
+			continue
+		}
+		out[i] = chars[n.Int64()]
+	}
+	return string(out)
 }
 
 func (s AuthService) DeletePreUser(ctx context.Context, id int64) error {
 	if id <= 0 {
 		return types.ErrInvalidParam
 	}
-	return s.users.DeletePreUser(ctx, id)
+	return s.preUserRepo.DeletePreUser(ctx, id)
 }
 
 func (s AuthService) EnablePreUserRecadastramento(ctx context.Context, idPessoa int64) error {
 	if idPessoa <= 0 {
 		return types.ErrInvalidParam
 	}
-	idUsuario, err := s.users.UserIDByPersonID(ctx, idPessoa)
+	idUsuario, err := s.preUserRepo.UserIDByPersonID(ctx, idPessoa)
 	if err != nil {
 		return err
 	}
-	if err := s.users.ActivateUser(ctx, idUsuario); err != nil {
+	if err := s.preUserRepo.ActivateUser(ctx, idUsuario); err != nil {
 		return err
 	}
-	return s.users.SetUserRecadastramento(ctx, idUsuario, true)
+	return s.preUserRepo.SetUserRecadastramento(ctx, idUsuario, true)
 }
 
 func (s AuthService) validatePreUser(p types.PessoaUsuarioCadastro) error {

@@ -1,5 +1,6 @@
-// Package dto define contratos de entrada/saida usados pelos handlers.
+// Package dto contem objetos de transferencia usados nas respostas publicas.
 //
-// Nesta etapa ele documenta a camada; os DTOs existentes ainda vivem em
-// internal/types para preservar compatibilidade enquanto a refatoracao avanca.
+// Use DTOs quando um contrato de resposta precisar ficar explicito. Fluxos
+// legados que exigem compatibilidade podem continuar usando mapas ate a
+// homologacao do shape.
 package dto

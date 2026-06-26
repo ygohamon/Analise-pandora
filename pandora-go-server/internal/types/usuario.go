@@ -56,6 +56,8 @@ type Usuario struct {
 	SEEU                       bool     `json:"seeu,omitempty"`
 	Transparencia              bool     `json:"transparencia"`
 	FontesAbertas              bool     `json:"fontesAbertas"`
+	TemaEscuro                 bool     `json:"temaEscuro,omitempty"`
+	ESPA                       bool     `json:"espa,omitempty"`
 }
 
 type UsuarioAdmin struct {
@@ -219,6 +221,8 @@ type UsuarioToken struct {
 	SEEU                       bool     `json:"seeu,omitempty"`
 	Transparencia              bool     `json:"transparencia"`
 	FontesAbertas              bool     `json:"fontesAbertas"`
+	TemaEscuro                 bool     `json:"tema_escuro,omitempty"`
+	ESPA                       bool     `json:"espa,omitempty"`
 }
 
 func (u Usuario) IsAdmin() bool {
@@ -258,6 +262,8 @@ func (u Usuario) ToToken() UsuarioToken {
 		SEEU:          u.SEEU,
 		Transparencia: u.Transparencia,
 		FontesAbertas: u.FontesAbertas,
+		TemaEscuro:    u.TemaEscuro,
+		ESPA:          u.ESPA,
 	}
 	if u.NecessitaProcesso {
 		token.NecessitaProcesso = !u.IsAdmin()

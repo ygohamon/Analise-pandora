@@ -28,6 +28,9 @@ type Config struct {
 	CacheTTL        time.Duration
 	RateLimitPerMin int
 	LogLevel        slog.Level
+	LogFormat       string
+	CrawlersURL     string
+	CrawlersTimeout time.Duration
 	Database        DatabaseConfig
 }
 
@@ -50,14 +53,17 @@ func Load() Config {
 		JWTExpiration:   durationSeconds("JWT_TOKEN_TEMPO_EXPIRACAO", 3600*6),
 		ServerAESPW:     os.Getenv("SERVER_AES_PW"),
 		RecaptchaSecret: os.Getenv("GOOGLE_RECAPTCHA_SECRET_KEY"),
-		RequestTimeout:  durationSeconds("REQUEST_TIMEOUT_SECONDS", 120),
+		RequestTimeout:  durationSeconds("REQUEST_TIMEOUT_SECONDS", 600),
 		ReadTimeout:     durationSeconds("SERVER_READ_TIMEOUT_SECONDS", 10),
-		WriteTimeout:    durationSeconds("SERVER_WRITE_TIMEOUT_SECONDS", 180),
+		WriteTimeout:    durationSeconds("SERVER_WRITE_TIMEOUT_SECONDS", 660),
 		IdleTimeout:     durationSeconds("SERVER_IDLE_TIMEOUT_SECONDS", 120),
 		MaxBodyBytes:    int64(intEnv("MAX_BODY_BYTES", 5<<20)),
 		CacheTTL:        durationSeconds("CACHE_TTL_SECONDS", 300),
 		RateLimitPerMin: intEnv("RATE_LIMIT_PER_MINUTE", 120),
 		LogLevel:        logLevel(os.Getenv("LOG_LEVEL")),
+		LogFormat:       strings.ToLower(getenv("LOG_FORMAT", "")),
+		CrawlersURL:     crawlersURL(),
+		CrawlersTimeout: durationSeconds("CRAWLERS_TIMEOUT_SECONDS", 120),
 		Database: DatabaseConfig{
 			Driver:          databaseDriver(),
 			DSN:             databaseDSN(),
@@ -66,6 +72,20 @@ func Load() Config {
 			ConnMaxLifetime: durationSeconds("DB_CONN_MAX_LIFETIME_SECONDS", 300),
 		},
 	}
+}
+
+func crawlersURL() string {
+	for _, key := range []string{"PANDORA_CRAWLERS_URL", "CRAWLERS_URL", "SERVER_CRAWLERS_URL"} {
+		if value := strings.TrimRight(strings.TrimSpace(os.Getenv(key)), "/"); value != "" {
+			return value
+		}
+	}
+	server := strings.TrimSpace(os.Getenv("CRAWLERS_SERVER"))
+	if server == "" {
+		return ""
+	}
+	port := getenv("CRAWLERS_PORT", "3123")
+	return "http://" + server + ":" + port
 }
 
 func loadEnvFiles() {

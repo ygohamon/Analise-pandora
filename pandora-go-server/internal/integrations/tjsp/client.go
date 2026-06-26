@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -42,7 +41,7 @@ func (c *Client) Processos(ctx context.Context, tipo, documento string) ([]map[s
 		return nil, err
 	}
 	endpoint := baseURL + "/processo/" + strings.Trim(tipo, "/") + "/" + url.PathEscape(documento)
-	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 60*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, endpoint, nil)
 	if err != nil {
@@ -56,7 +55,7 @@ func (c *Client) Processos(ctx context.Context, tipo, documento string) ([]map[s
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "tjsp.caex"), "method", http.MethodGet, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, "tjsp.caex", http.MethodGet, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
@@ -86,7 +85,7 @@ func (c *Client) authToken(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 20*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 2*time.Minute))
 	defer cancel()
 	endpoint := baseURL + "/auth/login"
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, endpoint, bytes.NewReader(raw))
@@ -101,7 +100,7 @@ func (c *Client) authToken(ctx context.Context) (string, error) {
 		return "", err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api login", append(sharedintegrations.LogAttrs(ctx, "tjsp.caex"), "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds())...)
+	sharedintegrations.LogExternalLogin(ctx, "tjsp.caex", res.StatusCode, time.Since(start))
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return "", fmt.Errorf("tjsp caex login status %d", res.StatusCode)
 	}

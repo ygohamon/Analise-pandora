@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -43,7 +42,7 @@ func (s *Session) Token(ctx context.Context, model modelconfig.Model, includeSco
 			form.Set("scope", scope)
 		}
 	}
-	reqCtx, cancel := context.WithTimeout(ctx, Timeout(model, 20*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, Timeout(model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, tokenURL, strings.NewReader(form.Encode()))
 	if err != nil {
@@ -56,7 +55,7 @@ func (s *Session) Token(ctx context.Context, model modelconfig.Model, includeSco
 		return "", err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api login", append(sharedintegrations.LogAttrs(ctx, SourceSigla(model, "oauth")), "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds())...)
+	sharedintegrations.LogExternalLogin(ctx, SourceSigla(model, "oauth"), res.StatusCode, time.Since(start))
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return "", fmt.Errorf("oauth status %d", res.StatusCode)
 	}
@@ -82,7 +81,7 @@ func (s *Session) Token(ctx context.Context, model modelconfig.Model, includeSco
 
 // GetJSON executa GET autenticado e decodifica um objeto JSON.
 func GetJSON(ctx context.Context, model modelconfig.Model, apiName, endpoint, bearerToken string, headers map[string]string) (map[string]any, error) {
-	reqCtx, cancel := context.WithTimeout(ctx, Timeout(model, 80*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, Timeout(model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, endpoint, nil)
 	if err != nil {
@@ -101,7 +100,7 @@ func GetJSON(ctx context.Context, model modelconfig.Model, apiName, endpoint, be
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, apiName), "method", http.MethodGet, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, apiName, http.MethodGet, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
@@ -121,7 +120,7 @@ func PostJSON(ctx context.Context, model modelconfig.Model, apiName, endpoint, b
 	if err != nil {
 		return nil, err
 	}
-	reqCtx, cancel := context.WithTimeout(ctx, Timeout(model, 80*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, Timeout(model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, endpoint, bytes.NewReader(rawBody))
 	if err != nil {
@@ -141,7 +140,7 @@ func PostJSON(ctx context.Context, model modelconfig.Model, apiName, endpoint, b
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, apiName), "method", http.MethodPost, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, apiName, http.MethodPost, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}

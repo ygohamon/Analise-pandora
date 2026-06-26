@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -42,7 +41,7 @@ func (c Client) GetArray(ctx context.Context, path string, query map[string]stri
 	if encoded := values.Encode(); encoded != "" {
 		endpoint += "?" + encoded
 	}
-	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 30*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, endpoint, nil)
 	if err != nil {
@@ -56,7 +55,7 @@ func (c Client) GetArray(ctx context.Context, path string, query map[string]stri
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "transparencia"), "method", http.MethodGet, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, "transparencia", http.MethodGet, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}

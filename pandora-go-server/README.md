@@ -1,10 +1,12 @@
 # pandora-go-server
 
-Backend Go separado para migracao incremental do `pandora-server`.
+Backend Go principal da rodada atual de refatoracao do Pandora.
 
 Handoff detalhado para outros agentes/IA: `../docs/HANDOFF_REFACTOR_BACKEND_GO.md`.
 
-O objetivo inicial e manter o servidor Node atual funcionando enquanto consultas de alto volume migram para Go por dominio, com foco em:
+O objetivo e manter as consultas operacionais e administrativas no Go com
+arquitetura simples por dominio/secao, preservando o `pandora-server` apenas
+como referencia funcional ate a homologacao final de paridade, com foco em:
 
 - consultas HTTP rapidas e cancelaveis por `context.Context`;
 - middleware de seguranca antes das rotas;
@@ -33,6 +35,8 @@ Variaveis principais:
 - `DB_MAX_OPEN_CONNS`, `DB_MAX_IDLE_CONNS`, `DB_CONN_MAX_LIFETIME_SECONDS`.
 - `CACHE_TTL_SECONDS`: TTL padrao das consultas GET.
 - `RATE_LIMIT_PER_MINUTE`: limite por minuto.
+- `PANDORA_CRAWLERS_URL`: URL do `pandora-crawlers` Go, por exemplo `http://crawlers-dev:3123`.
+- `CRAWLERS_TIMEOUT_SECONDS`: timeout das chamadas de crawler.
 
 ## Rotas principais migradas
 
@@ -46,14 +50,20 @@ Variaveis principais:
 - `GET /empresas/simplificado/{campo}/{valor}`
 - `GET /empresas/detalhado/cnpj/{cnpj}`
 - `GET /empresas/integrado/cnpj/{cnpj}`
+- secoes Pesquisa, Analise, Apps e Sistema documentadas em `docs/*.md`.
 
-Os integrados suportam `funcao=local`, `funcao=externo` e `funcao=crawlers`. Crawlers ainda retornam vazio resiliente ate a migracao das fontes abertas, sem alterar o envelope legado.
+Os integrados suportam `funcao=local`, `funcao=externo` e `funcao=crawlers`.
+O modo `crawlers` chama `pandora-crawlers` via `/crawl` quando configurado e
+faz bypass resiliente em timeout/falha.
 
 ## Padrao de migracao
 
 - `internal/http/handlers`: controllers HTTP finos; leem path/query/header e chamam usecases.
+- `internal/http/handlers/pesquisa`, `analise`, `apps` e `sistema`: entrada por secao do app.
 - `internal/usecases`: regras de orquestracao, defaults de parametros, validacao de entrada e escolha de modo.
+- `internal/usecases/pesquisa`, `analise` e `apps`: usecases/facades por secao operacional.
 - `internal/repositories`: consultas SQL/API por fonte, equivalentes aos antigos `models`.
+- `internal/repositories/pesquisa`, `analise`, `apps` e `sistema`: repositories por dominio/secao.
 - `internal/integrations`: clients externos reutilizaveis por fornecedor, como Cortex, Credlink e OAuth JSON.
 - `internal/mappers`: conversao de payload local/externo para abas compativeis com o front.
 - `internal/audit`: auditoria tecnica por fonte, com documento mascarado e `request_id`.

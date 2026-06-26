@@ -8,7 +8,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -37,7 +36,7 @@ func (c Client) DocumentosResumidos(ctx context.Context, base, termo string) ([]
 		return nil, nil
 	}
 	endpoint := baseURL + "/" + strings.Trim(base, "/") + "/documentosResumidos?termo=" + url.QueryEscape(termo)
-	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 20*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, endpoint, nil)
 	if err != nil {
@@ -50,7 +49,7 @@ func (c Client) DocumentosResumidos(ctx context.Context, base, termo string) ([]
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "tcu"), "method", http.MethodGet, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, "tcu", http.MethodGet, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
@@ -79,7 +78,7 @@ func (c Client) Condenacoes(ctx context.Context, documento string) ([]map[string
     </ext:recuperaCondenacoesPorCpfCnpj>
   </soapenv:Body>
 </soapenv:Envelope>`, xmlEscape(documento))
-	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 20*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, oauthjson.Timeout(c.model, 2*time.Minute))
 	defer cancel()
 	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, endpoint, bytes.NewBufferString(body))
 	if err != nil {
@@ -96,7 +95,7 @@ func (c Client) Condenacoes(ctx context.Context, documento string) ([]map[string
 	if readErr != nil {
 		return nil, readErr
 	}
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "tcu.condenacoes"), "method", http.MethodPost, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds(), "path", safePath(endpoint))...)
+	sharedintegrations.LogExternalCall(ctx, "tcu.condenacoes", http.MethodPost, res.StatusCode, time.Since(start), safePath(endpoint))
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}

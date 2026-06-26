@@ -1,5 +1,6 @@
-// Package repositories contem consultas especificas por dominio.
+// Package repositories contem ports e implementacoes SQL administrativas.
 //
-// Repositories representam os models do Pandora original: consultam banco ou
-// fontes especificas e retornam dados internos, sem conhecer regra de tela.
+// Ports operacionais devem representar dominios ou fontes especificas. SQL deve
+// ficar em repositories concretos; regra de permissao e orquestracao ficam nos
+// usecases.
 package repositories

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -53,7 +52,7 @@ func (c Client) Completo(ctx context.Context, cpf string) (map[string]any, error
 		return nil, err
 	}
 	defer res.Body.Close()
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "credlink"), "method", http.MethodGet, "status", res.StatusCode, "duration_ms", time.Since(start).Milliseconds())...)
+	sharedintegrations.LogExternalCall(ctx, "credlink", http.MethodGet, res.StatusCode, time.Since(start), "")
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return nil, fmt.Errorf("credlink status %d", res.StatusCode)
 	}

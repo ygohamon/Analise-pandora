@@ -82,7 +82,7 @@ func (c Client) endpoint(path string, query url.Values) (string, error) {
 }
 
 func (c Client) get(ctx context.Context, endpoint string) ([]byte, error) {
-	reqCtx, cancel := context.WithTimeout(ctx, timeout(c.model, 3*time.Second))
+	reqCtx, cancel := context.WithTimeout(ctx, timeout(c.model, 2*time.Minute))
 	defer cancel()
 
 	start := time.Now()
@@ -101,15 +101,11 @@ func (c Client) get(ctx context.Context, endpoint string) ([]byte, error) {
 	defer res.Body.Close()
 
 	raw, readErr := io.ReadAll(res.Body)
-	slog.InfoContext(ctx, "external api call", append(sharedintegrations.LogAttrs(ctx, "bcccs"),
+	sharedintegrations.LogExternalCall(ctx, "bcccs", http.MethodGet, res.StatusCode, time.Since(start), safePath(endpoint),
 		"source", "pix",
-		"method", http.MethodGet,
-		"path", safePath(endpoint),
-		"status", res.StatusCode,
-		"duration_ms", time.Since(start).Milliseconds(),
 		"content_type", res.Header.Get("Content-Type"),
 		"body_bytes", len(raw),
-	)...)
+	)
 	if readErr != nil {
 		return nil, readErr
 	}
